@@ -12,7 +12,6 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  ChevronDown,
   Send,
   Info,
 } from "lucide-react";

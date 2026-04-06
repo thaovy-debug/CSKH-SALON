@@ -12,7 +12,6 @@ import {
   MessageSquareReply,
   Bell,
   Activity,
-  AlertTriangle,
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";

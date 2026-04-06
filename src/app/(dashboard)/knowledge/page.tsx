@@ -14,7 +14,6 @@ import {
   AlertCircle,
   Star,
   ArrowUp,
-  ArrowDown,
   Minus,
   ToggleLeft,
   ToggleRight,

@@ -716,11 +716,7 @@ export default function ChannelsPage() {
     []
   );
 
-  useEffect(() => {
-    fetchChannels();
-  }, []);
-
-  const fetchChannels = async () => {
+  const fetchChannels = useCallback(async () => {
     try {
       const res = await fetch("/api/channels");
       if (!res.ok) throw new Error("Failed to fetch");
@@ -731,7 +727,11 @@ export default function ChannelsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchChannels();
+  }, [fetchChannels]);
 
   const handleSave = async (
     type: string,

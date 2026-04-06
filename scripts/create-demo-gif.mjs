@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { execSync } from 'child_process';
-import { mkdirSync, readdirSync } from 'fs';
+import { mkdirSync } from 'fs';
 
 const BASE = 'http://localhost:3000';
 const FRAMES_DIR = '/tmp/owly-gif-frames';
@@ -72,7 +72,7 @@ async function run() {
   try {
     execSync(`ffmpeg -y -framerate 1 -i ${FRAMES_DIR}/frame-%04d.png -vf "scale=700:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer" -loop 0 ${OUTPUT}`, { stdio: 'pipe' });
     console.log(`GIF saved to ${OUTPUT}`);
-  } catch (e) {
+  } catch {
     console.log('ffmpeg not found, trying convert (ImageMagick)...');
     try {
       execSync(`convert -delay 100 -loop 0 -resize 700x ${FRAMES_DIR}/frame-*.png ${OUTPUT}`, { stdio: 'pipe' });

@@ -287,7 +287,6 @@ export function LineChart({
 
 export function DonutChart({
   data,
-  height = 280,
   title,
   className,
 }: BaseChartProps & { centerLabel?: string }) {

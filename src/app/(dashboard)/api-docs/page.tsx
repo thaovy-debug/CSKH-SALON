@@ -2,7 +2,6 @@
 
 import { Header } from "@/components/layout/header";
 import {
-  FileCode,
   Key,
   ChevronDown,
   ChevronRight,

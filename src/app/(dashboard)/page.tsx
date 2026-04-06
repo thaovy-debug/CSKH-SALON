@@ -4,7 +4,6 @@ import { OnboardingChecklist } from "@/components/ui/onboarding-checklist";
 import { prisma } from "@/lib/prisma";
 import {
   MessageSquare,
-  Users,
   Ticket,
   Phone,
   Mail,

@@ -3,7 +3,6 @@
 import { Header } from "@/components/layout/header";
 import { cn } from "@/lib/utils";
 import {
-  Shield,
   Key,
   Plus,
   Pencil,
