@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-04-07
+
+### Added
+
+- Cross-channel conversation continuity: automatic customer identity resolution across WhatsApp, Email, and Phone
+- `customerId` foreign key on Conversation model linking conversations to unified Customer profiles
+- Customer resolver module with phone number normalization and cross-field matching
+- Unified customer timeline endpoint: `GET /api/customers/:id/conversations`
+- Kubernetes Helm chart (`helm/owly/`) with deployment, service, ingress, HPA, PVC, secrets
+- OpenAPI 3.0 specification served at `GET /api/openapi.json`
+- Webhook delivery system with exponential retry (3 attempts) and HMAC-SHA256 signatures
+- Webhook delivery log and manual retry endpoint: `/api/webhooks/:id/deliveries`
+- Request ID tracking (`X-Request-Id` header) on every API response
+- Rate limit headers on all API responses (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
+- API version header (`X-API-Version: 2026-04-07`)
+- CORS support via `CORS_ORIGIN` environment variable
+- Standardized error response format: `{ error: { code, message, requestId } }`
+- `AppError` class with factory methods (`notFound`, `badRequest`, `unauthorized`, `tooManyRequests`, `internal`)
+- Graceful shutdown handler (SIGTERM/SIGINT with connection cleanup)
+- Pagination helper module (`src/lib/pagination.ts`) shared across all endpoints
+- Export endpoint now supports `customers` and `knowledge` types with date range filters and 50K record limit
+- Database compound indexes for query performance
+- 51 new tests (228 total across 21 files)
+
+### Changed
+
+- All 14 list endpoints now paginated (max 100 per page, default 20)
+- Existing `/api/customers` and `/api/activity` pagination capped at 100
+- Export endpoint limits records to prevent memory exhaustion
+- Chat endpoint hardened with try/catch, input validation, and 10K character limit
+- Dockerfile upgraded to multi-stage build with non-root user and HEALTHCHECK
+- Docker Compose updated with app health check, resource limits, and production defaults
+- Health check endpoint now reports OpenAI reachability, memory usage, and environment
+- AI `get_customer_history` tool supports cross-channel lookup via `customerId`
+- Conversation detail API includes linked customer data
+
+### Removed
+
+- Unused `socket.io` and `socket.io-client` dependencies
+
 ## [0.1.1] - 2026-04-06
 
 ### Security

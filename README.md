@@ -16,8 +16,9 @@
 <p align="center">
   <a href="https://github.com/Hesper-Labs/owly/actions/workflows/ci.yml"><img src="https://github.com/Hesper-Labs/owly/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
-  <img src="https://img.shields.io/badge/version-0.1.1-brightgreen.svg" alt="Version" />
-  <img src="https://img.shields.io/badge/tests-177%20passed-success.svg" alt="Tests" />
+  <img src="https://img.shields.io/badge/version-0.2.1-brightgreen.svg" alt="Version" />
+  <img src="https://img.shields.io/badge/tests-228%20passed-success.svg" alt="Tests" />
+  <img src="https://img.shields.io/badge/helm-ready-0F1689.svg" alt="Helm" />
   <img src="https://img.shields.io/badge/node-%3E%3D20-green.svg" alt="Node" />
   <img src="https://img.shields.io/badge/typescript-5.x-blue.svg" alt="TypeScript" />
   <img src="https://img.shields.io/badge/next.js-16-black.svg" alt="Next.js" />
@@ -33,7 +34,7 @@
 
 ## What is Owly?
 
-Owly is a **self-hosted AI customer support agent** that small businesses and individuals can run on their own machines -- completely free. Connect your WhatsApp, Email, and Phone channels, add your business knowledge, and let the AI handle customer inquiries 24/7.
+Owly is a **self-hosted AI customer support agent** that small businesses and individuals can run on their own machines -- completely free. Connect your WhatsApp, Email, and Phone channels, add your business knowledge, and let the AI handle customer inquiries 24/7. Owly automatically identifies customers across channels -- someone who emails first and later calls gets a unified profile with full conversation history.
 
 <table>
   <tr>
@@ -112,9 +113,9 @@ Owly uses OpenAI GPT (extensible to Claude, Ollama) with your knowledge base to 
   <em>Unified inbox with conversation thread and admin takeover</em>
 </p>
 
-### Customer CRM
+### Customer CRM & Cross-Channel Continuity
 
-Every customer gets a unified profile across all channels -- conversations, notes, tags, and contact history in one place.
+Every customer gets a unified profile across all channels -- conversations, notes, tags, and contact history in one place. Owly automatically resolves customer identity when someone switches channels (WhatsApp to Email to Phone), keeping the full context available to both the AI and your team.
 
 <p align="center">
   <img src="docs/screenshots/04-customers.png" alt="Customer Management" width="100%" />
@@ -329,13 +330,12 @@ All configuration is done through the admin dashboard -- no config files to edit
 
 ## API
 
-Owly provides a full REST API. Interactive documentation with live testing is available at `/api-docs` in the dashboard.
+Owly provides a full REST API with **OpenAPI 3.0 spec** at `/api/openapi.json`. Interactive documentation with live testing is available at `/api-docs` in the dashboard. All list endpoints are paginated (max 100/page) with standardized response format.
 
 ```bash
 # Send a message and get AI response
 curl -X POST http://localhost:3000/api/chat \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: your_api_key" \
   -d '{"message": "What are your business hours?", "channel": "api"}'
 
 # Response:
@@ -343,10 +343,12 @@ curl -X POST http://localhost:3000/api/chat \
 ```
 
 ```bash
-# Health check
+# Health check (database, OpenAI, memory, uptime)
 curl http://localhost:3000/api/health
-# {"status": "ok", "version": "0.1.0", "database": "connected"}
+# {"status": "ok", "version": "0.2.1", "services": {"database": "connected", "openai": "reachable"}, ...}
 ```
+
+Every API response includes enterprise headers: `X-Request-Id`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-API-Version`.
 
 <details>
 <summary><strong>View all endpoints</strong></summary>
@@ -361,6 +363,7 @@ curl http://localhost:3000/api/health
 | `POST` | `/api/conversations/:id/notes` | Add internal note |
 | `GET` `POST` | `/api/customers` | List or create customers |
 | `GET` `PUT` `DELETE` | `/api/customers/:id` | Manage a customer |
+| `GET` | `/api/customers/:id/conversations` | Cross-channel conversation timeline |
 | `GET` `POST` | `/api/tickets` | List or create tickets |
 | `GET` `PUT` `DELETE` | `/api/tickets/:id` | Manage a ticket |
 | `GET` `POST` | `/api/knowledge/categories` | Knowledge categories |
@@ -375,10 +378,12 @@ curl http://localhost:3000/api/health
 | `GET` `POST` | `/api/canned-responses` | Canned responses |
 | `GET` `POST` | `/api/webhooks` | Webhook management |
 | `POST` | `/api/webhooks/test` | Test a webhook |
+| `GET` `POST` | `/api/webhooks/:id/deliveries` | Delivery log and retry |
 | `GET` `POST` | `/api/admin/users` | Admin user management |
 | `GET` `POST` | `/api/admin/api-keys` | API key management |
 | `GET` | `/api/activity` | Activity audit log |
 | `GET` | `/api/health` | Health check |
+| `GET` | `/api/openapi.json` | OpenAPI 3.0 specification |
 
 </details>
 
@@ -388,18 +393,20 @@ curl http://localhost:3000/api/health
 
 | Layer | Technology |
 |-------|-----------|
-| **Framework** | Next.js 14 (App Router) |
-| **Language** | TypeScript |
-| **Database** | PostgreSQL + Prisma ORM |
-| **UI** | Tailwind CSS |
+| **Framework** | Next.js 16 (App Router) |
+| **Language** | TypeScript 5 |
+| **Database** | PostgreSQL 16 + Prisma 7 |
+| **UI** | Tailwind CSS 4 + Radix UI |
 | **AI** | OpenAI GPT (extensible to Claude, Ollama) |
 | **Voice TTS** | ElevenLabs |
 | **Voice STT** | OpenAI Whisper |
 | **Phone** | Twilio Voice API |
 | **WhatsApp** | whatsapp-web.js |
-| **Auth** | JWT + bcrypt |
+| **Auth** | JWT + bcrypt (12 rounds) |
+| **Validation** | Zod schemas on all endpoints |
+| **Testing** | Vitest (228 tests) |
 | **Charts** | Pure CSS/SVG (zero dependencies) |
-| **Deployment** | Docker Compose |
+| **Deployment** | Docker Compose / Kubernetes (Helm) |
 
 ---
 
@@ -412,20 +419,33 @@ owly/
 ├── docs/
 │   ├── screenshots/         # UI screenshots (20 images)
 │   └── wiki/                # Full documentation (25 pages)
+├── helm/owly/               # Kubernetes Helm chart
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/           # K8s manifests (deployment, service, ingress, hpa, etc.)
 ├── src/
 │   ├── app/
 │   │   ├── (auth)/          # Login, setup wizard
 │   │   ├── (dashboard)/     # 19 dashboard pages
-│   │   └── api/             # 55+ REST API endpoints
+│   │   └── api/             # 60+ REST API endpoints
 │   ├── components/
 │   │   ├── layout/          # Sidebar, header
 │   │   └── ui/              # 12 reusable components
 │   └── lib/
 │       ├── ai/              # AI engine, tools, types
 │       ├── channels/        # WhatsApp, email, phone
+│       ├── customer-resolver.ts  # Cross-channel identity resolution
+│       ├── errors.ts        # Standardized error responses
+│       ├── logger.ts        # Structured logging
+│       ├── pagination.ts    # Shared pagination helper
+│       ├── rate-limit.ts    # Rate limiting
+│       ├── security.ts      # XSS/CRLF protection, secret masking
+│       ├── validations.ts   # Zod input schemas
+│       ├── webhook-delivery.ts   # Retry logic + HMAC signatures
 │       └── hooks/           # Theme hook
+├── tests/                   # 228 tests (unit, API, security)
 ├── docker-compose.yml
-├── Dockerfile
+├── Dockerfile               # Multi-stage, non-root, healthcheck
 └── .env.example
 ```
 
@@ -444,18 +464,44 @@ Full documentation is available in the [Wiki](docs/wiki/Home.md):
 
 ---
 
+## Deployment
+
+### Docker Compose (recommended for most users)
+
+```bash
+docker compose up -d
+```
+
+### Kubernetes (Helm)
+
+```bash
+helm install owly helm/owly \
+  --set database.host=your-postgres-host \
+  --set database.password=your-password \
+  --set secrets.jwtSecret=$(openssl rand -hex 32) \
+  --set secrets.openaiApiKey=sk-... \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0].host=support.yourdomain.com
+```
+
+The Helm chart includes startup/liveness/readiness probes, horizontal pod autoscaling, Ingress with TLS, PersistentVolumeClaim for WhatsApp sessions, and init container for database migrations. See [`helm/owly/values.yaml`](helm/owly/values.yaml) for all options.
+
+---
+
 ## Roadmap
 
+- [x] Cross-channel customer identity resolution
+- [x] Kubernetes Helm chart
+- [x] OpenAPI 3.0 specification
+- [x] Webhook delivery retry with HMAC signatures
+- [x] Pagination on all list endpoints
+- [x] Standardized error responses with request tracing
 - [ ] Embeddable live chat widget for customer websites
 - [ ] WebSocket real-time updates
 - [ ] Vector embeddings for semantic knowledge search
-- [ ] Visual AI tool builder
-- [ ] Public knowledge base (self-service)
-- [ ] Customer self-service portal
-- [ ] Visual workflow builder
+- [ ] Role-based access control (RBAC)
 - [ ] Telegram, Instagram, SMS channels
 - [ ] Shopify / WooCommerce integration
-- [ ] Sentiment analysis
 - [ ] Mobile admin (PWA)
 - [ ] Multi-tenant / white-label
 
@@ -486,6 +532,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 <p align="center">
   <img src="public/owly.png" alt="Owly" width="48" height="48" /><br/>
-  <strong>Owly</strong> -- AI Customer Support, Made Simple<br/>
-  <sub>Built with Next.js, TypeScript, and PostgreSQL</sub>
+  <strong>Owly</strong> -- AI Customer Support, Enterprise Grade<br/>
+  <sub>Built with Next.js 16, TypeScript, PostgreSQL, and OpenAI</sub>
 </p>
