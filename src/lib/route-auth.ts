@@ -8,21 +8,71 @@ interface AuthContext {
   role: string;
   username: string;
   name: string;
+  authMethod: "cookie" | "api_key";
+}
+
+/**
+ * Authenticate via API key (X-API-Key header).
+ */
+async function authenticateApiKey(apiKey: string): Promise<AuthContext | null> {
+  const key = await prisma.apiKey.findUnique({
+    where: { key: apiKey },
+  });
+
+  if (!key || !key.isActive) return null;
+
+  // Update lastUsed timestamp
+  prisma.apiKey.update({
+    where: { id: key.id },
+    data: { lastUsed: new Date() },
+  }).catch(() => { /* fire and forget */ });
+
+  // API keys get admin-level access
+  return {
+    userId: "api-key:" + key.id,
+    role: "admin",
+    username: key.name,
+    name: key.name,
+    authMethod: "api_key",
+  };
 }
 
 /**
  * Authenticate and authorize an API request.
+ * Supports both cookie (JWT) and API key (X-API-Key header) auth.
  * Returns the auth context or a 401/403 response.
  */
 export async function requireAuth(
   request: NextRequest,
   permission?: Permission
 ): Promise<AuthContext | NextResponse> {
+  // Try API key auth first
+  const apiKey = request.headers.get("x-api-key");
+  if (apiKey) {
+    const context = await authenticateApiKey(apiKey);
+    if (!context) {
+      return NextResponse.json(
+        { error: { code: "INVALID_API_KEY", message: "Invalid or inactive API key" } },
+        { status: 401 }
+      );
+    }
+
+    if (permission && !hasPermission(context.role, permission)) {
+      return NextResponse.json(
+        { error: { code: "FORBIDDEN", message: "Insufficient permissions" } },
+        { status: 403 }
+      );
+    }
+
+    return context;
+  }
+
+  // Fall back to cookie auth
   const token = request.cookies.get("owly-token")?.value;
 
   if (!token) {
     return NextResponse.json(
-      { error: { code: "UNAUTHORIZED", message: "Authentication required" } },
+      { error: { code: "UNAUTHORIZED", message: "Authentication required. Use cookie or X-API-Key header." } },
       { status: 401 }
     );
   }
@@ -35,7 +85,6 @@ export async function requireAuth(
     );
   }
 
-  // Check permission if specified
   if (permission && !hasPermission(payload.role, permission)) {
     return NextResponse.json(
       { error: { code: "FORBIDDEN", message: "Insufficient permissions" } },
@@ -60,6 +109,7 @@ export async function requireAuth(
     role: admin.role,
     username: admin.username,
     name: admin.name,
+    authMethod: "cookie",
   };
 }
 

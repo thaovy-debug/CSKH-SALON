@@ -134,10 +134,11 @@ export function middleware(request: NextRequest) {
     };
   }
 
-  // Check for auth token
+  // Check for auth token (cookie) or API key (header)
   const token = request.cookies.get("owly-token")?.value;
+  const apiKey = request.headers.get("x-api-key");
 
-  if (!token) {
+  if (!token && !apiKey) {
     if (pathname.startsWith("/api/")) {
       return addHeaders(
         NextResponse.json(
@@ -151,8 +152,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // API key auth is validated in route handlers (requireAuth), just pass through
+  if (apiKey && !token) {
+    return addHeaders(NextResponse.next(), requestId, apiRateInfo);
+  }
+
   // Verify JWT structure
-  const parts = token.split(".");
+  const parts = (token || "").split(".");
   if (parts.length !== 3) {
     if (pathname.startsWith("/api/")) {
       return addHeaders(
