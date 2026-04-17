@@ -25,6 +25,7 @@ import { useEffect, useState, useCallback } from "react";
 interface SettingsData {
   businessName: string;
   businessDesc: string;
+  logoUrl: string;
   welcomeMessage: string;
   tone: string;
   language: string;
@@ -71,8 +72,8 @@ interface TabDef {
 // ---------------------------------------------------------------------------
 
 const tabs: TabDef[] = [
-  { key: "general", label: "General", icon: SettingsIcon },
-  { key: "ai", label: "AI Configuration", icon: Bot },
+  { key: "general", label: "Cơ bản", icon: SettingsIcon },
+  { key: "ai", label: "Cấu hình AI", icon: Bot },
   { key: "voice", label: "Voice (ElevenLabs)", icon: Mic },
   { key: "phone", label: "Phone (Twilio)", icon: Phone },
   { key: "email", label: "Email (SMTP/IMAP)", icon: Mail },
@@ -81,7 +82,7 @@ const tabs: TabDef[] = [
 
 // Which fields belong to each section (used for partial saves)
 const sectionFields: Record<SectionKey, (keyof SettingsData)[]> = {
-  general: ["businessName", "businessDesc", "welcomeMessage", "tone", "language"],
+  general: ["businessName", "businessDesc", "logoUrl", "welcomeMessage", "tone", "language"],
   ai: ["aiProvider", "aiModel", "aiApiKey", "maxTokens", "temperature"],
   voice: ["elevenLabsKey", "elevenLabsVoice"],
   phone: ["twilioSid", "twilioToken", "twilioPhone"],
@@ -346,7 +347,7 @@ function SaveButton({
         ) : (
           <Save className="h-4 w-4" />
         )}
-        {saving ? "Saving..." : "Save"}
+        {saving ? "Đang lưu..." : "Lưu cài đặt"}
       </button>
     </div>
   );
@@ -355,6 +356,44 @@ function SaveButton({
 // ---------------------------------------------------------------------------
 // Section renderers
 // ---------------------------------------------------------------------------
+
+function ImageUpload({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Image must be less than 2MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onChange(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      {value ? (
+        <img src={value} alt="Logo preview" className="w-12 h-12 rounded-lg object-contain bg-white border border-owly-border/50" />
+      ) : (
+        <div className="w-12 h-12 rounded-lg bg-owly-border/20 border border-owly-border/50 flex items-center justify-center text-xs text-owly-text-light">Chưa có logo</div>
+      )}
+      <input 
+        type="file" 
+        accept="image/*" 
+        onChange={handleFileChange} 
+        className="text-sm text-owly-text-light file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-owly-primary file:text-white hover:file:bg-owly-primary-dark cursor-pointer transition-colors" 
+      />
+      {value && (
+        <button type="button" onClick={() => onChange("")} className="text-xs text-owly-danger hover:underline">
+          Remove
+        </button>
+      )}
+    </div>
+  );
+}
 
 function GeneralSection({
   data,
@@ -365,44 +404,50 @@ function GeneralSection({
 }) {
   return (
     <div className="space-y-5">
-      <FormField label="Business Name" description="The name of your business or organization.">
+      <FormField label="Tên doanh nghiệp" description="Tên thương hiệu hoặc cửa hàng của bạn.">
         <TextInput
           value={data.businessName}
           onChange={(v) => update("businessName", v)}
-          placeholder="My Business"
+          placeholder="Minh Hy Hair"
         />
       </FormField>
-      <FormField label="Business Description" description="A short description used for context in AI interactions.">
+      <FormField label="Logo" description="Upload your business logo (Max 2MB). It will replace the default logo in the sidebar.">
+        <ImageUpload
+          value={data.logoUrl || ""}
+          onChange={(v) => update("logoUrl", v)}
+        />
+      </FormField>
+      <FormField label="Mô tả doanh nghiệp" description="Mô tả ngắn gọn để cung cấp ngữ cảnh cho AI.">
         <TextareaInput
           value={data.businessDesc}
           onChange={(v) => update("businessDesc", v)}
-          placeholder="Describe what your business does..."
+          placeholder="Mô tả chi tiết về dịch vụ..."
         />
       </FormField>
-      <FormField label="Welcome Message" description="The greeting message sent to new customers.">
+      <FormField label="Tin nhắn chào mừng" description="Tin nhắn đầu tiên gửi cho khách hàng mới.">
         <TextareaInput
           value={data.welcomeMessage}
           onChange={(v) => update("welcomeMessage", v)}
           placeholder="Hello! How can I help you today?"
         />
       </FormField>
-      <FormField label="Tone" description="Choose the communication style for AI responses.">
+      <FormField label="Giọng văn" description="Chọn phong cách giao tiếp cho AI.">
         <SelectInput
           value={data.tone}
           onChange={(v) => update("tone", v)}
           options={[
-            { value: "friendly", label: "Friendly" },
-            { value: "formal", label: "Formal" },
-            { value: "technical", label: "Technical" },
+            { value: "friendly", label: "Thân thiện" },
+            { value: "formal", label: "Trang trọng" },
+            { value: "technical", label: "Chuyên môn" },
           ]}
         />
       </FormField>
-      <FormField label="Language" description="Primary language for AI responses. Auto will detect customer language.">
+      <FormField label="Ngôn ngữ" description="Ngôn ngữ chính cho AI. Chọn Tự động để nhận diện theo khách hàng.">
         <SelectInput
           value={data.language}
           onChange={(v) => update("language", v)}
           options={[
-            { value: "auto", label: "Auto-detect" },
+            { value: "auto", label: "Tự động nhận diện" },
             { value: "en", label: "English" },
             { value: "tr", label: "Turkish" },
             { value: "de", label: "German" },
@@ -446,7 +491,7 @@ function AISection({
 
   return (
     <div className="space-y-5">
-      <FormField label="AI Provider" description="Select which AI provider to use for generating responses.">
+      <FormField label="Nhà cung cấp AI" description="Chọn nhà cung cấp AI để xử lý hội thoại.">
         <SelectInput
           value={data.aiProvider}
           onChange={(v) => {
@@ -463,25 +508,25 @@ function AISection({
           ]}
         />
       </FormField>
-      <FormField label="Model" description="The specific model to use for AI responses.">
+      <FormField label="Mô hình" description="Mô hình AI cụ thể sẽ sử dụng.">
         <SelectInput
           value={data.aiModel}
           onChange={(v) => update("aiModel", v)}
           options={modelOptions[data.aiProvider] || []}
         />
       </FormField>
-      <FormField label="API Key" description="Your provider API key. Not required for Ollama.">
+      <FormField label="API Key" description="Mã API của nhà cung cấp. Không bắt buộc với Ollama.">
         <PasswordInput
           value={data.aiApiKey}
           onChange={(v) => update("aiApiKey", v)}
           placeholder={
             data.aiProvider === "ollama"
-              ? "Not required for local models"
-              : "Enter your API key"
+              ? "Không bắt buộc cho mô hình nội bộ"
+              : "Nhập mã API của bạn"
           }
         />
       </FormField>
-      <FormField label="Max Tokens" description="Maximum number of tokens per AI response.">
+      <FormField label="Số token tối đa" description="Số lượng token tối đa cho mỗi phản hồi của AI.">
         <SliderInput
           value={data.maxTokens}
           onChange={(v) => update("maxTokens", v)}
@@ -491,7 +536,7 @@ function AISection({
           displayValue={data.maxTokens.toLocaleString()}
         />
       </FormField>
-      <FormField label="Temperature" description="Controls randomness. Lower values make responses more focused, higher values more creative.">
+      <FormField label="Temperature" description="Kiểm soát độ sáng tạo. Giá trị thấp sẽ chính xác hơn, giá trị cao sẽ đa dạng hơn.">
         <SliderInput
           value={data.temperature}
           onChange={(v) => update("temperature", v)}
@@ -516,17 +561,17 @@ function VoiceSection({
     <div className="space-y-5">
       <div className="p-4 rounded-lg bg-owly-primary-50/50 border border-owly-primary/20">
         <p className="text-sm text-owly-text">
-          Connect your ElevenLabs account to enable AI-powered voice responses for phone calls.
+          Kết nối tài khoản ElevenLabs để kích hoạt tính năng chuyển văn bản thành giọng nói cho các cuộc gọi.
         </p>
       </div>
-      <FormField label="API Key" description="Your ElevenLabs API key for text-to-speech.">
+      <FormField label="API Key" description="Mã API ElevenLabs của bạn.">
         <PasswordInput
           value={data.elevenLabsKey}
           onChange={(v) => update("elevenLabsKey", v)}
-          placeholder="Enter your ElevenLabs API key"
+          placeholder="Nhập mã API ElevenLabs"
         />
       </FormField>
-      <FormField label="Voice ID" description="The ElevenLabs voice ID to use for speech synthesis.">
+      <FormField label="Voice ID" description="ID của giọng đọc ElevenLabs sẽ sử dụng.">
         <TextInput
           value={data.elevenLabsVoice}
           onChange={(v) => update("elevenLabsVoice", v)}
@@ -548,24 +593,24 @@ function PhoneSection({
     <div className="space-y-5">
       <div className="p-4 rounded-lg bg-owly-primary-50/50 border border-owly-primary/20">
         <p className="text-sm text-owly-text">
-          Configure Twilio to enable phone call support. You will need an active Twilio account with a phone number.
+          Cấu hình Twilio để kích hoạt tổng đài điện thoại. Bạn cần một tài khoản Twilio có sẵn số điện thoại.
         </p>
       </div>
-      <FormField label="Account SID" description="Your Twilio Account SID from the dashboard.">
+      <FormField label="Account SID" description="Account SID từ trang quản trị Twilio.">
         <PasswordInput
           value={data.twilioSid}
           onChange={(v) => update("twilioSid", v)}
           placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         />
       </FormField>
-      <FormField label="Auth Token" description="Your Twilio authentication token.">
+      <FormField label="Auth Token" description="Mã xác thực Twilio (Auth token).">
         <PasswordInput
           value={data.twilioToken}
           onChange={(v) => update("twilioToken", v)}
-          placeholder="Enter your Twilio auth token"
+          placeholder="Nhập Auth token của Twilio"
         />
       </FormField>
-      <FormField label="Phone Number" description="Your Twilio phone number in E.164 format.">
+      <FormField label="Số điện thoại" description="Số điện thoại Twilio của bạn (Định dạng E.164).">
         <TextInput
           value={data.twilioPhone}
           onChange={(v) => update("twilioPhone", v)}
@@ -610,22 +655,22 @@ function EmailSection({
             </FormField>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField label="Username">
+            <FormField label="Tên đăng nhập">
               <TextInput
                 value={data.smtpUser}
                 onChange={(v) => update("smtpUser", v)}
                 placeholder="your@email.com"
               />
             </FormField>
-            <FormField label="Password">
+            <FormField label="Mật khẩu">
               <PasswordInput
                 value={data.smtpPass}
                 onChange={(v) => update("smtpPass", v)}
-                placeholder="Enter SMTP password"
+                placeholder="Nhập mật khẩu SMTP"
               />
             </FormField>
           </div>
-          <FormField label="From Address" description="The email address that will appear as the sender.">
+          <FormField label="Địa chỉ người gửi" description="Địa chỉ email sẽ hiển thị với người nhận.">
             <TextInput
               value={data.smtpFrom}
               onChange={(v) => update("smtpFrom", v)}
@@ -660,18 +705,18 @@ function EmailSection({
             </FormField>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField label="Username">
+            <FormField label="Tên đăng nhập">
               <TextInput
                 value={data.imapUser}
                 onChange={(v) => update("imapUser", v)}
                 placeholder="your@email.com"
               />
             </FormField>
-            <FormField label="Password">
+            <FormField label="Mật khẩu">
               <PasswordInput
                 value={data.imapPass}
                 onChange={(v) => update("imapPass", v)}
-                placeholder="Enter IMAP password"
+                placeholder="Nhập mật khẩu IMAP"
               />
             </FormField>
           </div>
@@ -695,7 +740,7 @@ function WhatsAppSection({
           Choose between WhatsApp Web (free, requires QR scan) or the official WhatsApp Business API (paid, more reliable).
         </p>
       </div>
-      <FormField label="Connection Mode" description="Select how Owly connects to WhatsApp.">
+      <FormField label="Phương thức kết nối" description="Chọn cách hệ thống kết nối với WhatsApp.">
         <SelectInput
           value={data.whatsappMode}
           onChange={(v) => update("whatsappMode", v)}
@@ -707,14 +752,14 @@ function WhatsAppSection({
       </FormField>
       {data.whatsappMode === "api" && (
         <>
-          <FormField label="API Key" description="Your WhatsApp Business API key.">
+          <FormField label="API Key" description="Mã API WhatsApp Business của bạn.">
             <PasswordInput
               value={data.whatsappApiKey}
               onChange={(v) => update("whatsappApiKey", v)}
-              placeholder="Enter your WhatsApp API key"
+              placeholder="Nhập mã API WhatsApp"
             />
           </FormField>
-          <FormField label="Phone Number" description="Your WhatsApp Business phone number in E.164 format.">
+          <FormField label="Số điện thoại" description="Số điện thoại WhatsApp Business của bạn (Định dạng E.164).">
             <TextInput
               value={data.whatsappPhone}
               onChange={(v) => update("whatsappPhone", v)}
@@ -734,6 +779,7 @@ function WhatsAppSection({
 const defaultSettings: SettingsData = {
   businessName: "My Business",
   businessDesc: "",
+  logoUrl: "",
   welcomeMessage: "Hello! How can I help you today?",
   tone: "friendly",
   language: "auto",
@@ -788,7 +834,7 @@ export default function SettingsPage() {
         }
         setData(merged);
       })
-      .catch(() => addToast("error", "Failed to load settings"))
+      .catch(() => addToast("error", "Lỗi khi tải cài đặt"))
       .finally(() => setLoading(false));
   }, [addToast]);
 
@@ -812,9 +858,9 @@ export default function SettingsPage() {
       });
 
       if (!res.ok) throw new Error("Save failed");
-      addToast("success", "Settings saved successfully");
+      addToast("success", "Đã lưu cài đặt thành công");
     } catch {
-      addToast("error", "Failed to save settings. Please try again.");
+      addToast("error", "Lỗi khi lưu cài đặt. Vui lòng thử lại.");
     } finally {
       setSaving(false);
     }
@@ -832,7 +878,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <>
-        <Header title="Settings" description="Configure your Owly instance" />
+        <Header title="Cài đặt" description="Cấu hình hệ thống trợ lý AI" />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-owly-primary" />
         </div>
@@ -842,7 +888,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <Header title="Settings" description="Configure your Owly instance" />
+      <Header title="Cài đặt" description="Cấu hình hệ thống trợ lý AI" />
       <div className="flex-1 overflow-auto p-6">
         <div className="max-w-4xl mx-auto">
           {/* Tab navigation */}
@@ -876,17 +922,17 @@ export default function SettingsPage() {
               </h3>
               <p className="text-sm text-owly-text-light mt-0.5">
                 {activeTab === "general" &&
-                  "Configure your business identity and communication preferences."}
+                  "Cấu hình thông tin doanh nghiệp và phong cách giao tiếp."}
                 {activeTab === "ai" &&
-                  "Set up the AI model that powers your customer interactions."}
+                  "Thiết lập mô hình AI dùng để tương tác với khách hàng."}
                 {activeTab === "voice" &&
-                  "Configure text-to-speech for voice-based support channels."}
+                  "Cấu hình tính năng chuyển văn bản thành giọng nói."}
                 {activeTab === "phone" &&
-                  "Connect your Twilio account for phone call handling."}
+                  "Kết nối tài khoản Twilio để quản lý cuộc gọi."}
                 {activeTab === "email" &&
-                  "Set up email sending and receiving for support tickets."}
+                  "Cấu hình máy chủ gửi và nhận email cho các phiếu hỗ trợ."}
                 {activeTab === "whatsapp" &&
-                  "Configure WhatsApp integration for messaging support."}
+                  "Cấu hình tích hợp WhatsApp để hỗ trợ qua tin nhắn."}
               </p>
             </div>
 

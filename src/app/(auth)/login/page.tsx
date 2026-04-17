@@ -48,14 +48,14 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Login failed. Please try again.");
+        setError(data.error || "Đăng nhập thất bại. Vui lòng thử lại.");
         setLoading(false);
         return;
       }
 
       router.replace("/");
     } catch {
-      setError("An unexpected error occurred. Please try again.");
+      setError("Đã xảy ra lỗi ngoài dự kiến. Vui lòng thử lại.");
       setLoading(false);
     }
   }
@@ -72,17 +72,17 @@ export default function LoginPage() {
     <div className="bg-owly-surface rounded-2xl shadow-lg border border-owly-border p-8">
       <div className="flex flex-col items-center mb-8">
         <Image
-          src="/owly.png"
-          alt="Owly"
+          src="/salondesk-logo.svg"
+          alt="SalonDesk"
           width={56}
           height={56}
           className="mb-4"
         />
         <h1 className="text-2xl font-bold text-owly-text">
-          Welcome to Owly
+          Chào mừng đến với SalonDesk
         </h1>
         <p className="text-owly-text-light text-sm mt-1">
-          Sign in to your account
+          Đăng nhập vào tài khoản của bạn
         </p>
       </div>
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
             htmlFor="username"
             className="block text-sm font-medium text-owly-text mb-1.5"
           >
-            Username
+            Tên đăng nhập
           </label>
           <input
             id="username"
@@ -102,7 +102,7 @@ export default function LoginPage() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text placeholder:text-owly-text-light focus:outline-none focus:ring-2 focus:ring-owly-primary focus:border-transparent transition-shadow"
-            placeholder="Enter your username"
+            placeholder="Nhập tên đăng nhập"
           />
         </div>
 
@@ -111,7 +111,7 @@ export default function LoginPage() {
             htmlFor="password"
             className="block text-sm font-medium text-owly-text mb-1.5"
           >
-            Password
+            Mật khẩu
           </label>
           <input
             id="password"
@@ -121,7 +121,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text placeholder:text-owly-text-light focus:outline-none focus:ring-2 focus:ring-owly-primary focus:border-transparent transition-shadow"
-            placeholder="Enter your password"
+            placeholder="Nhập mật khẩu"
           />
         </div>
 
@@ -139,10 +139,10 @@ export default function LoginPage() {
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              Signing in...
+              Đang đăng nhập...
             </span>
           ) : (
-            "Sign In"
+            "Đăng nhập"
           )}
         </button>
       </form>

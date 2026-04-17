@@ -3,10 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { requireAuth, isAuthenticated } from "@/lib/route-auth";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireAuth(request, "customers:read");
   if (!isAuthenticated(auth)) return auth;
 
@@ -23,10 +20,7 @@ export async function GET(
     });
 
     if (!customer) {
-      return NextResponse.json(
-        { error: "Customer not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 });
     }
 
     // Find linked conversations by matching email, phone, or whatsapp
@@ -58,31 +52,36 @@ export async function GET(
     return NextResponse.json({ ...customer, conversations });
   } catch (error) {
     logger.error("Failed to fetch customer:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch customer" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch customer" }, { status: 500 });
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireAuth(request, "customers:update");
   if (!isAuthenticated(auth)) return auth;
 
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, email, phone, whatsapp, tags, isBlocked, metadata } = body;
+    const {
+      name,
+      email,
+      phone,
+      whatsapp,
+      tags,
+      isBlocked,
+      metadata,
+      hairHistory,
+      hairCondition,
+      profileNotes,
+      bleachHistory,
+      previousStylist,
+      preferences,
+    } = body;
 
     const existing = await prisma.customer.findUnique({ where: { id } });
     if (!existing) {
-      return NextResponse.json(
-        { error: "Customer not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 });
     }
 
     const customer = await prisma.customer.update({
@@ -93,6 +92,23 @@ export async function PUT(
         ...(phone !== undefined && { phone: phone.trim() }),
         ...(whatsapp !== undefined && { whatsapp: whatsapp.trim() }),
         ...(tags !== undefined && { tags: tags.trim() }),
+        ...(hairHistory !== undefined && { hairHistory: hairHistory.trim() }),
+        ...(hairCondition !== undefined && {
+          hairCondition: hairCondition.trim(),
+        }),
+        ...(profileNotes !== undefined && {
+          profileNotes: profileNotes.trim(),
+        }),
+        ...(bleachHistory !== undefined && {
+          bleachHistory:
+            bleachHistory === "yes" || bleachHistory === "no" ? bleachHistory : "unknown",
+        }),
+        ...(previousStylist !== undefined && {
+          previousStylist: previousStylist.trim(),
+        }),
+        ...(preferences !== undefined && {
+          preferences: preferences.trim(),
+        }),
         ...(isBlocked !== undefined && { isBlocked }),
         ...(metadata !== undefined && { metadata }),
         lastContact: new Date(),
@@ -108,10 +124,7 @@ export async function PUT(
     return NextResponse.json(customer);
   } catch (error) {
     logger.error("Failed to update customer:", error);
-    return NextResponse.json(
-      { error: "Failed to update customer" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update customer" }, { status: 500 });
   }
 }
 
@@ -127,10 +140,7 @@ export async function DELETE(
 
     const existing = await prisma.customer.findUnique({ where: { id } });
     if (!existing) {
-      return NextResponse.json(
-        { error: "Customer not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 });
     }
 
     await prisma.customer.delete({ where: { id } });
@@ -138,9 +148,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error("Failed to delete customer:", error);
-    return NextResponse.json(
-      { error: "Failed to delete customer" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to delete customer" }, { status: 500 });
   }
 }

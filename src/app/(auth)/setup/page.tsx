@@ -1,27 +1,67 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  AI_PROVIDER_OPTIONS,
+  DEFAULT_GEMINI_MODEL,
+  GEMINI_PROVIDER,
+} from "@/lib/ai/catalog";
+import {
+  Bot,
+  CheckCircle2,
+  FileSpreadsheet,
+  FileText,
+  MessageCircleMore,
+  ShieldAlert,
+  UserRound,
+} from "lucide-react";
 
 const STEPS = [
-  "Create Admin Account",
-  "Business Profile",
-  "AI Configuration",
-  "You're All Set!",
+  "Tài khoản quản trị",
+  "Hồ sơ salon",
+  "Luồng CSKH",
+  "Cấu hình AI",
+  "Hoàn tất",
 ];
 
 const TONE_OPTIONS = [
-  { value: "friendly", label: "Friendly", desc: "Warm and approachable" },
-  { value: "professional", label: "Professional", desc: "Formal and business-like" },
-  { value: "casual", label: "Casual", desc: "Relaxed and conversational" },
-  { value: "concise", label: "Concise", desc: "Short and to the point" },
+  { value: "friendly", label: "Thân thiện", desc: "Nhẹ nhàng, dễ gần và dễ chốt lịch" },
+  { value: "professional", label: "Chuyên nghiệp", desc: "Rõ ràng, lịch sự và chỉn chu" },
+  { value: "formal", label: "Trang trọng", desc: "Nghiêm túc hơn cho thương hiệu cao cấp" },
+  { value: "technical", label: "Giải thích kỹ", desc: "Phù hợp tư vấn nhiều nghiệp vụ, kỹ thuật" },
+] as const;
+
+const PROVIDER_OPTIONS = AI_PROVIDER_OPTIONS;
+
+const TRAINING_FORMATS = [
+  { label: "PDF", icon: FileText },
+  { label: "DOC / DOCX", icon: FileText },
+  { label: "XLS / XLSX", icon: FileSpreadsheet },
 ];
 
-const PROVIDER_OPTIONS = [
-  { value: "openai", label: "OpenAI", models: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"] },
-  { value: "claude", label: "Claude (Anthropic)", models: ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022", "claude-3-opus-20240229"] },
-  { value: "ollama", label: "Ollama (Local)", models: ["llama3", "mistral", "codellama", "phi3"] },
+const BOT_RESPONSIBILITIES = [
+  "Trả lời câu hỏi phổ biến về dịch vụ, giá khoảng và quy trình làm tóc.",
+  "Tư vấn ban đầu, hỏi thêm thông tin còn thiếu và gợi ý lịch hẹn.",
+  "Dùng dữ liệu từ bảng giá, FAQ, quy trình và chính sách để trả lời nhất quán.",
+];
+
+const HUMAN_HANDOFF_CASES = [
+  "Khách yêu cầu tư vấn quá sâu hoặc tình huống không có đủ dữ liệu.",
+  "Các ca complain, khiếu nại, hoàn tiền, bảo hành hoặc phản hồi tiêu cực.",
+  "Các trường hợp cần người thật chốt phương án cuối cùng hoặc trấn an khách.",
+];
+
+const CHAT_PREVIEW = [
+  { role: "customer", time: "20:52", content: "mình có đưa data training cho nó được không" },
+  { role: "customer", time: "21:07", content: "phải là file pdf, doc, excel á" },
+  {
+    role: "assistant",
+    time: "21:08",
+    content:
+      "Dạ được chị nhé. Mình có thể chuẩn hóa nội dung từ file PDF, Word, Excel để làm nguồn tri thức cho bot tư vấn khách hàng. Những ca khó hoặc các trường hợp complain thì hệ thống sẽ ưu tiên chuyển nhân viên hỗ trợ xử lý.",
+  },
 ];
 
 export default function SetupPage() {
@@ -31,25 +71,27 @@ export default function SetupPage() {
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState("");
 
-  // Step 1 - Admin Account
+  // Step 1 - Admin account
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Step 2 - Business Profile
+  // Step 2 - Business profile
   const [businessName, setBusinessName] = useState("");
   const [businessDesc, setBusinessDesc] = useState("");
-  const [welcomeMessage, setWelcomeMessage] = useState("Hello! How can I help you today?");
-  const [tone, setTone] = useState("friendly");
+  const [welcomeMessage, setWelcomeMessage] = useState(
+    "Xin chào! Chào mừng bạn đến với Luna Women's Hair Studio. Bạn cần tư vấn bảng giá, tình trạng tóc hay đặt lịch làm tóc?"
+  );
+  const [tone, setTone] = useState<(typeof TONE_OPTIONS)[number]["value"]>("friendly");
 
-  // Step 3 - AI Configuration
-  const [aiProvider, setAiProvider] = useState("openai");
-  const [aiModel, setAiModel] = useState("gpt-4o-mini");
+  // Step 4 - AI configuration
+  const [aiProvider, setAiProvider] = useState(GEMINI_PROVIDER);
+  const [aiModel, setAiModel] = useState(DEFAULT_GEMINI_MODEL);
   const [aiApiKey, setAiApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
 
-  // Step 4 - Summary
+  // Summary
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   useEffect(() => {
@@ -66,11 +108,12 @@ export default function SetupPage() {
       }
       setChecking(false);
     }
+
     checkSetup();
   }, [router]);
 
   function currentModels() {
-    return PROVIDER_OPTIONS.find((p) => p.value === aiProvider)?.models || [];
+    return PROVIDER_OPTIONS.find((provider) => provider.value === aiProvider)?.models || [];
   }
 
   async function handleNext() {
@@ -79,19 +122,20 @@ export default function SetupPage() {
 
     try {
       if (step === 0) {
-        // Validate admin fields
         if (!name.trim() || !username.trim() || !password) {
-          setError("All fields are required.");
+          setError("Vui lòng nhập đầy đủ các trường bắt buộc.");
           setLoading(false);
           return;
         }
+
         if (password.length < 6) {
-          setError("Password must be at least 6 characters.");
+          setError("Mật khẩu phải có ít nhất 6 ký tự.");
           setLoading(false);
           return;
         }
+
         if (password !== confirmPassword) {
-          setError("Passwords do not match.");
+          setError("Mật khẩu xác nhận không khớp.");
           setLoading(false);
           return;
         }
@@ -102,38 +146,46 @@ export default function SetupPage() {
           body: JSON.stringify({ action: "setup", name, username, password }),
         });
         const data = await res.json();
+
         if (!res.ok) {
-          setError(data.error || "Setup failed.");
+          setError(data.error || "Thiết lập thất bại.");
           setLoading(false);
           return;
         }
-        setCompletedSteps((prev) => [...prev, 0]);
+
+        setCompletedSteps((prev) => [...new Set([...prev, 0])]);
         setStep(1);
       } else if (step === 1) {
-        const body: Record<string, string> = {};
+        const body: Record<string, string> = { tone };
+
         if (businessName.trim()) body.businessName = businessName.trim();
         if (businessDesc.trim()) body.businessDesc = businessDesc.trim();
         if (welcomeMessage.trim()) body.welcomeMessage = welcomeMessage.trim();
-        body.tone = tone;
 
         const res = await fetch("/api/settings", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
+
         if (!res.ok) {
           const data = await res.json();
-          setError(data.error || "Failed to save business profile.");
+          setError(data.error || "Không thể lưu hồ sơ salon.");
           setLoading(false);
           return;
         }
-        setCompletedSteps((prev) => [...prev, 1]);
+
+        setCompletedSteps((prev) => [...new Set([...prev, 1])]);
         setStep(2);
       } else if (step === 2) {
+        setCompletedSteps((prev) => [...new Set([...prev, 2])]);
+        setStep(3);
+      } else if (step === 3) {
         const body: Record<string, string> = {
           aiProvider,
           aiModel,
         };
+
         if (aiApiKey.trim()) body.aiApiKey = aiApiKey.trim();
 
         const res = await fetch("/api/settings", {
@@ -141,17 +193,19 @@ export default function SetupPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
+
         if (!res.ok) {
           const data = await res.json();
-          setError(data.error || "Failed to save AI configuration.");
+          setError(data.error || "Không thể lưu cấu hình AI.");
           setLoading(false);
           return;
         }
-        setCompletedSteps((prev) => [...prev, 2]);
-        setStep(3);
+
+        setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+        setStep(4);
       }
     } catch {
-      setError("An unexpected error occurred. Please try again.");
+      setError("Đã xảy ra lỗi ngoài dự kiến. Vui lòng thử lại.");
     }
 
     setLoading(false);
@@ -159,7 +213,7 @@ export default function SetupPage() {
 
   function handleBack() {
     setError("");
-    setStep((s) => Math.max(0, s - 1));
+    setStep((currentStep) => Math.max(0, currentStep - 1));
   }
 
   if (checking) {
@@ -171,146 +225,138 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="bg-owly-surface rounded-2xl shadow-lg border border-owly-border overflow-hidden">
-      {/* Header */}
-      <div className="bg-owly-primary-50 border-b border-owly-border px-8 pt-6 pb-4">
-        <div className="flex items-center gap-3 mb-5">
-          <Image src="/owly.png" alt="Owly" width={40} height={40} />
+    <div className="overflow-hidden rounded-2xl border border-owly-border bg-owly-surface shadow-lg">
+      <div className="border-b border-owly-border bg-owly-primary-50 px-8 pb-4 pt-6">
+        <div className="mb-5 flex items-center gap-3">
+          <Image src="/salondesk-logo.svg" alt="SalonDesk" width={40} height={40} />
           <div>
-            <h1 className="text-lg font-bold text-owly-text">Set Up Owly</h1>
+            <h1 className="text-lg font-bold text-owly-text">Thiết lập SalonDesk</h1>
             <p className="text-xs text-owly-text-light">
-              Step {step + 1} of {STEPS.length}
+              Bước {step + 1} / {STEPS.length}
             </p>
           </div>
         </div>
 
-        {/* Progress Bar */}
         <div className="flex gap-1.5">
-          {STEPS.map((_, i) => (
+          {STEPS.map((_, index) => (
             <div
-              key={i}
+              key={index}
               className="h-1.5 flex-1 rounded-full transition-colors duration-300"
               style={{
                 backgroundColor:
-                  i <= step
-                    ? "var(--owly-primary)"
-                    : "var(--owly-border)",
+                  index <= step ? "var(--owly-primary)" : "var(--owly-border)",
               }}
             />
           ))}
         </div>
       </div>
 
-      {/* Body */}
       <div className="px-8 py-6">
-        <h2 className="text-xl font-bold text-owly-text mb-1">
-          {STEPS[step]}
-        </h2>
+        <h2 className="mb-1 text-xl font-bold text-owly-text">{STEPS[step]}</h2>
 
-        {/* Step 0: Admin Account */}
         {step === 0 && (
           <>
-            <p className="text-sm text-owly-text-light mb-6">
-              Create your administrator account to get started.
+            <p className="mb-6 text-sm text-owly-text-light">
+              Tạo tài khoản quản trị để bắt đầu cấu hình hệ thống CSKH.
             </p>
+
             <div className="space-y-4">
               <Field
                 id="name"
-                label="Full Name"
+                label="Họ và tên"
                 value={name}
                 onChange={setName}
-                placeholder="Your name"
+                placeholder="Nhập họ và tên"
                 autoComplete="name"
               />
               <Field
                 id="username"
-                label="Username"
+                label="Tên đăng nhập"
                 value={username}
                 onChange={setUsername}
-                placeholder="Choose a username"
+                placeholder="Chọn tên đăng nhập"
                 autoComplete="username"
               />
               <Field
                 id="password"
-                label="Password"
+                label="Mật khẩu"
                 type="password"
                 value={password}
                 onChange={setPassword}
-                placeholder="At least 6 characters"
+                placeholder="Ít nhất 6 ký tự"
                 autoComplete="new-password"
               />
               <Field
                 id="confirmPassword"
-                label="Confirm Password"
+                label="Xác nhận mật khẩu"
                 type="password"
                 value={confirmPassword}
                 onChange={setConfirmPassword}
-                placeholder="Re-enter your password"
+                placeholder="Nhập lại mật khẩu"
                 autoComplete="new-password"
               />
             </div>
           </>
         )}
 
-        {/* Step 1: Business Profile */}
         {step === 1 && (
           <>
-            <p className="text-sm text-owly-text-light mb-6">
-              Tell us about your business so Owly can represent you.
+            <p className="mb-6 text-sm text-owly-text-light">
+              Cung cấp thông tin salon để AI giữ đúng giọng điệu và ngữ cảnh khi tư vấn.
             </p>
+
             <div className="space-y-4">
               <Field
                 id="businessName"
-                label="Business Name"
+                label="Tên salon"
                 value={businessName}
                 onChange={setBusinessName}
-                placeholder="Your company or brand name"
+                placeholder="Ví dụ: Luna Women's Hair Studio"
               />
+
               <div>
                 <label
                   htmlFor="businessDesc"
-                  className="block text-sm font-medium text-owly-text mb-1.5"
+                  className="mb-1.5 block text-sm font-medium text-owly-text"
                 >
-                  Description
+                  Mô tả doanh nghiệp
                 </label>
                 <textarea
                   id="businessDesc"
                   rows={3}
                   value={businessDesc}
-                  onChange={(e) => setBusinessDesc(e.target.value)}
-                  placeholder="Briefly describe what your business does"
-                  className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text placeholder:text-owly-text-light focus:outline-none focus:ring-2 focus:ring-owly-primary focus:border-transparent transition-shadow resize-none"
+                  onChange={(event) => setBusinessDesc(event.target.value)}
+                  placeholder="Mô tả ngắn về dịch vụ, phong cách và nhóm khách hàng bạn phục vụ"
+                  className="w-full resize-none rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text placeholder:text-owly-text-light transition-shadow focus:border-transparent focus:outline-none focus:ring-2 focus:ring-owly-primary"
                 />
               </div>
+
               <Field
                 id="welcomeMessage"
-                label="Welcome Message"
+                label="Lời chào mở đầu"
                 value={welcomeMessage}
                 onChange={setWelcomeMessage}
-                placeholder="The first message customers see"
+                placeholder="Tin nhắn đầu tiên khách hàng sẽ nhìn thấy"
               />
+
               <div>
-                <label className="block text-sm font-medium text-owly-text mb-2">
-                  Response Tone
+                <label className="mb-2 block text-sm font-medium text-owly-text">
+                  Tông giọng trả lời
                 </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {TONE_OPTIONS.map((t) => (
+                <div className="grid gap-2 md:grid-cols-2">
+                  {TONE_OPTIONS.map((option) => (
                     <button
-                      key={t.value}
+                      key={option.value}
                       type="button"
-                      onClick={() => setTone(t.value)}
+                      onClick={() => setTone(option.value)}
                       className={`rounded-lg border px-3 py-2.5 text-left transition-colors ${
-                        tone === t.value
+                        tone === option.value
                           ? "border-owly-primary bg-owly-primary-50 ring-1 ring-owly-primary"
                           : "border-owly-border bg-owly-bg hover:border-owly-primary-light"
                       }`}
                     >
-                      <div className="text-sm font-medium text-owly-text">
-                        {t.label}
-                      </div>
-                      <div className="text-xs text-owly-text-light">
-                        {t.desc}
-                      </div>
+                      <div className="text-sm font-medium text-owly-text">{option.label}</div>
+                      <div className="text-xs text-owly-text-light">{option.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -319,36 +365,132 @@ export default function SetupPage() {
           </>
         )}
 
-        {/* Step 2: AI Configuration */}
         {step === 2 && (
-          <>
-            <p className="text-sm text-owly-text-light mb-6">
-              Configure the AI model that powers your support agent.
+          <div className="space-y-6">
+            <p className="text-sm text-owly-text-light">
+              Đây là kịch bản vận hành bot theo đúng nhu cầu của bạn: có nguồn dữ liệu để bot
+              tư vấn khách hàng, nhưng các ca khó và complain vẫn chuyển cho nhân viên.
             </p>
+
+            <div className="grid gap-4 xl:grid-cols-3">
+              <InfoCard
+                icon={Bot}
+                title="Bot xử lý trước"
+                description="Bot tiếp nhận các câu hỏi lặp lại và tư vấn cơ bản trước khi cần người thật."
+              >
+                {BOT_RESPONSIBILITIES.map((item) => (
+                  <FeatureRow key={item} text={item} />
+                ))}
+              </InfoCard>
+
+              <InfoCard
+                icon={FileText}
+                title="Nguồn dữ liệu training"
+                description="Nội dung tư vấn có thể được chuẩn hóa từ các tài liệu nghiệp vụ và bảng giá."
+              >
+                <div className="flex flex-wrap gap-2">
+                  {TRAINING_FORMATS.map((format) => {
+                    const Icon = format.icon;
+                    return (
+                      <span
+                        key={format.label}
+                        className="inline-flex items-center gap-2 rounded-full border border-owly-border bg-owly-bg px-3 py-1.5 text-xs font-medium text-owly-text"
+                      >
+                        <Icon className="h-3.5 w-3.5 text-owly-primary" />
+                        {format.label}
+                      </span>
+                    );
+                  })}
+                </div>
+                <p className="mt-3 text-xs leading-5 text-owly-text-light">
+                  Phù hợp để gom FAQ, bảng giá, quy trình, chính sách bảo hành và nội dung tư
+                  vấn chuẩn cho bot.
+                </p>
+              </InfoCard>
+
+              <InfoCard
+                icon={ShieldAlert}
+                title="Chuyển người thật"
+                description="Những tình huống cần xử lý khéo hoặc có rủi ro sẽ không để bot tự chốt."
+              >
+                {HUMAN_HANDOFF_CASES.map((item) => (
+                  <FeatureRow key={item} text={item} />
+                ))}
+              </InfoCard>
+            </div>
+
+            <div className="rounded-2xl border border-owly-border bg-owly-bg p-5">
+              <div className="mb-4 flex items-center gap-2">
+                <MessageCircleMore className="h-4 w-4 text-owly-primary" />
+                <h3 className="text-sm font-semibold text-owly-text">Preview hội thoại</h3>
+              </div>
+
+              <div className="space-y-3">
+                {CHAT_PREVIEW.map((message, index) => (
+                  <div
+                    key={`${message.role}-${index}`}
+                    className={`flex ${
+                      message.role === "assistant" ? "justify-start" : "justify-end"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-xl rounded-2xl px-4 py-3 shadow-sm ${
+                        message.role === "assistant"
+                          ? "border border-owly-border bg-white text-owly-text"
+                          : "bg-[#f5f7fb] text-owly-text"
+                      }`}
+                    >
+                      <div className="mb-1 flex items-center gap-2">
+                        {message.role === "assistant" ? (
+                          <Bot className="h-4 w-4 text-owly-primary" />
+                        ) : (
+                          <UserRound className="h-4 w-4 text-owly-text-light" />
+                        )}
+                        <span className="text-[11px] font-medium uppercase tracking-wide text-owly-text-light">
+                          {message.role === "assistant" ? "Bot" : "Khách"}
+                        </span>
+                      </div>
+                      <p className="text-sm leading-6">{message.content}</p>
+                      <p className="mt-2 text-[11px] text-owly-text-light">{message.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <>
+            <p className="mb-6 text-sm text-owly-text-light">
+              Chọn model AI dùng để trả lời khách hàng và kết hợp với luồng chuyển người thật ở
+              bước trước.
+            </p>
+
             <div className="space-y-4">
               <div>
                 <label
                   htmlFor="aiProvider"
-                  className="block text-sm font-medium text-owly-text mb-1.5"
+                  className="mb-1.5 block text-sm font-medium text-owly-text"
                 >
-                  AI Provider
+                  Nhà cung cấp AI
                 </label>
                 <select
                   id="aiProvider"
                   value={aiProvider}
-                  onChange={(e) => {
-                    const prov = e.target.value;
-                    setAiProvider(prov);
+                  onChange={(event) => {
+                    const provider = event.target.value;
                     const models =
-                      PROVIDER_OPTIONS.find((p) => p.value === prov)?.models ||
-                      [];
+                      PROVIDER_OPTIONS.find((option) => option.value === provider)?.models || [];
+
+                    setAiProvider(provider);
                     setAiModel(models[0] || "");
                   }}
-                  className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary focus:border-transparent transition-shadow"
+                  className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text transition-shadow focus:border-transparent focus:outline-none focus:ring-2 focus:ring-owly-primary"
                 >
-                  {PROVIDER_OPTIONS.map((p) => (
-                    <option key={p.value} value={p.value}>
-                      {p.label}
+                  {PROVIDER_OPTIONS.map((provider) => (
+                    <option key={provider.value} value={provider.value}>
+                      {provider.label}
                     </option>
                   ))}
                 </select>
@@ -357,19 +499,19 @@ export default function SetupPage() {
               <div>
                 <label
                   htmlFor="aiModel"
-                  className="block text-sm font-medium text-owly-text mb-1.5"
+                  className="mb-1.5 block text-sm font-medium text-owly-text"
                 >
-                  Model
+                  Mô hình
                 </label>
                 <select
                   id="aiModel"
                   value={aiModel}
-                  onChange={(e) => setAiModel(e.target.value)}
-                  className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary focus:border-transparent transition-shadow"
+                  onChange={(event) => setAiModel(event.target.value)}
+                  className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text transition-shadow focus:border-transparent focus:outline-none focus:ring-2 focus:ring-owly-primary"
                 >
-                  {currentModels().map((m) => (
-                    <option key={m} value={m}>
-                      {m}
+                  {currentModels().map((model) => (
+                    <option key={model} value={model}>
+                      {model}
                     </option>
                   ))}
                 </select>
@@ -378,34 +520,25 @@ export default function SetupPage() {
               <div>
                 <label
                   htmlFor="aiApiKey"
-                  className="block text-sm font-medium text-owly-text mb-1.5"
+                  className="mb-1.5 block text-sm font-medium text-owly-text"
                 >
-                  API Key
-                  {aiProvider === "ollama" && (
-                    <span className="ml-1 font-normal text-owly-text-light">
-                      (not required for local models)
-                    </span>
-                  )}
+                  API key
                 </label>
                 <div className="relative">
                   <input
                     id="aiApiKey"
                     type={showApiKey ? "text" : "password"}
                     value={aiApiKey}
-                    onChange={(e) => setAiApiKey(e.target.value)}
-                    placeholder={
-                      aiProvider === "ollama"
-                        ? "Optional"
-                        : "Enter your API key"
-                    }
-                    className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 pr-16 text-sm text-owly-text placeholder:text-owly-text-light focus:outline-none focus:ring-2 focus:ring-owly-primary focus:border-transparent transition-shadow"
+                    onChange={(event) => setAiApiKey(event.target.value)}
+                    placeholder="Nhập API key"
+                    className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 pr-16 text-sm text-owly-text placeholder:text-owly-text-light transition-shadow focus:border-transparent focus:outline-none focus:ring-2 focus:ring-owly-primary"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-xs font-medium text-owly-primary hover:bg-owly-primary-50 transition-colors"
+                    onClick={() => setShowApiKey((visible) => !visible)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-xs font-medium text-owly-primary transition-colors hover:bg-owly-primary-50"
                   >
-                    {showApiKey ? "Hide" : "Show"}
+                    {showApiKey ? "Ẩn" : "Hiện"}
                   </button>
                 </div>
               </div>
@@ -413,88 +546,89 @@ export default function SetupPage() {
           </>
         )}
 
-        {/* Step 3: Complete */}
-        {step === 3 && (
+        {step === 4 && (
           <>
-            <p className="text-sm text-owly-text-light mb-6">
-              Your Owly instance is ready to go.
+            <p className="mb-6 text-sm text-owly-text-light">
+              Không gian làm việc SalonDesk của bạn đã sẵn sàng để bắt đầu vận hành.
             </p>
-            <div className="space-y-3 mb-6">
+
+            <div className="mb-6 space-y-3">
               <SummaryRow
                 done={completedSteps.includes(0)}
-                label="Admin account created"
-                detail={username}
+                label="Đã tạo tài khoản quản trị"
+                detail={username || "Chưa có dữ liệu"}
               />
               <SummaryRow
                 done={completedSteps.includes(1)}
-                label="Business profile configured"
-                detail={businessName || "Default settings"}
+                label="Đã cấu hình hồ sơ salon"
+                detail={businessName || "Dùng cấu hình mặc định"}
               />
               <SummaryRow
                 done={completedSteps.includes(2)}
-                label="AI provider configured"
-                detail={`${PROVIDER_OPTIONS.find((p) => p.value === aiProvider)?.label} / ${aiModel}`}
+                label="Đã xác nhận luồng CSKH"
+                detail="Bot tư vấn case phổ biến, case khó và complain chuyển người thật"
+              />
+              <SummaryRow
+                done={completedSteps.includes(3)}
+                label="Đã cấu hình nhà cung cấp AI"
+                detail={`${PROVIDER_OPTIONS.find((provider) => provider.value === aiProvider)?.label || aiProvider} / ${aiModel}`}
               />
             </div>
           </>
         )}
 
-        {/* Error */}
         {error && (
-          <div className="mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-owly-danger">
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-owly-danger">
             {error}
           </div>
         )}
       </div>
 
-      {/* Footer Buttons */}
-      <div className="border-t border-owly-border px-8 py-4 flex items-center justify-between">
-        {step > 0 && step < 3 ? (
+      <div className="flex items-center justify-between border-t border-owly-border px-8 py-4">
+        {step > 0 && step < STEPS.length - 1 ? (
           <button
             type="button"
             onClick={handleBack}
             disabled={loading}
-            className="rounded-lg border border-owly-border bg-white px-4 py-2 text-sm font-medium text-owly-text hover:bg-owly-bg disabled:opacity-60 transition-colors"
+            className="rounded-lg border border-owly-border bg-white px-4 py-2 text-sm font-medium text-owly-text transition-colors hover:bg-owly-bg disabled:opacity-60"
           >
-            Back
+            Quay lại
           </button>
         ) : (
           <div />
         )}
 
-        {step < 3 ? (
+        {step < STEPS.length - 1 ? (
           <button
             type="button"
             onClick={handleNext}
             disabled={loading}
-            className="rounded-lg bg-owly-primary px-5 py-2 text-sm font-semibold text-white hover:bg-owly-primary-dark focus:outline-none focus:ring-2 focus:ring-owly-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            className="rounded-lg bg-owly-primary px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-owly-primary-dark focus:outline-none focus:ring-2 focus:ring-owly-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Saving...
+                Đang lưu...
               </span>
-            ) : step === 2 ? (
-              "Finish Setup"
+            ) : step === STEPS.length - 2 ? (
+              "Hoàn tất thiết lập"
             ) : (
-              "Next"
+              "Tiếp theo"
             )}
           </button>
         ) : (
           <button
             type="button"
             onClick={() => router.replace("/")}
-            className="rounded-lg bg-owly-primary px-5 py-2 text-sm font-semibold text-white hover:bg-owly-primary-dark focus:outline-none focus:ring-2 focus:ring-owly-primary focus:ring-offset-2 transition-colors"
+            className="rounded-lg bg-owly-primary px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-owly-primary-dark focus:outline-none focus:ring-2 focus:ring-owly-primary focus:ring-offset-2"
           >
-            Go to Dashboard
+            Vào trang tổng quan
           </button>
         )}
       </div>
     </div>
   );
 }
-
-/* ---- Helper Components ---- */
 
 function Field({
   id,
@@ -508,17 +642,14 @@ function Field({
   id: string;
   label: string;
   value: string;
-  onChange: (v: string) => void;
+  onChange: (value: string) => void;
   placeholder?: string;
   type?: string;
   autoComplete?: string;
 }) {
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-owly-text mb-1.5"
-      >
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-owly-text">
         {label}
       </label>
       <input
@@ -526,10 +657,46 @@ function Field({
         type={type}
         autoComplete={autoComplete}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text placeholder:text-owly-text-light focus:outline-none focus:ring-2 focus:ring-owly-primary focus:border-transparent transition-shadow"
+        className="w-full rounded-lg border border-owly-border bg-owly-bg px-3.5 py-2.5 text-sm text-owly-text placeholder:text-owly-text-light transition-shadow focus:border-transparent focus:outline-none focus:ring-2 focus:ring-owly-primary"
       />
+    </div>
+  );
+}
+
+function InfoCard({
+  icon: Icon,
+  title,
+  description,
+  children,
+}: {
+  icon: typeof Bot;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-owly-border bg-white p-5">
+      <div className="mb-4 flex items-start gap-3">
+        <div className="rounded-xl bg-owly-primary-50 p-2 text-owly-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-owly-text">{title}</h3>
+          <p className="mt-1 text-xs leading-5 text-owly-text-light">{description}</p>
+        </div>
+      </div>
+      <div className="space-y-3">{children}</div>
+    </div>
+  );
+}
+
+function FeatureRow({ text }: { text: string }) {
+  return (
+    <div className="flex items-start gap-2">
+      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-owly-primary" />
+      <p className="text-sm leading-6 text-owly-text">{text}</p>
     </div>
   );
 }
@@ -547,9 +714,7 @@ function SummaryRow({
     <div className="flex items-start gap-3 rounded-lg border border-owly-border bg-owly-bg px-4 py-3">
       <div
         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-          done
-            ? "bg-owly-success text-white"
-            : "bg-owly-border text-owly-text-light"
+          done ? "bg-owly-success text-white" : "bg-owly-border text-owly-text-light"
         }`}
       >
         {done ? (
@@ -560,11 +725,7 @@ function SummaryRow({
             strokeWidth={3}
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 13l4 4L19 7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         ) : (
           <span>-</span>

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import OpenAI from "openai";
 import { logger } from "@/lib/logger";
 import { requireAuth, isAuthenticated } from "@/lib/route-auth";
+import { normalizeAIModel } from "@/lib/ai/catalog";
+import { createGeminiClient } from "@/lib/ai/provider";
 
 export async function POST(request: NextRequest) {
   const auth = await requireAuth(request, "knowledge:read");
@@ -13,10 +14,7 @@ export async function POST(request: NextRequest) {
     const { question } = body;
 
     if (!question || typeof question !== "string" || question.trim().length === 0) {
-      return NextResponse.json(
-        { error: "Question is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Question is required" }, { status: 400 });
     }
 
     // Load settings for AI configuration
@@ -71,12 +69,10 @@ Your answer here...
 ---SOURCES---
 [1, 3, 5]`;
 
-    const openai = new OpenAI({
-      apiKey: settings.aiApiKey,
-    });
+    const client = createGeminiClient(settings.aiApiKey);
 
-    const completion = await openai.chat.completions.create({
-      model: settings.aiModel || "gpt-4o-mini",
+    const completion = await client.chat.completions.create({
+      model: normalizeAIModel(settings.aiModel),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: question.trim() },
@@ -121,13 +117,12 @@ Your answer here...
     return NextResponse.json({
       answer,
       sources,
-      model: settings.aiModel || "gpt-4o-mini",
+      model: normalizeAIModel(settings.aiModel),
       totalEntries: entries.length,
     });
   } catch (error) {
     logger.error("Failed to test knowledge base:", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to test knowledge base";
+    const message = error instanceof Error ? error.message : "Failed to test knowledge base";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

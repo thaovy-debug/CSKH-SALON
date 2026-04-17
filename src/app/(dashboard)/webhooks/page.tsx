@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
+import { extractPaginatedData } from "@/lib/pagination";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -427,9 +428,9 @@ export default function WebhooksPage() {
 
   const fetchWebhooks = useCallback(async () => {
     try {
-      const res = await fetch("/api/webhooks");
+      const res = await fetch("/api/webhooks?limit=100");
       const data = await res.json();
-      setWebhooks(data);
+      setWebhooks(extractPaginatedData<WebhookData>(data));
     } catch {
       // silently fail
     } finally {
@@ -585,7 +586,7 @@ export default function WebhooksPage() {
                               wh.isActive ? "bg-emerald-500" : "bg-gray-400"
                             )}
                           />
-                          {wh.isActive ? "Active" : "Inactive"}
+                          {wh.isActive ? "Đang bật" : "Đã tắt"}
                         </span>
                       </div>
                       <p className="mt-1 text-xs text-owly-text-light font-mono truncate">

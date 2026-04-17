@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/layout/header";
+import { cn } from "@/lib/utils";
+import { extractPaginatedData } from "@/lib/pagination";
 import {
   Workflow,
   Plus,
@@ -13,8 +15,7 @@ import {
   Bell,
   Activity,
 } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
-import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
 interface ConditionData {
   field: string;
@@ -42,30 +43,52 @@ interface AutomationRuleData {
 }
 
 const ruleTypes = [
-  { value: "auto_route", label: "Auto Route", icon: Route, color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
-  { value: "auto_tag", label: "Auto Tag", icon: Tag, color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
-  { value: "auto_reply", label: "Auto Reply", icon: MessageSquareReply, color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
-  { value: "keyword_alert", label: "Keyword Alert", icon: Bell, color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
+  {
+    value: "auto_route",
+    label: "Tự động chuyển tuyến",
+    icon: Route,
+    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  },
+  {
+    value: "auto_tag",
+    label: "Tự động gắn nhãn",
+    icon: Tag,
+    color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  },
+  {
+    value: "auto_reply",
+    label: "Tự động trả lời",
+    icon: MessageSquareReply,
+    color:
+      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+  },
+  {
+    value: "keyword_alert",
+    label: "Cảnh báo từ khóa",
+    icon: Bell,
+    color:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  },
 ];
 
 const conditionFields = [
-  { value: "message_content", label: "Message Content" },
-  { value: "channel", label: "Channel" },
-  { value: "customer_name", label: "Customer Name" },
+  { value: "message_content", label: "Nội dung tin nhắn" },
+  { value: "channel", label: "Kênh" },
+  { value: "customer_name", label: "Tên khách hàng" },
 ];
 
 const conditionOperators = [
-  { value: "contains", label: "Contains" },
-  { value: "equals", label: "Equals" },
-  { value: "starts_with", label: "Starts With" },
+  { value: "contains", label: "Chứa" },
+  { value: "equals", label: "Bằng" },
+  { value: "starts_with", label: "Bắt đầu bằng" },
 ];
 
 const filterTabs = [
-  { value: "all", label: "All" },
-  { value: "auto_route", label: "Auto Route" },
-  { value: "auto_tag", label: "Auto Tag" },
-  { value: "auto_reply", label: "Auto Reply" },
-  { value: "keyword_alert", label: "Keyword Alert" },
+  { value: "all", label: "Tất cả" },
+  { value: "auto_route", label: "Tự động chuyển tuyến" },
+  { value: "auto_tag", label: "Tự động gắn nhãn" },
+  { value: "auto_reply", label: "Tự động trả lời" },
+  { value: "keyword_alert", label: "Cảnh báo từ khóa" },
 ];
 
 const defaultCondition: ConditionData = {
@@ -84,11 +107,28 @@ const defaultForm = {
   priority: 0,
 };
 
+function getActionLabel(type: string) {
+  switch (type) {
+    case "auto_route":
+      return "Chuyển đến bộ phận";
+    case "auto_tag":
+      return "Gắn nhãn";
+    case "auto_reply":
+      return "Nội dung phản hồi";
+    case "keyword_alert":
+      return "Email nhận cảnh báo";
+    default:
+      return "Hành động";
+  }
+}
+
 export default function AutomationPage() {
   const [rules, setRules] = useState<AutomationRuleData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingRule, setEditingRule] = useState<AutomationRuleData | null>(null);
+  const [editingRule, setEditingRule] = useState<AutomationRuleData | null>(
+    null
+  );
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(defaultForm);
@@ -97,11 +137,12 @@ export default function AutomationPage() {
   const fetchRules = useCallback(async () => {
     try {
       const params = new URLSearchParams();
+      params.set("limit", "100");
       if (typeFilter !== "all") params.set("type", typeFilter);
       const res = await fetch(`/api/automation?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        setRules(data);
+        setRules(extractPaginatedData<AutomationRuleData>(data));
       }
     } catch (error) {
       console.error("Failed to fetch automation rules:", error);
@@ -115,21 +156,15 @@ export default function AutomationPage() {
   }, [fetchRules]);
 
   const getRuleType = (type: string) =>
-    ruleTypes.find((t) => t.value === type) || ruleTypes[0];
-
-  const getActionLabel = (type: string) => {
-    switch (type) {
-      case "auto_route": return "Route to Department";
-      case "auto_tag": return "Apply Tag";
-      case "auto_reply": return "Reply Message";
-      case "keyword_alert": return "Notify Email";
-      default: return "Action";
-    }
-  };
+    ruleTypes.find((item) => item.value === type) || ruleTypes[0];
 
   const openCreateModal = () => {
     setEditingRule(null);
-    setForm({ ...defaultForm, conditions: [{ ...defaultCondition }], actions: [{ type: "auto_route", value: "" }] });
+    setForm({
+      ...defaultForm,
+      conditions: [{ ...defaultCondition }],
+      actions: [{ type: "auto_route", value: "" }],
+    });
     setShowModal(true);
   };
 
@@ -140,8 +175,14 @@ export default function AutomationPage() {
       description: rule.description,
       type: rule.type,
       isActive: rule.isActive,
-      conditions: rule.conditions.length > 0 ? [...rule.conditions] : [{ ...defaultCondition }],
-      actions: rule.actions.length > 0 ? [...rule.actions] : [{ type: rule.type, value: "" }],
+      conditions:
+        rule.conditions.length > 0
+          ? [...rule.conditions]
+          : [{ ...defaultCondition }],
+      actions:
+        rule.actions.length > 0
+          ? [...rule.actions]
+          : [{ type: rule.type, value: "" }],
       priority: rule.priority,
     });
     setShowModal(true);
@@ -149,14 +190,17 @@ export default function AutomationPage() {
 
   const handleSave = async () => {
     if (!form.name.trim()) return;
-    if (form.conditions.some((c) => !c.value.trim())) return;
-    if (form.actions.some((a) => !a.value.trim())) return;
+    if (form.conditions.some((condition) => !condition.value.trim())) return;
+    if (form.actions.some((action) => !action.value.trim())) return;
 
     setSaving(true);
     try {
       const payload = {
         ...form,
-        actions: form.actions.map((a) => ({ type: form.type, value: a.value })),
+        actions: form.actions.map((action) => ({
+          type: form.type,
+          value: action.value,
+        })),
       };
 
       const url = editingRule
@@ -207,47 +251,51 @@ export default function AutomationPage() {
   };
 
   const addCondition = () => {
-    setForm((f) => ({
-      ...f,
-      conditions: [...f.conditions, { ...defaultCondition }],
+    setForm((current) => ({
+      ...current,
+      conditions: [...current.conditions, { ...defaultCondition }],
     }));
   };
 
   const removeCondition = (index: number) => {
-    setForm((f) => ({
-      ...f,
-      conditions: f.conditions.filter((_, i) => i !== index),
+    setForm((current) => ({
+      ...current,
+      conditions: current.conditions.filter((_, itemIndex) => itemIndex !== index),
     }));
   };
 
-  const updateCondition = (index: number, field: keyof ConditionData, value: string) => {
-    setForm((f) => ({
-      ...f,
-      conditions: f.conditions.map((c, i) =>
-        i === index ? { ...c, [field]: value } : c
+  const updateCondition = (
+    index: number,
+    field: keyof ConditionData,
+    value: string
+  ) => {
+    setForm((current) => ({
+      ...current,
+      conditions: current.conditions.map((condition, itemIndex) =>
+        itemIndex === index ? { ...condition, [field]: value } : condition
       ),
     }));
   };
 
   const addAction = () => {
-    setForm((f) => ({
-      ...f,
-      actions: [...f.actions, { type: f.type, value: "" }],
+    setForm((current) => ({
+      ...current,
+      actions: [...current.actions, { type: current.type, value: "" }],
     }));
   };
 
   const removeAction = (index: number) => {
-    setForm((f) => ({
-      ...f,
-      actions: f.actions.filter((_, i) => i !== index),
+    setForm((current) => ({
+      ...current,
+      actions: current.actions.filter((_, itemIndex) => itemIndex !== index),
     }));
   };
 
   const updateAction = (index: number, value: string) => {
-    setForm((f) => ({
-      ...f,
-      actions: f.actions.map((a, i) =>
-        i === index ? { ...a, value } : a
+    setForm((current) => ({
+      ...current,
+      actions: current.actions.map((action, itemIndex) =>
+        itemIndex === index ? { ...action, value } : action
       ),
     }));
   };
@@ -267,7 +315,7 @@ export default function AutomationPage() {
           <input
             {...commonProps}
             type="text"
-            placeholder="Department name (e.g. Sales, Support, Billing)"
+            placeholder="Tên bộ phận, ví dụ: Tư vấn, CSKH, Thu ngân"
           />
         );
       case "auto_tag":
@@ -275,7 +323,7 @@ export default function AutomationPage() {
           <input
             {...commonProps}
             type="text"
-            placeholder="Tag name (e.g. urgent, vip, refund)"
+            placeholder="Tên nhãn, ví dụ: gấp, VIP, khiếu nại"
           />
         );
       case "auto_reply":
@@ -283,7 +331,7 @@ export default function AutomationPage() {
           <textarea
             {...commonProps}
             rows={3}
-            placeholder="Auto-reply message content..."
+            placeholder="Nhập nội dung trả lời tự động..."
           />
         );
       case "keyword_alert":
@@ -291,39 +339,38 @@ export default function AutomationPage() {
           <input
             {...commonProps}
             type="email"
-            placeholder="Notification email address"
+            placeholder="Email nhận thông báo"
           />
         );
       default:
-        return <input {...commonProps} type="text" placeholder="Value" />;
+        return <input {...commonProps} type="text" placeholder="Giá trị" />;
     }
   };
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <Header
-        title="Automation"
-        description="Set up rules to automate your support workflow"
+        title="Tự động hóa"
+        description="Thiết lập quy tắc tự động cho luồng CSKH"
         actions={
           <button
             onClick={openCreateModal}
             className="flex items-center gap-2 px-4 py-2 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors text-sm font-medium"
           >
             <Plus className="h-4 w-4" />
-            Add Rule
+            Thêm quy tắc
           </button>
         }
       />
 
       <div className="flex-1 overflow-y-auto p-6">
-        {/* Filter Tabs */}
-        <div className="flex gap-1 mb-6 bg-owly-surface border border-owly-border rounded-lg p-1 w-fit">
+        <div className="flex flex-nowrap gap-1 mb-6 bg-owly-surface border border-owly-border rounded-lg p-1 max-w-full overflow-x-auto scrollbar-hide">
           {filterTabs.map((tab) => (
             <button
               key={tab.value}
               onClick={() => setTypeFilter(tab.value)}
               className={cn(
-                "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
+                "whitespace-nowrap shrink-0 px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
                 typeFilter === tab.value
                   ? "bg-owly-primary text-white"
                   : "text-owly-text-light hover:text-owly-text hover:bg-owly-primary-50"
@@ -336,9 +383,9 @@ export default function AutomationPage() {
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3].map((item) => (
               <div
-                key={i}
+                key={item}
                 className="bg-owly-surface border border-owly-border rounded-xl p-5 animate-pulse"
               >
                 <div className="h-5 bg-owly-border rounded w-2/3 mb-3" />
@@ -354,46 +401,56 @@ export default function AutomationPage() {
               <Workflow className="h-8 w-8 text-owly-primary" />
             </div>
             <h3 className="text-lg font-semibold text-owly-text mb-2">
-              No automation rules yet
+              Chưa có quy tắc tự động nào
             </h3>
             <p className="text-owly-text-light max-w-lg mx-auto mb-6">
-              Automation rules help you handle repetitive tasks automatically.
-              Create rules to streamline your support workflow.
+              Các quy tắc tự động giúp xử lý những tác vụ lặp lại trong chăm sóc
+              khách hàng.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
               <div className="flex gap-3 p-4 rounded-lg bg-owly-bg border border-owly-border">
                 <Route className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-owly-text">Auto Route</p>
+                  <p className="text-sm font-medium text-owly-text">
+                    Tự động chuyển tuyến
+                  </p>
                   <p className="text-xs text-owly-text-light mt-0.5">
-                    Automatically route conversations to the right department based on message content.
+                    Tự động chuyển hội thoại đến đúng bộ phận dựa trên nội dung
+                    khách gửi.
                   </p>
                 </div>
               </div>
               <div className="flex gap-3 p-4 rounded-lg bg-owly-bg border border-owly-border">
                 <Tag className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-owly-text">Auto Tag</p>
+                  <p className="text-sm font-medium text-owly-text">
+                    Tự động gắn nhãn
+                  </p>
                   <p className="text-xs text-owly-text-light mt-0.5">
-                    Automatically apply tags to conversations based on keywords or conditions.
+                    Tự động gắn nhãn hội thoại dựa trên từ khóa hoặc điều kiện.
                   </p>
                 </div>
               </div>
               <div className="flex gap-3 p-4 rounded-lg bg-owly-bg border border-owly-border">
                 <MessageSquareReply className="h-5 w-5 text-purple-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-owly-text">Auto Reply</p>
+                  <p className="text-sm font-medium text-owly-text">
+                    Tự động trả lời
+                  </p>
                   <p className="text-xs text-owly-text-light mt-0.5">
-                    Send automatic replies when specific conditions are met in incoming messages.
+                    Tự động gửi phản hồi khi tin nhắn đến thỏa điều kiện đã đặt.
                   </p>
                 </div>
               </div>
               <div className="flex gap-3 p-4 rounded-lg bg-owly-bg border border-owly-border">
                 <Bell className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-owly-text">Keyword Alert</p>
+                  <p className="text-sm font-medium text-owly-text">
+                    Cảnh báo từ khóa
+                  </p>
                   <p className="text-xs text-owly-text-light mt-0.5">
-                    Get notified via email when specific keywords appear in conversations.
+                    Nhận email cảnh báo khi hội thoại xuất hiện từ khóa cần theo
+                    dõi.
                   </p>
                 </div>
               </div>
@@ -403,7 +460,7 @@ export default function AutomationPage() {
               className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors text-sm font-medium"
             >
               <Plus className="h-4 w-4" />
-              Create Your First Rule
+              Tạo quy tắc đầu tiên
             </button>
           </div>
         ) : (
@@ -469,9 +526,9 @@ export default function AutomationPage() {
                   <div className="flex items-center gap-3 text-xs text-owly-text-light mb-4">
                     <span className="flex items-center gap-1">
                       <Activity className="h-3.5 w-3.5" />
-                      {rule.triggerCount} triggers
+                      {rule.triggerCount} lần kích hoạt
                     </span>
-                    <span>Priority: {rule.priority}</span>
+                    <span>Ưu tiên: {rule.priority}</span>
                   </div>
 
                   <div className="flex items-center gap-2 pt-3 border-t border-owly-border">
@@ -480,7 +537,7 @@ export default function AutomationPage() {
                       className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-owly-text-light hover:text-owly-primary hover:bg-owly-primary-50 rounded-lg transition-colors"
                     >
                       <Pencil className="h-3.5 w-3.5" />
-                      Edit
+                      Sửa
                     </button>
                     {deleteConfirm === rule.id ? (
                       <div className="flex items-center gap-1.5 ml-auto">
@@ -488,13 +545,13 @@ export default function AutomationPage() {
                           onClick={() => handleDelete(rule.id)}
                           className="px-3 py-1.5 text-xs font-medium text-white bg-owly-danger rounded-lg hover:bg-red-600 transition-colors"
                         >
-                          Confirm
+                          Xác nhận
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(null)}
                           className="px-3 py-1.5 text-xs font-medium text-owly-text-light hover:text-owly-text rounded-lg transition-colors"
                         >
-                          Cancel
+                          Hủy
                         </button>
                       </div>
                     ) : (
@@ -503,7 +560,7 @@ export default function AutomationPage() {
                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-owly-text-light hover:text-owly-danger hover:bg-red-50 rounded-lg transition-colors ml-auto"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                        Delete
+                        Xóa
                       </button>
                     )}
                   </div>
@@ -514,13 +571,12 @@ export default function AutomationPage() {
         )}
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-owly-surface border border-owly-border rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in">
             <div className="flex items-center justify-between p-5 border-b border-owly-border sticky top-0 bg-owly-surface z-10">
               <h3 className="text-lg font-semibold text-owly-text">
-                {editingRule ? "Edit Rule" : "Create Automation Rule"}
+                {editingRule ? "Chỉnh sửa quy tắc" : "Tạo quy tắc tự động"}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -531,33 +587,35 @@ export default function AutomationPage() {
             </div>
 
             <div className="p-5 space-y-5">
-              {/* Name & Description */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1.5">
-                    Rule Name
+                    Tên quy tắc
                   </label>
                   <input
                     type="text"
                     value={form.name}
                     onChange={(e) =>
-                      setForm((f) => ({ ...f, name: e.target.value }))
+                      setForm((current) => ({
+                        ...current,
+                        name: e.target.value,
+                      }))
                     }
-                    placeholder="e.g. Route billing questions"
+                    placeholder="VD: Chuyển tin nhắn hỏi về thanh toán"
                     className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary transition-theme"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1.5">
-                    Priority
+                    Ưu tiên
                   </label>
                   <input
                     type="number"
                     value={form.priority}
                     onChange={(e) =>
-                      setForm((f) => ({
-                        ...f,
-                        priority: parseInt(e.target.value) || 0,
+                      setForm((current) => ({
+                        ...current,
+                        priority: parseInt(e.target.value, 10) || 0,
                       }))
                     }
                     min={0}
@@ -568,63 +626,64 @@ export default function AutomationPage() {
 
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1.5">
-                  Description
+                  Mô tả
                 </label>
                 <input
                   type="text"
                   value={form.description}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, description: e.target.value }))
+                    setForm((current) => ({
+                      ...current,
+                      description: e.target.value,
+                    }))
                   }
-                  placeholder="Brief description of what this rule does"
+                  placeholder="Mô tả ngắn quy tắc này dùng để làm gì"
                   className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary transition-theme"
                 />
               </div>
 
-              {/* Type Selector */}
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1.5">
-                  Rule Type
+                  Loại quy tắc
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {ruleTypes.map((rt) => (
+                  {ruleTypes.map((ruleType) => (
                     <button
-                      key={rt.value}
+                      key={ruleType.value}
                       onClick={() =>
-                        setForm((f) => ({
-                          ...f,
-                          type: rt.value,
-                          actions: f.actions.map((a) => ({
-                            ...a,
-                            type: rt.value,
+                        setForm((current) => ({
+                          ...current,
+                          type: ruleType.value,
+                          actions: current.actions.map((action) => ({
+                            ...action,
+                            type: ruleType.value,
                           })),
                         }))
                       }
                       className={cn(
                         "flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all",
-                        form.type === rt.value
+                        form.type === ruleType.value
                           ? "border-owly-primary bg-owly-primary-50 text-owly-primary"
                           : "border-owly-border text-owly-text-light hover:border-owly-primary/30"
                       )}
                     >
-                      <rt.icon className="h-5 w-5" />
-                      {rt.label}
+                      <ruleType.icon className="h-5 w-5" />
+                      {ruleType.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Conditions */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-sm font-medium text-owly-text">
-                    Conditions
+                    Điều kiện
                   </label>
                   <button
                     onClick={addCondition}
                     className="text-xs text-owly-primary hover:text-owly-primary-dark font-medium transition-colors"
                   >
-                    + Add Condition
+                    + Thêm điều kiện
                   </button>
                 </div>
                 <div className="space-y-2">
@@ -640,9 +699,9 @@ export default function AutomationPage() {
                         }
                         className="px-2.5 py-1.5 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 transition-theme"
                       >
-                        {conditionFields.map((f) => (
-                          <option key={f.value} value={f.value}>
-                            {f.label}
+                        {conditionFields.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
                           </option>
                         ))}
                       </select>
@@ -653,9 +712,9 @@ export default function AutomationPage() {
                         }
                         className="px-2.5 py-1.5 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 transition-theme"
                       >
-                        {conditionOperators.map((o) => (
-                          <option key={o.value} value={o.value}>
-                            {o.label}
+                        {conditionOperators.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
                           </option>
                         ))}
                       </select>
@@ -665,7 +724,7 @@ export default function AutomationPage() {
                         onChange={(e) =>
                           updateCondition(index, "value", e.target.value)
                         }
-                        placeholder="Value..."
+                        placeholder="Giá trị..."
                         className="flex-1 px-2.5 py-1.5 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 transition-theme"
                       />
                       {form.conditions.length > 1 && (
@@ -681,7 +740,6 @@ export default function AutomationPage() {
                 </div>
               </div>
 
-              {/* Actions */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-sm font-medium text-owly-text">
@@ -691,7 +749,7 @@ export default function AutomationPage() {
                     onClick={addAction}
                     className="text-xs text-owly-primary hover:text-owly-primary-dark font-medium transition-colors"
                   >
-                    + Add Action
+                    + Thêm hành động
                   </button>
                 </div>
                 <div className="space-y-2">
@@ -720,7 +778,7 @@ export default function AutomationPage() {
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 text-sm font-medium text-owly-text-light hover:text-owly-text border border-owly-border rounded-lg hover:bg-owly-bg transition-colors"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 onClick={handleSave}
@@ -728,10 +786,10 @@ export default function AutomationPage() {
                 className="px-4 py-2 text-sm font-medium text-white bg-owly-primary rounded-lg hover:bg-owly-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {saving
-                  ? "Saving..."
+                  ? "Đang lưu..."
                   : editingRule
-                    ? "Update Rule"
-                    : "Create Rule"}
+                    ? "Cập nhật quy tắc"
+                    : "Tạo quy tắc"}
               </button>
             </div>
           </div>

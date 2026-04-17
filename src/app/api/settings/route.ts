@@ -4,6 +4,7 @@ import { maskSettingsSecrets } from "@/lib/security";
 import { updateSettingsSchema, validateBody } from "@/lib/validations";
 import { logger } from "@/lib/logger";
 import { requireAuth, isAuthenticated } from "@/lib/route-auth";
+import { DEFAULT_GEMINI_MODEL, GEMINI_PROVIDER } from "@/lib/ai/catalog";
 
 export async function GET(request: NextRequest) {
   const auth = await requireAuth(request, "settings:read");
@@ -16,17 +17,18 @@ export async function GET(request: NextRequest) {
 
     if (!settings) {
       settings = await prisma.settings.create({
-        data: { id: "default" },
+        data: {
+          id: "default",
+          aiProvider: GEMINI_PROVIDER,
+          aiModel: DEFAULT_GEMINI_MODEL,
+        },
       });
     }
 
     return NextResponse.json(maskSettingsSecrets(settings));
   } catch (error) {
     logger.error("Failed to fetch settings:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch settings" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch settings" }, { status: 500 });
   }
 }
 
@@ -56,9 +58,6 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(maskSettingsSecrets(settings));
   } catch (error) {
     logger.error("Failed to update settings:", error);
-    return NextResponse.json(
-      { error: "Failed to update settings" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update settings" }, { status: 500 });
   }
 }

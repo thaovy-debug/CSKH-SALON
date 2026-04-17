@@ -1,7 +1,7 @@
-import OpenAI from "openai";
 import { prisma } from "@/lib/prisma";
 import { chat, createNewConversation } from "@/lib/ai/engine";
 import { resolveCustomer } from "@/lib/customer-resolver";
+import { transcribeAudioWithGemini } from "@/lib/ai/provider";
 
 interface PhoneConfig {
   twilioSid: string;
@@ -26,21 +26,9 @@ async function getPhoneConfig(): Promise<PhoneConfig | null> {
   };
 }
 
-// Speech-to-Text using OpenAI Whisper
-export async function transcribeAudio(
-  audioBuffer: Buffer,
-  apiKey: string
-): Promise<string> {
-  const openai = new OpenAI({ apiKey });
-
-  const file = new File([new Uint8Array(audioBuffer)], "audio.wav", { type: "audio/wav" });
-
-  const transcription = await openai.audio.transcriptions.create({
-    file,
-    model: "whisper-1",
-  });
-
-  return transcription.text;
+// Speech-to-Text using Gemini
+export async function transcribeAudio(audioBuffer: Buffer, apiKey: string): Promise<string> {
+  return transcribeAudioWithGemini(audioBuffer, apiKey);
 }
 
 // Text-to-Speech using ElevenLabs
@@ -49,26 +37,23 @@ export async function synthesizeSpeech(
   apiKey: string,
   voiceId: string
 ): Promise<Buffer> {
-  const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "xi-api-key": apiKey,
+  const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "xi-api-key": apiKey,
+    },
+    body: JSON.stringify({
+      text,
+      model_id: "eleven_multilingual_v2",
+      voice_settings: {
+        stability: 0.5,
+        similarity_boost: 0.75,
+        style: 0.0,
+        use_speaker_boost: true,
       },
-      body: JSON.stringify({
-        text,
-        model_id: "eleven_multilingual_v2",
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75,
-          style: 0.0,
-          use_speaker_boost: true,
-        },
-      }),
-    }
-  );
+    }),
+  });
 
   if (!response.ok) {
     throw new Error(`ElevenLabs API error: ${response.status}`);
@@ -79,10 +64,7 @@ export async function synthesizeSpeech(
 }
 
 // Generate TwiML response for incoming calls
-export function generateTwiMLGather(
-  message: string,
-  callbackUrl: string
-): string {
+export function generateTwiMLGather(message: string, callbackUrl: string): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say voice="alice">${escapeXml(message)}</Say>
@@ -123,10 +105,7 @@ function escapeXml(text: string): string {
 }
 
 // Handle incoming call
-export async function handleIncomingCall(
-  from: string,
-  callSid: string
-): Promise<string> {
+export async function handleIncomingCall(from: string, callSid: string): Promise<string> {
   const config = await getPhoneConfig();
   if (!config) {
     return generateTwiMLSay(
@@ -152,10 +131,7 @@ export async function handleIncomingCall(
     where: {
       channel: "phone",
       status: { in: ["active", "escalated"] },
-      OR: [
-        { customerId },
-        { customerContact: from },
-      ],
+      OR: [{ customerId }, { customerContact: from }],
     },
   });
 
@@ -165,7 +141,8 @@ export async function handleIncomingCall(
 
   const settings = await prisma.settings.findFirst();
   const welcomeMessage =
-    settings?.welcomeMessage || "Hello! How can I help you today?";
+    settings?.welcomeMessage ||
+    "Xin chào! Chào mừng bạn đến với Luna Women's Hair Studio. Bạn cần tư vấn bảng giá, tình trạng tóc hay đặt lịch làm tóc?";
 
   const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/channels/phone/gather?conversationId=${conversation.id}&callSid=${callSid}`;
 
@@ -187,7 +164,9 @@ export async function handleSpeechInput(
   try {
     aiResponse = await chat(conversationId, speechResult);
   } catch {
-    return generateTwiMLSay("I'm sorry, I'm having trouble right now. Please try again or hold for an agent.");
+    return generateTwiMLSay(
+      "I'm sorry, I'm having trouble right now. Please try again or hold for an agent."
+    );
   }
 
   // Update call log

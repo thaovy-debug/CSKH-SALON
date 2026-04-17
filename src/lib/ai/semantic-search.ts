@@ -1,7 +1,7 @@
 /**
  * Semantic Search for Knowledge Base
  *
- * Uses OpenAI embeddings for vector similarity search.
+ * Uses Gemini embeddings for vector similarity search.
  * Falls back to keyword matching when embeddings are unavailable.
  *
  * Embeddings are stored in the KnowledgeEntry metadata field as JSON.
@@ -11,6 +11,7 @@
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { cacheGet, cacheSet } from "@/lib/cache";
+import { generateGeminiEmbedding } from "./provider";
 
 interface SearchResult {
   id: string;
@@ -21,26 +22,11 @@ interface SearchResult {
 }
 
 /**
- * Generate embedding for a text using OpenAI.
+ * Generate embedding for a text using Gemini.
  */
 async function generateEmbedding(text: string, apiKey: string): Promise<number[] | null> {
   try {
-    const response = await fetch("https://api.openai.com/v1/embeddings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "text-embedding-3-small",
-        input: text.substring(0, 8000),
-      }),
-    });
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    return data.data?.[0]?.embedding || null;
+    return await generateGeminiEmbedding(text, apiKey);
   } catch (error) {
     logger.error("Failed to generate embedding:", error);
     return null;
@@ -73,7 +59,10 @@ function cosineSimilarity(a: number[], b: number[]): number {
  * Keyword-based search fallback.
  */
 function keywordScore(query: string, text: string): number {
-  const queryWords = query.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+  const queryWords = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((w) => w.length > 2);
   const textLower = text.toLowerCase();
   let matches = 0;
 
@@ -88,10 +77,7 @@ function keywordScore(query: string, text: string): number {
  * Search the knowledge base semantically.
  * Uses embeddings when available, falls back to keyword matching.
  */
-export async function searchKnowledgeBase(
-  query: string,
-  limit = 5
-): Promise<SearchResult[]> {
+export async function searchKnowledgeBase(query: string, limit = 5): Promise<SearchResult[]> {
   const entries = await prisma.knowledgeEntry.findMany({
     where: { isActive: true },
     include: { category: { select: { name: true } } },
@@ -179,10 +165,7 @@ function keywordSearch(
 /**
  * Generate and store embedding for a knowledge entry.
  */
-export async function indexKnowledgeEntry(
-  entryId: string,
-  apiKey: string
-): Promise<boolean> {
+export async function indexKnowledgeEntry(entryId: string, apiKey: string): Promise<boolean> {
   const entry = await prisma.knowledgeEntry.findUnique({
     where: { id: entryId },
   });

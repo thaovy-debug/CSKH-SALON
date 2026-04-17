@@ -164,8 +164,8 @@ export default function CustomersPage() {
         const res = await fetch(`/api/customers?${params.toString()}`);
         if (res.ok) {
           const data = await res.json();
-          setCustomers(data.customers);
-          setPagination(data.pagination);
+          setCustomers(Array.isArray(data) ? data : (data.customers ?? data.data ?? []));
+          setPagination(data.pagination ?? { page: 1, limit: 20, total: 0, totalPages: 0 });
         }
       } catch (error) {
         console.error("Failed to fetch customers:", error);
@@ -252,7 +252,7 @@ export default function CustomersPage() {
   };
 
   const handleDeleteCustomer = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this customer?")) return;
+    if (!confirm("Bạn có chắc muốn xóa khách hàng này không?")) return;
     try {
       const res = await fetch(`/api/customers/${id}`, { method: "DELETE" });
       if (res.ok) {
@@ -362,15 +362,15 @@ export default function CustomersPage() {
   return (
     <>
       <Header
-        title="Customers"
-        description="Manage your customer profiles and history"
+        title="Khách hàng"
+        description="Quản lý hồ sơ và lịch sử khách hàng"
         actions={
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors text-sm font-medium"
           >
             <Plus className="h-4 w-4" />
-            Add Customer
+            Thêm khách hàng
           </button>
         }
       />
@@ -390,7 +390,7 @@ export default function CustomersPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-owly-text-light" />
                 <input
                   type="text"
-                  placeholder="Search by name, email, or phone..."
+                  placeholder="Tìm theo tên, email hoặc số điện thoại..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
@@ -406,7 +406,7 @@ export default function CustomersPage() {
                 )}
               >
                 <ShieldAlert className="h-4 w-4" />
-                Blocked
+                Bị chặn
               </button>
             </div>
           </div>
@@ -415,7 +415,7 @@ export default function CustomersPage() {
           <div className="flex-1 overflow-auto">
             {loading ? (
               <div className="flex items-center justify-center h-64">
-                <div className="text-sm text-owly-text-light">Loading...</div>
+                <div className="text-sm text-owly-text-light">Đang tải...</div>
               </div>
             ) : customers.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64 px-6 text-center">
@@ -423,12 +423,12 @@ export default function CustomersPage() {
                   <Contact className="h-8 w-8 text-owly-primary" />
                 </div>
                 <p className="font-medium text-owly-text">
-                  No customers found
+                  Không tìm thấy khách hàng
                 </p>
                 <p className="text-sm text-owly-text-light mt-1">
                   {searchQuery || blockedFilter
-                    ? "Try adjusting your search or filters"
-                    : "Add your first customer to get started"}
+                    ? "Thử thay đổi từ khóa hoặc bộ lọc"
+                    : "Thêm khách hàng đầu tiên để bắt đầu"}
                 </p>
               </div>
             ) : (
@@ -436,28 +436,28 @@ export default function CustomersPage() {
                 <thead>
                   <tr className="border-b border-owly-border bg-owly-surface/50">
                     <th className="text-left px-6 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider">
-                      Name
+                      Tên
                     </th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider hidden md:table-cell">
                       Email
                     </th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider hidden lg:table-cell">
-                      Phone
+                      Điện thoại
                     </th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider hidden xl:table-cell">
-                      Tags
+                      Nhãn
                     </th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider hidden lg:table-cell">
-                      First Contact
+                      Liên hệ lần đầu
                     </th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider hidden md:table-cell">
-                      Last Contact
+                      Liên hệ gần nhất
                     </th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider">
-                      Status
+                      Trạng thái
                     </th>
                     <th className="text-right px-6 py-3 text-xs font-semibold text-owly-text-light uppercase tracking-wider">
-                      Actions
+                      Thao tác
                     </th>
                   </tr>
                 </thead>
@@ -515,11 +515,11 @@ export default function CustomersPage() {
                         {customer.isBlocked ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
                             <ShieldAlert className="h-3 w-3" />
-                            Blocked
+                            Bị chặn
                           </span>
                         ) : (
                           <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                            Active
+                            Hoạt động
                           </span>
                         )}
                       </td>
@@ -530,7 +530,7 @@ export default function CustomersPage() {
                             handleDeleteCustomer(customer.id);
                           }}
                           className="p-1.5 text-owly-text-light hover:text-owly-danger hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete customer"
+                          title="Xóa khách hàng"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -546,17 +546,17 @@ export default function CustomersPage() {
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between px-6 py-3 bg-owly-surface border-t border-owly-border">
               <span className="text-sm text-owly-text-light">
-                Showing{" "}
+                Hiển thị{" "}
                 {Math.min(
                   (pagination.page - 1) * pagination.limit + 1,
                   pagination.total
                 )}{" "}
-                to{" "}
+                đến{" "}
                 {Math.min(
                   pagination.page * pagination.limit,
                   pagination.total
                 )}{" "}
-                of {pagination.total} customers
+                trong tổng số {pagination.total} khách hàng
               </span>
               <div className="flex items-center gap-1">
                 <button
@@ -654,11 +654,11 @@ export default function CustomersPage() {
                   {selectedCustomer.isBlocked && (
                     <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700">
                       <ShieldAlert className="h-3 w-3" />
-                      Blocked
+                      Bị chặn
                     </span>
                   )}
                   <span className="text-xs text-owly-text-light">
-                    {selectedCustomer._count.notes} notes
+                    {selectedCustomer._count.notes} ghi chú
                   </span>
                 </div>
               </div>
@@ -669,7 +669,7 @@ export default function CustomersPage() {
                       onClick={handleSaveEdit}
                       className="px-3 py-1.5 text-xs font-medium bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors"
                     >
-                      Save
+                      Lưu
                     </button>
                     <button
                       onClick={() => {
@@ -684,7 +684,7 @@ export default function CustomersPage() {
                       }}
                       className="px-3 py-1.5 text-xs font-medium text-owly-text-light border border-owly-border rounded-lg hover:bg-owly-primary-50 transition-colors"
                     >
-                      Cancel
+                      Hủy
                     </button>
                   </>
                 ) : (
@@ -692,7 +692,7 @@ export default function CustomersPage() {
                     <button
                       onClick={() => setEditMode(true)}
                       className="p-1.5 text-owly-text-light hover:text-owly-primary hover:bg-owly-primary-50 rounded-lg transition-colors"
-                      title="Edit customer"
+                      title="Chỉnh sửa khách hàng"
                     >
                       <Edit3 className="h-4 w-4" />
                     </button>
@@ -706,8 +706,8 @@ export default function CustomersPage() {
                       )}
                       title={
                         selectedCustomer.isBlocked
-                          ? "Unblock customer"
-                          : "Block customer"
+                          ? "Bỏ chặn khách hàng"
+                          : "Chặn khách hàng"
                       }
                     >
                       {selectedCustomer.isBlocked ? (
@@ -729,7 +729,7 @@ export default function CustomersPage() {
 
             {detailLoading && !selectedCustomer.notes ? (
               <div className="flex-1 flex items-center justify-center">
-                <div className="text-sm text-owly-text-light">Loading...</div>
+                <div className="text-sm text-owly-text-light">Đang tải...</div>
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto">
@@ -748,12 +748,12 @@ export default function CustomersPage() {
                             setEditForm({ ...editForm, email: e.target.value })
                           }
                           className="w-full mt-0.5 text-sm bg-owly-bg border border-owly-border rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-owly-primary/30"
-                          placeholder="Email address"
+                          placeholder="Địa chỉ email"
                         />
                       </div>
                       <div>
                         <label className="text-xs text-owly-text-light font-medium">
-                          Phone
+                          Điện thoại
                         </label>
                         <input
                           type="tel"
@@ -762,7 +762,7 @@ export default function CustomersPage() {
                             setEditForm({ ...editForm, phone: e.target.value })
                           }
                           className="w-full mt-0.5 text-sm bg-owly-bg border border-owly-border rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-owly-primary/30"
-                          placeholder="Phone number"
+                          placeholder="Số điện thoại"
                         />
                       </div>
                       <div>
@@ -779,7 +779,7 @@ export default function CustomersPage() {
                             })
                           }
                           className="w-full mt-0.5 text-sm bg-owly-bg border border-owly-border rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-owly-primary/30"
-                          placeholder="WhatsApp number"
+                          placeholder="Số WhatsApp"
                         />
                       </div>
                     </div>
@@ -812,7 +812,7 @@ export default function CustomersPage() {
                       <div className="flex items-center gap-2">
                         <Clock className="h-3.5 w-3.5 text-owly-text-light flex-shrink-0" />
                         <span className="text-xs text-owly-text-light">
-                          Since {formatDate(selectedCustomer.firstContact)}
+                          Từ {formatDate(selectedCustomer.firstContact)}
                         </span>
                       </div>
                     </div>
@@ -823,7 +823,7 @@ export default function CustomersPage() {
                 <div className="px-4 py-3 border-b border-owly-border">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-semibold text-owly-text-light uppercase tracking-wider">
-                      Tags
+                      Nhãn
                     </span>
                   </div>
                   {editMode ? (
@@ -853,7 +853,7 @@ export default function CustomersPage() {
                       </div>
                       <input
                         type="text"
-                        placeholder="Type a tag and press Enter..."
+                        placeholder="Nhập nhãn và nhấn Enter..."
                         onKeyDown={handleAddTag}
                         className="w-full text-sm bg-owly-bg border border-owly-border rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-owly-primary/30"
                       />
@@ -861,7 +861,7 @@ export default function CustomersPage() {
                   ) : (
                     renderTags(selectedCustomer.tags) || (
                       <span className="text-sm text-owly-text-light">
-                        No tags
+                        Chưa có nhãn
                       </span>
                     )
                   )}
@@ -879,7 +879,7 @@ export default function CustomersPage() {
                     )}
                   >
                     <StickyNote className="h-4 w-4" />
-                    Notes
+                    Ghi chú
                   </button>
                   <button
                     onClick={() => setDetailTab("conversations")}
@@ -891,7 +891,7 @@ export default function CustomersPage() {
                     )}
                   >
                     <MessageSquare className="h-4 w-4" />
-                    Conversations
+                    Cuộc hội thoại
                   </button>
                 </div>
 
@@ -903,7 +903,7 @@ export default function CustomersPage() {
                       <div className="flex gap-2">
                         <input
                           type="text"
-                          placeholder="Add a note..."
+                          placeholder="Thêm ghi chú..."
                           value={newNote}
                           onChange={(e) => setNewNote(e.target.value)}
                           onKeyDown={(e) => {
@@ -930,7 +930,7 @@ export default function CustomersPage() {
                         <div className="text-center py-8">
                           <StickyNote className="h-8 w-8 text-owly-text-light/40 mx-auto mb-2" />
                           <p className="text-sm text-owly-text-light">
-                            No notes yet
+                            Chưa có ghi chú nào
                           </p>
                         </div>
                       ) : (
@@ -967,7 +967,7 @@ export default function CustomersPage() {
                         <div className="text-center py-8">
                           <MessageSquare className="h-8 w-8 text-owly-text-light/40 mx-auto mb-2" />
                           <p className="text-sm text-owly-text-light">
-                            No conversations found
+                            Chưa có cuộc hội thoại nào
                           </p>
                         </div>
                       ) : (
@@ -1011,7 +1011,7 @@ export default function CustomersPage() {
                                       --
                                     </span>
                                     <span className="text-xs text-owly-text-light">
-                                      {conv._count.messages} messages
+                                      {conv._count.messages} tin nhắn
                                     </span>
                                   </div>
                                 </div>
@@ -1039,7 +1039,7 @@ export default function CustomersPage() {
           <div className="relative bg-owly-surface rounded-xl shadow-xl border border-owly-border w-full max-w-md mx-4 animate-scale-in">
             <div className="flex items-center justify-between px-5 py-4 border-b border-owly-border">
               <h3 className="text-lg font-semibold text-owly-text">
-                Add Customer
+                Thêm khách hàng
               </h3>
               <button
                 onClick={() => setShowAddModal(false)}
@@ -1051,7 +1051,7 @@ export default function CustomersPage() {
             <div className="px-5 py-4 space-y-3">
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1">
-                  Name *
+                  Tên *
                 </label>
                 <input
                   type="text"
@@ -1060,7 +1060,7 @@ export default function CustomersPage() {
                     setAddForm({ ...addForm, name: e.target.value })
                   }
                   className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
-                  placeholder="Customer name"
+                  placeholder="Tên khách hàng"
                   autoFocus
                 />
               </div>
@@ -1075,7 +1075,7 @@ export default function CustomersPage() {
                     setAddForm({ ...addForm, email: e.target.value })
                   }
                   className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
-                  placeholder="Email address"
+                  placeholder="Địa chỉ email"
                 />
               </div>
               <div>
@@ -1089,7 +1089,7 @@ export default function CustomersPage() {
                     setAddForm({ ...addForm, phone: e.target.value })
                   }
                   className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
-                  placeholder="Phone number"
+                  placeholder="Số điện thoại"
                 />
               </div>
               <div>
@@ -1103,12 +1103,12 @@ export default function CustomersPage() {
                     setAddForm({ ...addForm, whatsapp: e.target.value })
                   }
                   className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
-                  placeholder="WhatsApp number"
+                  placeholder="Số WhatsApp"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1">
-                  Tags
+                  Nhãn
                 </label>
                 <input
                   type="text"
@@ -1117,7 +1117,7 @@ export default function CustomersPage() {
                     setAddForm({ ...addForm, tags: e.target.value })
                   }
                   className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
-                  placeholder="Comma-separated tags (e.g. VIP, Premium)"
+                  placeholder="Nhãn phân cách bởi dấu phẩy (VD: VIP, Thân thiết)"
                 />
               </div>
             </div>
@@ -1126,7 +1126,7 @@ export default function CustomersPage() {
                 onClick={() => setShowAddModal(false)}
                 className="px-4 py-2 text-sm font-medium text-owly-text-light border border-owly-border rounded-lg hover:bg-owly-primary-50 transition-colors"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 onClick={handleAddCustomer}
@@ -1138,7 +1138,7 @@ export default function CustomersPage() {
                     : "bg-owly-border text-owly-text-light cursor-not-allowed"
                 )}
               >
-                {addLoading ? "Adding..." : "Add Customer"}
+                {addLoading ? "Đang thêm..." : "Thêm khách hàng"}
               </button>
             </div>
           </div>

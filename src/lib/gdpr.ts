@@ -8,11 +8,27 @@ import { logger } from "@/lib/logger";
 
 // PII patterns for detection and redaction
 const PII_PATTERNS = [
-  { name: "credit_card", pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, replacement: "[CARD REDACTED]" },
+  {
+    name: "credit_card",
+    pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g,
+    replacement: "[CARD REDACTED]",
+  },
   { name: "ssn", pattern: /\b\d{3}-\d{2}-\d{4}\b/g, replacement: "[SSN REDACTED]" },
-  { name: "email", pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, replacement: "[EMAIL REDACTED]" },
-  { name: "phone", pattern: /\b\+?\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{1,4}[\s-]?\d{1,9}\b/g, replacement: "[PHONE REDACTED]" },
-  { name: "ip_address", pattern: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, replacement: "[IP REDACTED]" },
+  {
+    name: "email",
+    pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+    replacement: "[EMAIL REDACTED]",
+  },
+  {
+    name: "phone",
+    pattern: /\b\+?\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{1,4}[\s-]?\d{1,9}\b/g,
+    replacement: "[PHONE REDACTED]",
+  },
+  {
+    name: "ip_address",
+    pattern: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g,
+    replacement: "[IP REDACTED]",
+  },
 ];
 
 /**
@@ -44,7 +60,9 @@ export function detectPII(text: string): { found: boolean; types: string[] } {
 /**
  * Export all data for a customer (GDPR data portability).
  */
-export async function exportCustomerData(customerId: string): Promise<Record<string, unknown> | null> {
+export async function exportCustomerData(
+  customerId: string
+): Promise<Record<string, unknown> | null> {
   const customer = await prisma.customer.findUnique({
     where: { id: customerId },
     include: {
@@ -57,6 +75,7 @@ export async function exportCustomerData(customerId: string): Promise<Record<str
               id: true,
               title: true,
               description: true,
+              type: true,
               status: true,
               priority: true,
               createdAt: true,
@@ -79,6 +98,12 @@ export async function exportCustomerData(customerId: string): Promise<Record<str
       phone: customer.phone,
       whatsapp: customer.whatsapp,
       tags: customer.tags,
+      hairHistory: customer.hairHistory,
+      hairCondition: customer.hairCondition,
+      profileNotes: customer.profileNotes,
+      bleachHistory: customer.bleachHistory,
+      previousStylist: customer.previousStylist,
+      preferences: customer.preferences,
       firstContact: customer.firstContact,
       lastContact: customer.lastContact,
       createdAt: customer.createdAt,

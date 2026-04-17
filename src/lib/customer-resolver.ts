@@ -10,6 +10,8 @@ export function normalizePhone(input: string): string {
   return cleaned.replace(/[^\d+]/g, "").replace(/(?!^)\+/g, "");
 }
 
+const resolvingPromises = new Map<string, Promise<string>>();
+
 /**
  * Resolve a customer identity across channels.
  * Finds or creates a Customer record based on contact info.
@@ -20,9 +22,16 @@ export async function resolveCustomer(
   customerContact: string,
   customerName: string
 ): Promise<string> {
-  if (!customerContact) {
-    return createCustomer(customerName, channel, customerContact);
+  const lockKey = `${channel}:${customerContact}`;
+  
+  if (resolvingPromises.has(lockKey)) {
+    return resolvingPromises.get(lockKey)!;
   }
+
+  const resolvePromise = (async () => {
+    if (!customerContact) {
+      return createCustomer(customerName, channel, customerContact);
+    }
 
   // Step 1: Direct field match by channel
   const directMatch = await findByChannelField(channel, customerContact);
@@ -66,7 +75,19 @@ export async function resolveCustomer(
   }
 
   // Step 4: Auto-create new customer
-  return createCustomer(customerName, channel, customerContact);
+    return createCustomer(customerName, channel, customerContact);
+  })();
+
+  resolvingPromises.set(lockKey, resolvePromise);
+  
+  try {
+    return await resolvePromise;
+  } finally {
+    // Only remove if it's the exact same promise (to handle extremely rare edge cases gracefully)
+    if (resolvingPromises.get(lockKey) === resolvePromise) {
+      resolvingPromises.delete(lockKey);
+    }
+  }
 }
 
 async function findByChannelField(channel: string, contact: string) {

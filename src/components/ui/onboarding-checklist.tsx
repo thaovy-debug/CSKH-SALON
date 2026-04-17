@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
+import { extractPaginatedData } from "@/lib/pagination";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -45,16 +46,20 @@ export function OnboardingChecklist() {
         await Promise.all([
           fetch("/api/auth"),
           fetch("/api/settings"),
-          fetch("/api/knowledge/entries"),
+          fetch("/api/knowledge/entries?limit=100"),
           fetch("/api/channels"),
-          fetch("/api/team/members"),
+          fetch("/api/team/members?limit=100"),
         ]);
 
       const auth = authRes.ok ? await authRes.json() : {};
       const settings = settingsRes.ok ? await settingsRes.json() : {};
-      const entries = entriesRes.ok ? await entriesRes.json() : [];
+      const entries = extractPaginatedData(
+        entriesRes.ok ? await entriesRes.json() : []
+      );
       const channels = channelsRes.ok ? await channelsRes.json() : [];
-      const team = teamRes.ok ? await teamRes.json() : [];
+      const team = extractPaginatedData(
+        teamRes.ok ? await teamRes.json() : []
+      );
 
       const connectedChannels = Array.isArray(channels)
         ? channels.filter((c: { isActive: boolean }) => c.isActive)
@@ -66,48 +71,49 @@ export function OnboardingChecklist() {
         {
           id: "admin",
           title: "Admin account created",
-          description: "Your admin account is set up and ready",
+          description: "Tài khoản quản trị đã sẵn sàng sử dụng",
           href: "/admin",
           completed: auth.authenticated === true,
           icon: UserCheck,
         },
         {
           id: "business",
-          title: "Business profile configured",
-          description: "Set your business name and details",
+          title: "Đã cấu hình hồ sơ salon",
+          description: "Thiết lập tên salon và thông tin cơ bản",
           href: "/settings",
           completed:
-            !!settings.businessName && settings.businessName !== "My Business",
+            !!settings.businessName &&
+            settings.businessName !== "Luna Women's Hair Studio",
           icon: Building2,
         },
         {
           id: "ai",
-          title: "AI configured",
-          description: "Connect your AI provider with an API key",
+          title: "Đã cấu hình AI",
+          description: "Kết nối nhà cung cấp AI và API key",
           href: "/settings",
           completed: !!settings.aiApiKey && settings.aiApiKey.length > 0,
           icon: Bot,
         },
         {
           id: "knowledge",
-          title: "Knowledge base entries added",
-          description: "Add content for the AI to reference",
+          title: "Đã thêm kho kiến thức",
+          description: "Bổ sung nội dung để AI dùng khi trả lời",
           href: "/knowledge",
           completed: Array.isArray(entries) && entries.length > 0,
           icon: BookOpen,
         },
         {
           id: "channels",
-          title: "At least one channel connected",
-          description: "Connect WhatsApp, email, or phone",
+          title: "Đã kết nối ít nhất một kênh",
+          description: "Kết nối WhatsApp, email hoặc điện thoại",
           href: "/channels",
           completed: connectedChannels.length > 0,
           icon: Radio,
         },
         {
           id: "team",
-          title: "Team members added",
-          description: "Add your support team for escalations",
+          title: "Đã thêm nhân sự",
+          description: "Bổ sung đội ngũ để xử lý các ca cần người thật",
           href: "/team",
           completed: teamMembers.length > 0,
           icon: Users,
@@ -124,7 +130,7 @@ export function OnboardingChecklist() {
 
   useEffect(() => {
     // Check if user previously dismissed
-    const wasDismissed = localStorage.getItem("owly-onboarding-dismissed");
+    const wasDismissed = localStorage.getItem("salondesk-onboarding-dismissed");
     if (wasDismissed === "true") {
       setDismissed(true);
     }
@@ -133,7 +139,7 @@ export function OnboardingChecklist() {
 
   function handleDismiss() {
     setDismissed(true);
-    localStorage.setItem("owly-onboarding-dismissed", "true");
+    localStorage.setItem("salondesk-onboarding-dismissed", "true");
   }
 
   const completedCount = items.filter((i) => i.completed).length;
@@ -156,9 +162,9 @@ export function OnboardingChecklist() {
       <div className="px-5 py-4 border-b border-owly-border">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-owly-text">Getting Started</h3>
+            <h3 className="font-semibold text-owly-text">Bắt đầu thiết lập</h3>
             <p className="text-xs text-owly-text-light mt-0.5">
-              Complete these steps to set up Owly
+              Hoàn thành các bước này để vận hành SalonDesk
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -168,7 +174,7 @@ export function OnboardingChecklist() {
             <button
               onClick={handleDismiss}
               className="p-1 text-owly-text-light hover:text-owly-text rounded transition-colors"
-              title="Hide checklist"
+              title="Ẩn danh sách"
             >
               <X className="h-4 w-4" />
             </button>
@@ -239,7 +245,7 @@ export function OnboardingChecklist() {
           onClick={handleDismiss}
           className="text-xs text-owly-text-light hover:text-owly-text transition-colors"
         >
-          Hide checklist
+          Ẩn danh sách
         </button>
       </div>
     </div>

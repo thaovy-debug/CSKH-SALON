@@ -24,8 +24,9 @@ import {
   Webhook,
   ChevronLeft,
   ChevronRight,
+  Beaker,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface NavSection {
   title?: string;
@@ -35,48 +36,49 @@ interface NavSection {
 const sections: NavSection[] = [
   {
     items: [
-      { name: "Dashboard", href: "/", icon: LayoutDashboard },
-      { name: "Conversations", href: "/conversations", icon: MessageSquare },
-      { name: "Customers", href: "/customers", icon: Contact },
-      { name: "Tickets", href: "/tickets", icon: Ticket },
+      { name: "Tổng quan", href: "/", icon: LayoutDashboard },
+      { name: "Hội thoại", href: "/conversations", icon: MessageSquare },
+      { name: "Khách hàng", href: "/customers", icon: Contact },
+      { name: "Phiếu hỗ trợ", href: "/tickets", icon: Ticket },
     ],
   },
   {
-    title: "Knowledge",
+    title: "Kiến thức",
     items: [
-      { name: "Knowledge Base", href: "/knowledge", icon: BookOpen },
-      { name: "Canned Responses", href: "/canned-responses", icon: Zap },
-      { name: "Automation", href: "/automation", icon: Workflow },
-      { name: "Business Hours", href: "/business-hours", icon: Clock },
+      { name: "Kho kiến thức", href: "/knowledge", icon: BookOpen },
+      { name: "Mẫu trả lời", href: "/canned-responses", icon: Zap },
+      { name: "Tự động hóa", href: "/automation", icon: Workflow },
+      { name: "Giờ làm việc", href: "/business-hours", icon: Clock },
     ],
   },
   {
-    title: "Team",
+    title: "Đội ngũ",
     items: [
-      { name: "Team", href: "/team", icon: Users },
-      { name: "SLA Rules", href: "/sla", icon: Timer },
+      { name: "Nhân sự", href: "/team", icon: Users },
+      { name: "Quy tắc SLA", href: "/sla", icon: Timer },
     ],
   },
   {
-    title: "Channels",
+    title: "Kênh",
     items: [
-      { name: "Channels", href: "/channels", icon: Radio },
+      { name: "Kênh liên hệ", href: "/channels", icon: Radio },
       { name: "Webhooks", href: "/webhooks", icon: Webhook },
     ],
   },
   {
-    title: "Insights",
+    title: "Phân tích",
     items: [
-      { name: "Analytics", href: "/analytics", icon: BarChart3 },
-      { name: "Activity Log", href: "/activity", icon: ScrollText },
+      { name: "Báo cáo", href: "/analytics", icon: BarChart3 },
+      { name: "Nhật ký hoạt động", href: "/activity", icon: ScrollText },
     ],
   },
   {
-    title: "System",
+    title: "Hệ thống",
     items: [
-      { name: "Administration", href: "/admin", icon: Shield },
-      { name: "API Docs", href: "/api-docs", icon: FileCode },
-      { name: "Settings", href: "/settings", icon: Settings },
+      { name: "Quản trị", href: "/admin", icon: Shield },
+      { name: "Tài liệu API", href: "/api-docs", icon: FileCode },
+      { name: "Kiểm thử AI", href: "/testing", icon: Beaker },
+      { name: "Cài đặt", href: "/settings", icon: Settings },
     ],
   },
 ];
@@ -84,26 +86,63 @@ const sections: NavSection[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [logo, setLogo] = useState("/owly.png");
+  const [name, setName] = useState("MinhHyHair");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.logoUrl) setLogo(data.logoUrl);
+        if (data.businessName) setName(data.businessName);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handleToggle = () => setMobileOpen((p) => !p);
+    window.addEventListener("toggle-sidebar", handleToggle);
+    return () => window.removeEventListener("toggle-sidebar", handleToggle);
+  }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   return (
-    <aside
-      className={cn(
-        "flex flex-col bg-owly-sidebar text-white transition-all duration-300",
-        collapsed ? "w-16" : "w-60"
-      )}
-    >
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10">
-        <Image
-          src="/owly.png"
-          alt="Owly"
-          width={32}
-          height={32}
-          className="rounded-lg flex-shrink-0"
+    <>
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+          onClick={() => setMobileOpen(false)}
         />
+      )}
+      <aside
+        className={cn(
+          "flex flex-col bg-owly-sidebar text-white transition-all duration-300",
+          collapsed ? "w-16" : "w-60",
+          mobileOpen ? "fixed inset-y-0 left-0 z-50 translate-x-0" : "hidden md:flex"
+        )}
+      >
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10">
+        {logo.startsWith("data:") || logo.startsWith("http") ? (
+          <img
+            src={logo}
+            alt={name}
+            className="w-8 h-8 rounded-lg flex-shrink-0 object-cover bg-white"
+          />
+        ) : (
+          <img
+            src={logo}
+            alt={name}
+            className="w-8 h-8 rounded-lg flex-shrink-0 object-cover bg-white"
+          />
+        )}
         {!collapsed && (
-          <div className="overflow-hidden">
-            <h1 className="text-base font-bold tracking-tight">Owly</h1>
-            <p className="text-[10px] text-white/50">AI Customer Support</p>
+          <div className="overflow-hidden flex-1">
+            <h1 className="text-base font-bold tracking-tight truncate" title={name}>{name}</h1>
+            <p className="text-[10px] text-white/50 truncate">Chăm sóc khách hàng AI</p>
           </div>
         )}
       </div>
@@ -147,7 +186,7 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="px-2 py-2 border-t border-white/10">
+      <div className="hidden md:block px-2 py-2 border-t border-white/10">
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="flex items-center justify-center w-full py-1.5 rounded-md text-white/40 hover:text-white hover:bg-owly-sidebar-hover transition-colors"
@@ -160,5 +199,6 @@ export function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }

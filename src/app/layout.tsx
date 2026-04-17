@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Quicksand } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { ThemeInit } from "@/components/theme-init";
 import "./globals.css";
 
-const inter = Inter({
+const inter = Quicksand({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "vietnamese"],
 });
 
 export const metadata: Metadata = {
-  title: "Owly - AI Customer Support",
-  description: "Open-source AI-powered customer support agent",
+  title: "SalonDesk - Trợ lý CSKH salon tóc",
+  description: "Nền tảng hỗ trợ khách hàng bằng AI dành cho salon tóc",
   icons: {
-    icon: "/owly.png",
+    icon: "/salondesk-logo.svg",
   },
 };
 
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="vi" className={`${inter.variable} h-full antialiased`}>
       <body className="h-full">
           <Providers>
             <ThemeInit />

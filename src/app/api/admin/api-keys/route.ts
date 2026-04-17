@@ -11,7 +11,7 @@ function maskKey(key: string): string {
 }
 
 function generateApiKey(): string {
-  return "owly_" + crypto.randomBytes(32).toString("hex");
+  return "salondesk_" + crypto.randomBytes(32).toString("hex");
 }
 
 export async function GET(request: NextRequest) {

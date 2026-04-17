@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/layout/header";
+import { cn } from "@/lib/utils";
+import { extractPaginatedData } from "@/lib/pagination";
 import {
   Zap,
   Plus,
@@ -11,8 +13,7 @@ import {
   Hash,
   BarChart3,
 } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
-import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
 interface CannedResponseData {
   id: string;
@@ -29,7 +30,7 @@ interface CannedResponseData {
 const defaultForm = {
   title: "",
   content: "",
-  category: "General",
+  category: "Chung",
   shortcut: "",
   isActive: true,
 };
@@ -49,12 +50,13 @@ export default function CannedResponsesPage() {
   const fetchResponses = useCallback(async () => {
     try {
       const params = new URLSearchParams();
+      params.set("limit", "100");
       if (categoryFilter !== "all") params.set("category", categoryFilter);
 
       const res = await fetch(`/api/canned-responses?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        setResponses(data);
+        setResponses(extractPaginatedData<CannedResponseData>(data));
       }
     } catch (error) {
       console.error("Failed to fetch canned responses:", error);
@@ -68,16 +70,16 @@ export default function CannedResponsesPage() {
   }, [fetchResponses]);
 
   const categories = Array.from(
-    new Set(responses.map((r) => r.category))
+    new Set(responses.map((response) => response.category))
   ).sort();
 
-  const filteredResponses = responses.filter((r) => {
+  const filteredResponses = responses.filter((response) => {
     if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
+    const query = searchQuery.toLowerCase();
     return (
-      r.title.toLowerCase().includes(q) ||
-      r.content.toLowerCase().includes(q) ||
-      r.shortcut.toLowerCase().includes(q)
+      response.title.toLowerCase().includes(query) ||
+      response.content.toLowerCase().includes(query) ||
+      response.shortcut.toLowerCase().includes(query)
     );
   });
 
@@ -101,6 +103,7 @@ export default function CannedResponsesPage() {
 
   const handleSave = async () => {
     if (!form.title.trim() || !form.content.trim()) return;
+
     setSaving(true);
     try {
       const url = editingResponse
@@ -112,6 +115,7 @@ export default function CannedResponsesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
       if (res.ok) {
         setShowModal(false);
         setEditingResponse(null);
@@ -130,6 +134,7 @@ export default function CannedResponsesPage() {
       const res = await fetch(`/api/canned-responses/${id}`, {
         method: "DELETE",
       });
+
       if (res.ok) {
         setDeleteConfirm(null);
         fetchResponses();
@@ -146,6 +151,7 @@ export default function CannedResponsesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !response.isActive }),
       });
+
       if (res.ok) {
         fetchResponses();
       }
@@ -157,28 +163,27 @@ export default function CannedResponsesPage() {
   return (
     <>
       <Header
-        title="Canned Responses"
-        description="Pre-written replies for quick customer support"
+        title="Mẫu trả lời"
+        description="Câu trả lời soạn sẵn giúp hỗ trợ khách nhanh hơn"
         actions={
           <button
             onClick={openCreateModal}
             className="flex items-center gap-2 px-4 py-2 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors text-sm font-medium"
           >
             <Plus className="h-4 w-4" />
-            Add Response
+            Thêm mẫu
           </button>
         }
       />
 
       <div className="flex-1 overflow-auto p-6 space-y-4">
-        {/* Filter Bar */}
         <div className="bg-owly-surface rounded-xl border border-owly-border p-3">
           <div className="flex flex-wrap items-center gap-2">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-owly-text-light" />
               <input
                 type="text"
-                placeholder="Search responses..."
+                placeholder="Tìm kiếm mẫu..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
@@ -189,20 +194,19 @@ export default function CannedResponsesPage() {
               onChange={(e) => setCategoryFilter(e.target.value)}
               className="text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 text-owly-text"
             >
-              <option value="all">All Categories</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              <option value="all">Tất cả danh mục</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Responses Grid */}
         {loading ? (
           <div className="flex items-center justify-center h-40">
-            <div className="text-sm text-owly-text-light">Loading...</div>
+            <div className="text-sm text-owly-text-light">Đang tải...</div>
           </div>
         ) : filteredResponses.length === 0 ? (
           <div className="bg-owly-surface rounded-xl border border-owly-border">
@@ -211,12 +215,14 @@ export default function CannedResponsesPage() {
                 <Zap className="h-8 w-8 text-owly-primary" />
               </div>
               <p className="font-medium text-owly-text">
-                {searchQuery ? "No matching responses" : "No canned responses yet"}
+                {searchQuery
+                  ? "Không tìm thấy mẫu phù hợp"
+                  : "Chưa có mẫu trả lời nào"}
               </p>
               <p className="text-sm text-owly-text-light mt-1">
                 {searchQuery
-                  ? "Try adjusting your search terms"
-                  : "Create pre-written replies for faster support"}
+                  ? "Thử từ khóa khác"
+                  : "Tạo mẫu trả lời để chat với khách nhanh hơn"}
               </p>
               {!searchQuery && (
                 <button
@@ -224,7 +230,7 @@ export default function CannedResponsesPage() {
                   className="mt-4 flex items-center gap-2 px-4 py-2 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors text-sm font-medium"
                 >
                   <Plus className="h-4 w-4" />
-                  Add Response
+                  Thêm mẫu
                 </button>
               )}
             </div>
@@ -279,7 +285,7 @@ export default function CannedResponsesPage() {
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1 text-xs text-owly-text-light">
                       <BarChart3 className="h-3 w-3" />
-                      {response.usageCount} uses
+                      {response.usageCount} lần dùng
                     </div>
                     <span
                       className={cn(
@@ -289,7 +295,7 @@ export default function CannedResponsesPage() {
                           : "text-owly-text-light"
                       )}
                     >
-                      {response.isActive ? "Active" : "Inactive"}
+                      {response.isActive ? "Đang bật" : "Đã tắt"}
                     </span>
                   </div>
                   <button
@@ -315,7 +321,6 @@ export default function CannedResponsesPage() {
         )}
       </div>
 
-      {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -326,8 +331,8 @@ export default function CannedResponsesPage() {
             <div className="flex items-center justify-between px-5 py-4 border-b border-owly-border">
               <h3 className="font-semibold text-owly-text text-lg">
                 {editingResponse
-                  ? "Edit Canned Response"
-                  : "Create Canned Response"}
+                  ? "Chỉnh sửa mẫu trả lời"
+                  : "Tạo mẫu trả lời mới"}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -340,27 +345,27 @@ export default function CannedResponsesPage() {
             <div className="px-5 py-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1">
-                  Title
+                  Tiêu đề
                 </label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  placeholder="e.g., Welcome Greeting"
+                  placeholder="VD: Lời chào khách mới"
                   className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1">
-                  Content
+                  Nội dung
                 </label>
                 <textarea
                   value={form.content}
                   onChange={(e) =>
                     setForm({ ...form, content: e.target.value })
                   }
-                  placeholder="Write the response content..."
+                  placeholder="Nhập nội dung mẫu trả lời..."
                   rows={5}
                   className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary resize-none"
                 />
@@ -369,7 +374,7 @@ export default function CannedResponsesPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1">
-                    Category
+                    Danh mục
                   </label>
                   <input
                     type="text"
@@ -377,13 +382,13 @@ export default function CannedResponsesPage() {
                     onChange={(e) =>
                       setForm({ ...form, category: e.target.value })
                     }
-                    placeholder="e.g., General"
+                    placeholder="VD: Chăm sóc khách"
                     className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1">
-                    Shortcut
+                    Phím tắt
                   </label>
                   <input
                     type="text"
@@ -391,7 +396,7 @@ export default function CannedResponsesPage() {
                     onChange={(e) =>
                       setForm({ ...form, shortcut: e.target.value })
                     }
-                    placeholder="e.g., /greeting"
+                    placeholder="VD: /chao"
                     className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
                   />
                 </div>
@@ -403,13 +408,11 @@ export default function CannedResponsesPage() {
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 text-sm font-medium text-owly-text hover:bg-owly-primary-50 rounded-lg transition-colors"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 onClick={handleSave}
-                disabled={
-                  !form.title.trim() || !form.content.trim() || saving
-                }
+                disabled={!form.title.trim() || !form.content.trim() || saving}
                 className={cn(
                   "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
                   form.title.trim() && form.content.trim() && !saving
@@ -418,17 +421,16 @@ export default function CannedResponsesPage() {
                 )}
               >
                 {saving
-                  ? "Saving..."
+                  ? "Đang lưu..."
                   : editingResponse
-                  ? "Update Response"
-                  : "Create Response"}
+                    ? "Cập nhật"
+                    : "Tạo mới"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Delete Confirmation */}
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -437,24 +439,24 @@ export default function CannedResponsesPage() {
           />
           <div className="relative w-full max-w-sm mx-4 bg-owly-surface rounded-xl shadow-xl p-5">
             <h3 className="font-semibold text-owly-text text-lg mb-2">
-              Delete Canned Response
+              Xóa mẫu trả lời
             </h3>
             <p className="text-sm text-owly-text-light mb-4">
-              Are you sure you want to delete this canned response? This action
-              cannot be undone.
+              Bạn có chắc muốn xóa mẫu trả lời này không? Hành động này không
+              thể hoàn tác.
             </p>
             <div className="flex items-center justify-end gap-2">
               <button
                 onClick={() => setDeleteConfirm(null)}
                 className="px-4 py-2 text-sm font-medium text-owly-text hover:bg-owly-primary-50 rounded-lg transition-colors"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
                 className="px-4 py-2 text-sm font-medium bg-owly-danger text-white rounded-lg hover:bg-red-700 transition-colors"
               >
-                Delete
+                Xóa
               </button>
             </div>
           </div>

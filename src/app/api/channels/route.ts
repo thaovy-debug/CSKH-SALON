@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { requireAuth, isAuthenticated } from "@/lib/route-auth";
 
-const CHANNEL_TYPES = ["whatsapp", "email", "phone", "sms", "telegram"];
+const CHANNEL_TYPES = ["widget", "whatsapp", "email", "phone", "sms", "telegram"];
 
 export async function GET(request: NextRequest) {
   const auth = await requireAuth(request, "channels:read");

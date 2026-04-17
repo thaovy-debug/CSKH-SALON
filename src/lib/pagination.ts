@@ -21,11 +21,16 @@ export function parsePagination(searchParams: URLSearchParams): PaginationParams
   };
 }
 
-interface PaginationMeta {
+export interface PaginationMeta {
   page: number;
   limit: number;
   total: number;
   totalPages: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: PaginationMeta;
 }
 
 export function paginatedResponse<T>(
@@ -33,7 +38,7 @@ export function paginatedResponse<T>(
   total: number,
   page: number,
   limit: number
-): { data: T[]; pagination: PaginationMeta } {
+): PaginatedResponse<T> {
   return {
     data,
     pagination: {
@@ -43,4 +48,14 @@ export function paginatedResponse<T>(
       totalPages: Math.ceil(total / limit),
     },
   };
+}
+
+export function extractPaginatedData<T>(
+  value: T[] | PaginatedResponse<T> | null | undefined
+): T[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  return Array.isArray(value?.data) ? value.data : [];
 }

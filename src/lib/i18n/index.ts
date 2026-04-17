@@ -1,17 +1,19 @@
 import en from "./locales/en";
+import vi from "./locales/vi";
 import tr from "./locales/tr";
 import de from "./locales/de";
 import es from "./locales/es";
 import ar from "./locales/ar";
 import fr from "./locales/fr";
 
-export const SUPPORTED_LOCALES = ["en", "tr", "de", "es", "ar", "fr"] as const;
+export const SUPPORTED_LOCALES = ["vi", "en", "tr", "de", "es", "ar", "fr"] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
-export const DEFAULT_LOCALE: Locale = "en";
+export const DEFAULT_LOCALE: Locale = "vi";
 
 export const RTL_LOCALES: Locale[] = ["ar"];
 
 const translations: Record<Locale, Record<string, string>> = {
+  vi,
   en,
   tr,
   de,

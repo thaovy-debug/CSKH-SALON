@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status");
     const priority = searchParams.get("priority");
     const departmentId = searchParams.get("departmentId");
+    const type = searchParams.get("type");
     const search = searchParams.get("search");
 
     const where: Record<string, unknown> = {};
@@ -28,6 +29,10 @@ export async function GET(request: NextRequest) {
 
     if (departmentId && departmentId !== "all") {
       where.departmentId = departmentId;
+    }
+
+    if (type && type !== "all") {
+      where.type = type;
     }
 
     if (search && search.trim()) {
@@ -73,10 +78,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(paginatedResponse(tickets, total, page, limit));
   } catch (error) {
     logger.error("Failed to fetch tickets:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch tickets" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch tickets" }, { status: 500 });
   }
 }
 
@@ -89,6 +91,7 @@ export async function POST(request: NextRequest) {
     const {
       title,
       description,
+      type,
       priority,
       status,
       conversationId,
@@ -97,14 +100,12 @@ export async function POST(request: NextRequest) {
     } = body;
 
     if (!title || typeof title !== "string" || title.trim().length === 0) {
-      return NextResponse.json(
-        { error: "Ticket title is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Ticket title is required" }, { status: 400 });
     }
 
     const ticket = await prisma.ticket.create({
       data: {
+        type: type || "consultation",
         title: title.trim(),
         description: description?.trim() || "",
         priority: priority || "medium",
@@ -134,9 +135,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(ticket, { status: 201 });
   } catch (error) {
     logger.error("Failed to create ticket:", error);
-    return NextResponse.json(
-      { error: "Failed to create ticket" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create ticket" }, { status: 500 });
   }
 }

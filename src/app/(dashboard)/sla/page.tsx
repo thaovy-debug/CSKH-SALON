@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/layout/header";
+import { cn } from "@/lib/utils";
+import { extractPaginatedData } from "@/lib/pagination";
 import {
   Timer,
   Plus,
@@ -11,8 +13,7 @@ import {
   Clock,
   CheckCircle2,
 } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
-import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
 interface SLARuleData {
   id: string;
@@ -28,18 +29,18 @@ interface SLARuleData {
 }
 
 const channelOptions = [
-  { value: "all", label: "All Channels" },
+  { value: "all", label: "Tất cả kênh" },
   { value: "whatsapp", label: "WhatsApp" },
   { value: "email", label: "Email" },
-  { value: "phone", label: "Phone" },
+  { value: "phone", label: "Điện thoại" },
 ];
 
 const priorityOptions = [
-  { value: "all", label: "All Priorities" },
-  { value: "low", label: "Low" },
-  { value: "medium", label: "Medium" },
-  { value: "high", label: "High" },
-  { value: "urgent", label: "Urgent" },
+  { value: "all", label: "Tất cả mức ưu tiên" },
+  { value: "low", label: "Thấp" },
+  { value: "medium", label: "Trung bình" },
+  { value: "high", label: "Cao" },
+  { value: "urgent", label: "Khẩn cấp" },
 ];
 
 const defaultForm = {
@@ -53,10 +54,10 @@ const defaultForm = {
 };
 
 function formatMinutes(mins: number): string {
-  if (mins < 60) return `${mins}m`;
+  if (mins < 60) return `${mins} phút`;
   const hours = Math.floor(mins / 60);
   const remaining = mins % 60;
-  return remaining > 0 ? `${hours}h ${remaining}m` : `${hours}h`;
+  return remaining > 0 ? `${hours} giờ ${remaining} phút` : `${hours} giờ`;
 }
 
 export default function SLAPage() {
@@ -70,10 +71,10 @@ export default function SLAPage() {
 
   const fetchRules = useCallback(async () => {
     try {
-      const res = await fetch("/api/sla");
+      const res = await fetch("/api/sla?limit=100");
       if (res.ok) {
         const data = await res.json();
-        setRules(data);
+        setRules(extractPaginatedData<SLARuleData>(data));
       }
     } catch (error) {
       console.error("Failed to fetch SLA rules:", error);
@@ -160,39 +161,36 @@ export default function SLAPage() {
   return (
     <>
       <Header
-        title="SLA Rules"
-        description="Set response time goals for your team"
+        title="Quy tắc SLA"
+        description="Thiết lập thời gian phản hồi mục tiêu cho đội ngũ"
         actions={
           <button
             onClick={openCreateModal}
             className="flex items-center gap-2 px-4 py-2 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors text-sm font-medium"
           >
             <Plus className="h-4 w-4" />
-            Add Rule
+            Thêm quy tắc
           </button>
         }
       />
 
       <div className="flex-1 overflow-auto p-6 space-y-4">
-        {/* Info Section */}
         <div className="bg-owly-primary-50 rounded-xl border border-owly-primary/20 p-4 flex items-start gap-3">
           <Info className="h-5 w-5 text-owly-primary flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-owly-text">
-              What are SLA Rules?
+              Quy tắc SLA là gì?
             </p>
             <p className="text-sm text-owly-text-light mt-1">
-              Service Level Agreement rules define response time targets for your
-              support team. Configure first response and resolution time goals
-              based on channel and priority to ensure consistent service quality.
+              Quy tắc SLA giúp đặt mục tiêu thời gian phản hồi đầu tiên và thời
+              gian xử lý hoàn tất theo từng kênh và mức độ ưu tiên.
             </p>
           </div>
         </div>
 
-        {/* Rules Grid */}
         {loading ? (
           <div className="flex items-center justify-center h-40">
-            <div className="text-sm text-owly-text-light">Loading...</div>
+            <div className="text-sm text-owly-text-light">Đang tải...</div>
           </div>
         ) : rules.length === 0 ? (
           <div className="bg-owly-surface rounded-xl border border-owly-border">
@@ -200,16 +198,18 @@ export default function SLAPage() {
               <div className="p-4 rounded-full bg-owly-primary-50 mb-4">
                 <Timer className="h-8 w-8 text-owly-primary" />
               </div>
-              <p className="font-medium text-owly-text">No SLA rules yet</p>
+              <p className="font-medium text-owly-text">
+                Chưa có quy tắc SLA nào
+              </p>
               <p className="text-sm text-owly-text-light mt-1">
-                Create your first SLA rule to set response time goals
+                Tạo quy tắc SLA đầu tiên để đặt thời gian phản hồi mục tiêu
               </p>
               <button
                 onClick={openCreateModal}
                 className="mt-4 flex items-center gap-2 px-4 py-2 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark transition-colors text-sm font-medium"
               >
                 <Plus className="h-4 w-4" />
-                Add Rule
+                Thêm quy tắc
               </button>
             </div>
           </div>
@@ -252,10 +252,13 @@ export default function SLAPage() {
 
                 <div className="flex items-center gap-2 mb-3">
                   <span className="px-2 py-0.5 rounded text-xs font-medium bg-owly-primary-50 text-owly-primary">
-                    {channelOptions.find((c) => c.value === rule.channel)?.label || rule.channel}
+                    {channelOptions.find((item) => item.value === rule.channel)
+                      ?.label || rule.channel}
                   </span>
                   <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
-                    {priorityOptions.find((p) => p.value === rule.priority)?.label || rule.priority}
+                    {priorityOptions.find(
+                      (item) => item.value === rule.priority
+                    )?.label || rule.priority}
                   </span>
                 </div>
 
@@ -264,7 +267,7 @@ export default function SLAPage() {
                     <Clock className="h-3.5 w-3.5 text-owly-text-light" />
                     <div>
                       <p className="text-xs text-owly-text-light">
-                        First Response
+                        Phản hồi đầu tiên
                       </p>
                       <p className="text-sm font-medium text-owly-text">
                         {formatMinutes(rule.firstResponseMins)}
@@ -275,7 +278,7 @@ export default function SLAPage() {
                     <CheckCircle2 className="h-3.5 w-3.5 text-owly-text-light" />
                     <div>
                       <p className="text-xs text-owly-text-light">
-                        Resolution
+                        Thời gian xử lý
                       </p>
                       <p className="text-sm font-medium text-owly-text">
                         {formatMinutes(rule.resolutionMins)}
@@ -288,10 +291,12 @@ export default function SLAPage() {
                   <span
                     className={cn(
                       "text-xs font-medium",
-                      rule.isActive ? "text-owly-success" : "text-owly-text-light"
+                      rule.isActive
+                        ? "text-owly-success"
+                        : "text-owly-text-light"
                     )}
                   >
-                    {rule.isActive ? "Active" : "Inactive"}
+                    {rule.isActive ? "Đang bật" : "Đã tắt"}
                   </span>
                   <button
                     onClick={() => handleToggleActive(rule)}
@@ -303,7 +308,9 @@ export default function SLAPage() {
                     <span
                       className={cn(
                         "inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform",
-                        rule.isActive ? "translate-x-4.5" : "translate-x-1"
+                        rule.isActive
+                          ? "translate-x-4.5"
+                          : "translate-x-1"
                       )}
                     />
                   </button>
@@ -314,7 +321,6 @@ export default function SLAPage() {
         )}
       </div>
 
-      {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -324,7 +330,7 @@ export default function SLAPage() {
           <div className="relative w-full max-w-md mx-4 bg-owly-surface rounded-xl shadow-xl">
             <div className="flex items-center justify-between px-5 py-4 border-b border-owly-border">
               <h3 className="font-semibold text-owly-text text-lg">
-                {editingRule ? "Edit SLA Rule" : "Create SLA Rule"}
+                {editingRule ? "Chỉnh sửa quy tắc SLA" : "Tạo quy tắc SLA"}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -337,20 +343,20 @@ export default function SLAPage() {
             <div className="px-5 py-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1">
-                  Name
+                  Tên quy tắc
                 </label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="e.g., Urgent WhatsApp SLA"
+                  placeholder="VD: SLA WhatsApp khẩn cấp"
                   className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-owly-text mb-1">
-                  Description
+                  Mô tả
                 </label>
                 <input
                   type="text"
@@ -358,7 +364,7 @@ export default function SLAPage() {
                   onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
                   }
-                  placeholder="Optional description..."
+                  placeholder="Mô tả thêm nếu cần..."
                   className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
                 />
               </div>
@@ -366,7 +372,7 @@ export default function SLAPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1">
-                    Channel
+                    Kênh
                   </label>
                   <select
                     value={form.channel}
@@ -375,16 +381,16 @@ export default function SLAPage() {
                     }
                     className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 text-owly-text"
                   >
-                    {channelOptions.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
+                    {channelOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1">
-                    Priority
+                    Ưu tiên
                   </label>
                   <select
                     value={form.priority}
@@ -393,9 +399,9 @@ export default function SLAPage() {
                     }
                     className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 text-owly-text"
                   >
-                    {priorityOptions.map((p) => (
-                      <option key={p.value} value={p.value}>
-                        {p.label}
+                    {priorityOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>
@@ -405,7 +411,7 @@ export default function SLAPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1">
-                    First Response (minutes)
+                    Phản hồi đầu tiên (phút)
                   </label>
                   <input
                     type="number"
@@ -414,7 +420,7 @@ export default function SLAPage() {
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        firstResponseMins: parseInt(e.target.value) || 1,
+                        firstResponseMins: parseInt(e.target.value, 10) || 1,
                       })
                     }
                     className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
@@ -422,7 +428,7 @@ export default function SLAPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-owly-text mb-1">
-                    Resolution (minutes)
+                    Xử lý hoàn tất (phút)
                   </label>
                   <input
                     type="number"
@@ -431,7 +437,7 @@ export default function SLAPage() {
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        resolutionMins: parseInt(e.target.value) || 1,
+                        resolutionMins: parseInt(e.target.value, 10) || 1,
                       })
                     }
                     className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
@@ -445,7 +451,7 @@ export default function SLAPage() {
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 text-sm font-medium text-owly-text hover:bg-owly-primary-50 rounded-lg transition-colors"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 onClick={handleSave}
@@ -458,17 +464,16 @@ export default function SLAPage() {
                 )}
               >
                 {saving
-                  ? "Saving..."
+                  ? "Đang lưu..."
                   : editingRule
-                  ? "Update Rule"
-                  : "Create Rule"}
+                    ? "Cập nhật quy tắc"
+                    : "Tạo quy tắc"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Delete Confirmation */}
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -477,24 +482,24 @@ export default function SLAPage() {
           />
           <div className="relative w-full max-w-sm mx-4 bg-owly-surface rounded-xl shadow-xl p-5">
             <h3 className="font-semibold text-owly-text text-lg mb-2">
-              Delete SLA Rule
+              Xóa quy tắc SLA
             </h3>
             <p className="text-sm text-owly-text-light mb-4">
-              Are you sure you want to delete this SLA rule? This action cannot
-              be undone.
+              Bạn có chắc muốn xóa quy tắc SLA này không? Hành động này không
+              thể hoàn tác.
             </p>
             <div className="flex items-center justify-end gap-2">
               <button
                 onClick={() => setDeleteConfirm(null)}
                 className="px-4 py-2 text-sm font-medium text-owly-text hover:bg-owly-primary-50 rounded-lg transition-colors"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
                 className="px-4 py-2 text-sm font-medium bg-owly-danger text-white rounded-lg hover:bg-red-700 transition-colors"
               >
-                Delete
+                Xóa
               </button>
             </div>
           </div>

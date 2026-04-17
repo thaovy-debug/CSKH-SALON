@@ -44,10 +44,12 @@ export async function PUT(request: NextRequest) {
       friday,
       saturday,
       sunday,
+      lastCustomerTime,
       offlineMessage,
     } = body;
 
     const timePattern = /^\d{2}:\d{2}-\d{2}:\d{2}$/;
+    const singleTimePattern = /^\d{2}:\d{2}$/;
     const days = { monday, tuesday, wednesday, thursday, friday, saturday, sunday };
 
     for (const [day, value] of Object.entries(days)) {
@@ -57,6 +59,17 @@ export async function PUT(request: NextRequest) {
           { status: 400 }
         );
       }
+    }
+
+    if (
+      lastCustomerTime !== undefined &&
+      lastCustomerTime !== "" &&
+      !singleTimePattern.test(lastCustomerTime)
+    ) {
+      return NextResponse.json(
+        { error: "Invalid time format for lastCustomerTime. Use HH:mm." },
+        { status: 400 }
+      );
     }
 
     const config = await prisma.businessHours.upsert({
@@ -71,6 +84,7 @@ export async function PUT(request: NextRequest) {
         ...(friday !== undefined && { friday }),
         ...(saturday !== undefined && { saturday }),
         ...(sunday !== undefined && { sunday }),
+        ...(lastCustomerTime !== undefined && { lastCustomerTime }),
         ...(offlineMessage !== undefined && { offlineMessage }),
       },
       create: {
@@ -84,6 +98,7 @@ export async function PUT(request: NextRequest) {
         friday: friday ?? "09:00-18:00",
         saturday: saturday ?? "",
         sunday: sunday ?? "",
+        lastCustomerTime: lastCustomerTime ?? "17:00",
         offlineMessage:
           offlineMessage ??
           "We are currently offline. We will get back to you during business hours.",

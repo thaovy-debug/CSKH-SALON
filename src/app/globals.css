@@ -1,42 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  --owly-primary: #4A7C9B;
-  --owly-primary-dark: #2D5A7B;
-  --owly-primary-light: #A8D0E6;
-  --owly-primary-50: #EDF5FA;
-  --owly-primary-100: #D6E8F2;
-  --owly-accent: #C4956A;
-  --owly-accent-light: #E0C4A8;
-  --owly-bg: #F8FAFC;
+  --owly-primary: #E295AC;
+  --owly-primary-dark: #C97A91;
+  --owly-primary-light: #F6DAE4;
+  --owly-primary-50: #FCF3F7;
+  --owly-primary-100: #FAECF1;
+  --owly-accent: #B8D8D8;
+  --owly-accent-light: #E0EEEE;
+  --owly-bg: #FFFDFD;
   --owly-surface: #FFFFFF;
-  --owly-text: #1E293B;
-  --owly-text-light: #64748B;
-  --owly-border: #E2E8F0;
-  --owly-sidebar: #1E293B;
-  --owly-sidebar-hover: #334155;
-  --owly-sidebar-active: #4A7C9B;
-  --owly-success: #22C55E;
-  --owly-warning: #F59E0B;
-  --owly-danger: #EF4444;
+  --owly-text: #3A3034;
+  --owly-text-light: #8B7D82;
+  --owly-border: #F0E5E7;
+  --owly-sidebar: #54464C;
+  --owly-sidebar-hover: #66555D;
+  --owly-sidebar-active: #E295AC;
+  --owly-success: #88D4B0;
+  --owly-warning: #F5CB86;
+  --owly-danger: #E27E85;
 }
 
 .dark {
-  --owly-primary: #5A9CBB;
-  --owly-primary-dark: #4A8CAB;
-  --owly-primary-light: #3A6C8B;
-  --owly-primary-50: #1A2A3A;
-  --owly-primary-100: #1E3448;
-  --owly-accent: #D4A57A;
-  --owly-accent-light: #4A3A2A;
-  --owly-bg: #0F172A;
-  --owly-surface: #1E293B;
-  --owly-text: #F1F5F9;
-  --owly-text-light: #94A3B8;
-  --owly-border: #334155;
-  --owly-sidebar: #0F172A;
-  --owly-sidebar-hover: #1E293B;
-  --owly-sidebar-active: #4A7C9B;
+  --owly-primary: #E295AC;
+  --owly-primary-dark: #F6DAE4;
+  --owly-primary-light: #C97A91;
+  --owly-primary-50: #3E272F;
+  --owly-primary-100: #4F353E;
+  --owly-accent: #A5C4C4;
+  --owly-accent-light: #3F4D4D;
+  --owly-bg: #1E181A;
+  --owly-surface: #2B2225;
+  --owly-text: #F8F4F5;
+  --owly-text-light: #BBAFB4;
+  --owly-border: #4F4347;
+  --owly-sidebar: #151012;
+  --owly-sidebar-hover: #2B2225;
+  --owly-sidebar-active: #E295AC;
 }
 
 @theme inline {

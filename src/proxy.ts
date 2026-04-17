@@ -58,7 +58,7 @@ function getClientIp(request: NextRequest): string {
   );
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const requestId = request.headers.get("x-request-id") || generateRequestId();
 
@@ -139,7 +139,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Check for auth token (cookie) or API key (header)
-  const token = request.cookies.get("owly-token")?.value;
+  const token = request.cookies.get("salondesk-token")?.value;
   const apiKey = request.headers.get("x-api-key");
 
   if (!token && !apiKey) {
@@ -175,7 +175,7 @@ export function middleware(request: NextRequest) {
       );
     }
     const response = NextResponse.redirect(new URL("/login", request.url));
-    response.cookies.delete("owly-token");
+    response.cookies.delete("salondesk-token");
     return response;
   }
 

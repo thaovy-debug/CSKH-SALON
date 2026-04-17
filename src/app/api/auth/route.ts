@@ -9,6 +9,7 @@ import {
   getCurrentUser,
   isSetupComplete,
 } from "@/lib/auth";
+import { DEFAULT_GEMINI_MODEL, GEMINI_PROVIDER } from "@/lib/ai/catalog";
 
 // POST /api/auth - Login or Setup
 export async function POST(request: NextRequest) {
@@ -18,17 +19,11 @@ export async function POST(request: NextRequest) {
   if (action === "setup") {
     const setupDone = await isSetupComplete();
     if (setupDone) {
-      return NextResponse.json(
-        { error: "Setup already completed" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Setup already completed" }, { status: 400 });
     }
 
     if (!username || !password) {
-      return NextResponse.json(
-        { error: "Username and password are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
     }
 
     const hashed = await hashPassword(password);
@@ -45,7 +40,11 @@ export async function POST(request: NextRequest) {
     await prisma.settings.upsert({
       where: { id: "default" },
       update: {},
-      create: { id: "default" },
+      create: {
+        id: "default",
+        aiProvider: GEMINI_PROVIDER,
+        aiModel: DEFAULT_GEMINI_MODEL,
+      },
     });
 
     // Ensure channels exist
@@ -70,26 +69,17 @@ export async function POST(request: NextRequest) {
 
   if (action === "login") {
     if (!username || !password) {
-      return NextResponse.json(
-        { error: "Username and password are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
     }
 
     const admin = await prisma.admin.findUnique({ where: { username } });
     if (!admin) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
     const valid = await verifyPassword(password, admin.password);
     if (!valid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
     const token = generateToken(admin.id, admin.role);

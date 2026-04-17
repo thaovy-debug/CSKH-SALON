@@ -56,7 +56,7 @@ function StatusBadge({ status }: { status: string }) {
           isConnected ? "bg-owly-success" : "bg-owly-danger"
         )}
       />
-      {isConnected ? "Connected" : "Disconnected"}
+      {isConnected ? "Đã kết nối" : "Chưa kết nối"}
     </span>
   );
 }
@@ -721,7 +721,16 @@ export default function ChannelsPage() {
       const res = await fetch("/api/channels");
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
-      setChannels(data);
+      const whatsappRes = await fetch("/api/channels/whatsapp");
+      const whatsappLive = whatsappRes.ok ? await whatsappRes.json() : null;
+
+      setChannels(
+        data.map((channel: ChannelData) =>
+          channel.type === "whatsapp" && whatsappLive
+            ? { ...channel, status: whatsappLive.status }
+            : channel
+        )
+      );
     } catch {
       showToast("Failed to load channels", "error");
     } finally {
@@ -770,11 +779,7 @@ export default function ChannelsPage() {
         throw new Error(err.error || "Action failed");
       }
       const data = await res.json();
-      if (data.type) {
-        setChannels((prev) =>
-          prev.map((ch) => (ch.type === type ? { ...ch, ...data } : ch))
-        );
-      }
+      await fetchChannels();
       showToast(data.message || "Action completed");
     } catch (err) {
       showToast(
@@ -796,7 +801,7 @@ export default function ChannelsPage() {
   return (
     <>
       <Header
-        title="Channels"
+        title="Kênh liên hệ"
         description="Connect and manage your communication channels"
       />
 

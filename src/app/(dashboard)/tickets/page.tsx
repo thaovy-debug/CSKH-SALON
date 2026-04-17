@@ -21,6 +21,7 @@ import {
   getStatusColor,
   getPriorityColor,
 } from "@/lib/utils";
+import { extractPaginatedData } from "@/lib/pagination";
 
 interface TicketData {
   id: string;
@@ -110,6 +111,7 @@ export default function TicketsPage() {
   const fetchTickets = useCallback(async () => {
     try {
       const params = new URLSearchParams();
+      params.set("limit", "100");
       if (statusFilter !== "all") params.set("status", statusFilter);
       if (priorityFilter !== "all") params.set("priority", priorityFilter);
       if (departmentFilter !== "all")
@@ -119,7 +121,7 @@ export default function TicketsPage() {
       const res = await fetch(`/api/tickets?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        setTickets(data);
+        setTickets(extractPaginatedData<TicketData>(data));
       }
     } catch (error) {
       console.error("Failed to fetch tickets:", error);
@@ -130,10 +132,10 @@ export default function TicketsPage() {
 
   const fetchDepartments = useCallback(async () => {
     try {
-      const res = await fetch("/api/team/departments");
+      const res = await fetch("/api/team/departments?limit=100");
       if (res.ok) {
         const data = await res.json();
-        setDepartments(data);
+        setDepartments(extractPaginatedData<DepartmentData>(data));
       }
     } catch (error) {
       console.error("Failed to fetch departments:", error);
@@ -277,7 +279,7 @@ export default function TicketsPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-owly-text-light" />
               <input
                 type="text"
-                placeholder="Search tickets..."
+                placeholder="Tìm kiếm phiếu..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
@@ -310,7 +312,7 @@ export default function TicketsPage() {
               onChange={(e) => setDepartmentFilter(e.target.value)}
               className="text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 text-owly-text"
             >
-              <option value="all">All Departments</option>
+              <option value="all">Tất cả bộ phận</option>
               {departments.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name}
@@ -324,7 +326,7 @@ export default function TicketsPage() {
         <div className="bg-owly-surface rounded-xl border border-owly-border overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center h-40">
-              <div className="text-sm text-owly-text-light">Loading...</div>
+              <div className="text-sm text-owly-text-light">Đang tải...</div>
             </div>
           ) : tickets.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
@@ -533,7 +535,7 @@ export default function TicketsPage() {
                   }
                   className="w-full text-sm px-3 py-2 border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 text-owly-text"
                 >
-                  <option value="">Unassigned</option>
+                  <option value="">Chưa phân công</option>
                   {departments.map((d) => (
                     <option key={d.id} value={d.id}>
                       {d.name}

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { prisma } from "@/lib/prisma";
 
-// Mock OpenAI
+// Mock Gemini compatibility client
 const mockOpenAICreateFn = vi.fn();
 vi.mock("openai", () => {
   return {
@@ -30,8 +30,8 @@ describe("AI Engine", () => {
       welcomeMessage: "Hello!",
       tone: "friendly",
       language: "auto",
-      aiProvider: "openai",
-      aiModel: "gpt-4",
+      aiProvider: "gemini",
+      aiModel: "gemini-2.5-flash",
       aiApiKey: "sk-test",
       maxTokens: 1000,
       temperature: 0.7,
@@ -52,9 +52,7 @@ describe("AI Engine", () => {
       customerName: "John",
       customerContact: "+1555",
       status: "active",
-      messages: [
-        { role: "customer", content: "Hi", createdAt: new Date() },
-      ],
+      messages: [{ role: "customer", content: "Hi", createdAt: new Date() }],
     });
 
     // Default message creation
@@ -66,8 +64,8 @@ describe("AI Engine", () => {
     mockPrisma.settings.findFirst.mockResolvedValue({
       id: "default",
       aiApiKey: "",
-      aiProvider: "openai",
-      aiModel: "gpt-4",
+      aiProvider: "gemini",
+      aiModel: "gemini-2.5-flash",
       maxTokens: 1000,
       temperature: 0.7,
       businessName: "Test",
@@ -80,7 +78,7 @@ describe("AI Engine", () => {
     const { chat } = await import("@/lib/ai/engine");
     const response = await chat("conv-1", "Hello");
 
-    expect(response).toContain("AI is not configured");
+    expect(response).toContain("AI chưa được cấu hình");
   });
 
   it("should return error when conversation not found", async () => {
@@ -89,10 +87,10 @@ describe("AI Engine", () => {
     const { chat } = await import("@/lib/ai/engine");
     const response = await chat("nonexistent", "Hello");
 
-    expect(response).toBe("Conversation not found.");
+    expect(response).toBe("Không tìm thấy hội thoại.");
   });
 
-  it("should call OpenAI with correct parameters", async () => {
+  it("should call Gemini with correct parameters", async () => {
     mockOpenAICreateFn.mockResolvedValue({
       choices: [
         {
@@ -108,7 +106,7 @@ describe("AI Engine", () => {
     expect(response).toBe("Hello! How can I help?");
     expect(mockOpenAICreateFn).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "gpt-4",
+        model: "gemini-2.5-flash",
         max_tokens: 1000,
         temperature: 0.7,
       })
@@ -237,6 +235,6 @@ describe("AI Engine", () => {
     const { chat } = await import("@/lib/ai/engine");
     const response = await chat("conv-1", "Hello");
 
-    expect(response).toContain("could not generate a response");
+    expect(response).toContain("chưa thể tạo phản hồi");
   });
 });

@@ -16,6 +16,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { extractPaginatedData } from "@/lib/pagination";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -67,14 +68,18 @@ export default function KnowledgeTestPage() {
   const fetchStats = useCallback(async () => {
     try {
       const [categoriesRes, entriesRes] = await Promise.all([
-        fetch("/api/knowledge/categories"),
-        fetch("/api/knowledge/entries"),
+        fetch("/api/knowledge/categories?limit=100"),
+        fetch("/api/knowledge/entries?limit=100"),
       ]);
 
-      const categories = categoriesRes.ok ? await categoriesRes.json() : [];
-      const entries = entriesRes.ok ? await entriesRes.json() : [];
+      const categories = extractPaginatedData(
+        categoriesRes.ok ? await categoriesRes.json() : []
+      );
+      const entries = extractPaginatedData<{ isActive: boolean; updatedAt: string }>(
+        entriesRes.ok ? await entriesRes.json() : []
+      );
 
-      const activeEntries = entries.filter((e: { isActive: boolean }) => e.isActive);
+      const activeEntries = entries.filter((e) => e.isActive);
       const lastUpdated =
         entries.length > 0
           ? entries.sort(

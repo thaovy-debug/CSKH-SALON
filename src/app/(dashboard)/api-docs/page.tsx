@@ -56,7 +56,8 @@ const apiSections: ApiSection[] = [
       {
         method: "POST",
         path: "/api/chat",
-        description: "Send a message and get an AI-generated response. The AI uses your knowledge base and conversation history to generate relevant answers.",
+        description:
+          "Send a message and get an AI-generated response. The AI uses your knowledge base and conversation history to generate relevant answers.",
         requestBody: {
           message: "How do I reset my password?",
           conversationId: "conv_abc123",
@@ -91,8 +92,18 @@ const apiSections: ApiSection[] = [
           },
         ],
         queryParams: [
-          { name: "status", type: "string", required: false, description: "Filter by status: active, closed, archived" },
-          { name: "channel", type: "string", required: false, description: "Filter by channel: web, whatsapp, email, phone" },
+          {
+            name: "status",
+            type: "string",
+            required: false,
+            description: "Filter by status: active, closed, archived",
+          },
+          {
+            name: "channel",
+            type: "string",
+            required: false,
+            description: "Filter by channel: web, whatsapp, email, phone",
+          },
         ],
       },
       {
@@ -123,12 +134,15 @@ const apiSections: ApiSection[] = [
           status: "active",
           messages: [
             { id: "msg_1", role: "user", content: "Hello", createdAt: "2026-04-01T10:00:00Z" },
-            { id: "msg_2", role: "assistant", content: "Hi! How can I help?", createdAt: "2026-04-01T10:00:01Z" },
+            {
+              id: "msg_2",
+              role: "assistant",
+              content: "Hi! How can I help?",
+              createdAt: "2026-04-01T10:00:01Z",
+            },
           ],
         },
-        params: [
-          { name: "id", type: "string", required: true, description: "Conversation ID" },
-        ],
+        params: [{ name: "id", type: "string", required: true, description: "Conversation ID" }],
       },
       {
         method: "PUT",
@@ -145,18 +159,14 @@ const apiSections: ApiSection[] = [
           satisfaction: 5,
           updatedAt: "2026-04-01T12:00:00Z",
         },
-        params: [
-          { name: "id", type: "string", required: true, description: "Conversation ID" },
-        ],
+        params: [{ name: "id", type: "string", required: true, description: "Conversation ID" }],
       },
       {
         method: "DELETE",
         path: "/api/conversations/:id",
         description: "Delete a conversation and all its messages.",
         responseExample: { ok: true },
-        params: [
-          { name: "id", type: "string", required: true, description: "Conversation ID" },
-        ],
+        params: [{ name: "id", type: "string", required: true, description: "Conversation ID" }],
       },
       {
         method: "POST",
@@ -173,9 +183,7 @@ const apiSections: ApiSection[] = [
           content: "I need help with billing",
           createdAt: "2026-04-01T10:05:00Z",
         },
-        params: [
-          { name: "id", type: "string", required: true, description: "Conversation ID" },
-        ],
+        params: [{ name: "id", type: "string", required: true, description: "Conversation ID" }],
       },
     ],
   },
@@ -198,8 +206,18 @@ const apiSections: ApiSection[] = [
           },
         ],
         queryParams: [
-          { name: "status", type: "string", required: false, description: "Filter by status: open, in_progress, resolved, closed" },
-          { name: "priority", type: "string", required: false, description: "Filter by priority: low, medium, high, urgent" },
+          {
+            name: "status",
+            type: "string",
+            required: false,
+            description: "Filter by status: open, in_progress, resolved, closed",
+          },
+          {
+            name: "priority",
+            type: "string",
+            required: false,
+            description: "Filter by priority: low, medium, high, urgent",
+          },
         ],
       },
       {
@@ -232,9 +250,7 @@ const apiSections: ApiSection[] = [
           department: { id: "dept_1", name: "Engineering" },
           assignedTo: { id: "mem_1", name: "Alice" },
         },
-        params: [
-          { name: "id", type: "string", required: true, description: "Ticket ID" },
-        ],
+        params: [{ name: "id", type: "string", required: true, description: "Ticket ID" }],
       },
       {
         method: "PUT",
@@ -250,18 +266,14 @@ const apiSections: ApiSection[] = [
           resolution: "Fixed permission configuration for the user.",
           updatedAt: "2026-04-01T12:00:00Z",
         },
-        params: [
-          { name: "id", type: "string", required: true, description: "Ticket ID" },
-        ],
+        params: [{ name: "id", type: "string", required: true, description: "Ticket ID" }],
       },
       {
         method: "DELETE",
         path: "/api/tickets/:id",
         description: "Delete a ticket permanently.",
         responseExample: { ok: true },
-        params: [
-          { name: "id", type: "string", required: true, description: "Ticket ID" },
-        ],
+        params: [{ name: "id", type: "string", required: true, description: "Ticket ID" }],
       },
     ],
   },
@@ -309,7 +321,12 @@ const apiSections: ApiSection[] = [
           },
         ],
         queryParams: [
-          { name: "categoryId", type: "string", required: false, description: "Filter by category ID" },
+          {
+            name: "categoryId",
+            type: "string",
+            required: false,
+            description: "Filter by category ID",
+          },
         ],
       },
       {
@@ -342,11 +359,12 @@ const apiSections: ApiSection[] = [
         path: "/api/settings",
         description: "Get the current application settings.",
         responseExample: {
-          businessName: "My Business",
-          welcomeMessage: "Hello! How can I help you today?",
+          businessName: "Luna Women's Hair Studio",
+          welcomeMessage:
+            "Hello! Welcome to Luna Women's Hair Studio. Would you like help with pricing, hair consultations, or booking an appointment?",
           tone: "friendly",
-          aiProvider: "openai",
-          aiModel: "gpt-4o-mini",
+          aiProvider: "gemini",
+          aiModel: "gemini-2.5-flash",
         },
       },
       {
@@ -417,13 +435,24 @@ const apiSections: ApiSection[] = [
       {
         method: "GET",
         path: "/api/export",
-        description: "Export data in CSV or JSON format. Supports exporting conversations, tickets, knowledge base entries, and customers.",
+        description:
+          "Export data in CSV or JSON format. Supports exporting conversations, tickets, knowledge base entries, and customers.",
         responseExample: {
           note: "Returns CSV or JSON file as download",
         },
         queryParams: [
-          { name: "type", type: "string", required: true, description: "Data type: conversations, tickets, knowledge, customers" },
-          { name: "format", type: "string", required: true, description: "Output format: csv or json" },
+          {
+            name: "type",
+            type: "string",
+            required: true,
+            description: "Data type: conversations, tickets, knowledge, customers",
+          },
+          {
+            name: "format",
+            type: "string",
+            required: true,
+            description: "Output format: csv or json",
+          },
         ],
       },
     ],
@@ -436,7 +465,8 @@ const apiSections: ApiSection[] = [
       {
         method: "GET",
         path: "/api/health",
-        description: "Check the API health status. Returns uptime and database connectivity status.",
+        description:
+          "Check the API health status. Returns uptime and database connectivity status.",
         responseExample: {
           status: "ok",
           uptime: 86400,
@@ -571,10 +601,7 @@ function TryItPanel({ endpoint }: { endpoint: Endpoint }) {
     }
   }, [endpoint, paramValues, bodyText]);
 
-  const allParams = [
-    ...(endpoint.params || []),
-    ...(endpoint.queryParams || []),
-  ];
+  const allParams = [...(endpoint.params || []), ...(endpoint.queryParams || [])];
 
   return (
     <div className="mt-4 border border-owly-border rounded-lg overflow-hidden">
@@ -612,9 +639,7 @@ function TryItPanel({ endpoint }: { endpoint: Endpoint }) {
                     placeholder={p.description}
                     className="flex-1 px-3 py-1.5 text-sm border border-owly-border rounded-lg bg-owly-bg text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary transition-theme"
                     value={paramValues[p.name] || ""}
-                    onChange={(e) =>
-                      setParamValues({ ...paramValues, [p.name]: e.target.value })
-                    }
+                    onChange={(e) => setParamValues({ ...paramValues, [p.name]: e.target.value })}
                   />
                 </div>
               ))}
@@ -639,11 +664,7 @@ function TryItPanel({ endpoint }: { endpoint: Endpoint }) {
             disabled={loading}
             className="inline-flex items-center gap-2 px-4 py-2 bg-owly-primary text-white text-sm font-medium rounded-lg hover:bg-owly-primary-dark transition-colors disabled:opacity-50"
           >
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Send Request
           </button>
 
@@ -686,14 +707,10 @@ function EndpointCard({ endpoint }: { endpoint: Endpoint }) {
     <div className="border border-owly-border rounded-xl bg-owly-surface p-6 transition-theme">
       <div className="flex items-center gap-3 flex-wrap">
         <MethodBadge method={endpoint.method} />
-        <code className="text-sm font-semibold text-owly-text font-mono">
-          {endpoint.path}
-        </code>
+        <code className="text-sm font-semibold text-owly-text font-mono">{endpoint.path}</code>
       </div>
 
-      <p className="mt-3 text-sm text-owly-text-light leading-relaxed">
-        {endpoint.description}
-      </p>
+      <p className="mt-3 text-sm text-owly-text-light leading-relaxed">{endpoint.description}</p>
 
       {/* Parameters table */}
       {((endpoint.params && endpoint.params.length > 0) ||
@@ -721,24 +738,20 @@ function EndpointCard({ endpoint }: { endpoint: Endpoint }) {
                 </tr>
               </thead>
               <tbody>
-                {[...(endpoint.params || []), ...(endpoint.queryParams || [])].map(
-                  (p) => (
-                    <tr key={p.name} className="border-t border-owly-border">
-                      <td className="px-4 py-2 font-mono text-owly-text font-medium">
-                        {p.name}
-                      </td>
-                      <td className="px-4 py-2 text-owly-text-light">{p.type}</td>
-                      <td className="px-4 py-2">
-                        {p.required ? (
-                          <span className="text-owly-danger font-medium">Yes</span>
-                        ) : (
-                          <span className="text-owly-text-light">No</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-2 text-owly-text-light">{p.description}</td>
-                    </tr>
-                  )
-                )}
+                {[...(endpoint.params || []), ...(endpoint.queryParams || [])].map((p) => (
+                  <tr key={p.name} className="border-t border-owly-border">
+                    <td className="px-4 py-2 font-mono text-owly-text font-medium">{p.name}</td>
+                    <td className="px-4 py-2 text-owly-text-light">{p.type}</td>
+                    <td className="px-4 py-2">
+                      {p.required ? (
+                        <span className="text-owly-danger font-medium">Yes</span>
+                      ) : (
+                        <span className="text-owly-text-light">No</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 text-owly-text-light">{p.description}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -774,10 +787,7 @@ export default function ApiDocsPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <Header
-        title="API Documentation"
-        description="Integrate Owly with your systems"
-      />
+      <Header title="API Documentation" description="Integrate SalonDesk with your systems" />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
@@ -799,9 +809,7 @@ export default function ApiDocsPage() {
                 >
                   <Icon className="h-4 w-4 flex-shrink-0" />
                   {section.name}
-                  <span className="ml-auto text-xs opacity-70">
-                    {section.endpoints.length}
-                  </span>
+                  <span className="ml-auto text-xs opacity-70">{section.endpoints.length}</span>
                 </button>
               );
             })}
@@ -833,9 +841,7 @@ export default function ApiDocsPage() {
                   <Key className="h-5 w-5 text-owly-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-owly-text">
-                    Authentication
-                  </h3>
+                  <h3 className="text-lg font-semibold text-owly-text">Authentication</h3>
                   <p className="text-sm text-owly-text-light">
                     All API requests require authentication
                   </p>
@@ -854,14 +860,13 @@ export default function ApiDocsPage() {
                 <div className="bg-gray-900 dark:bg-gray-950 text-gray-100 text-sm p-4 rounded-lg border border-gray-700 font-mono">
                   <span className="text-blue-400">curl</span>{" "}
                   <span className="text-green-400">-H</span>{" "}
-                  <span className="text-amber-300">{'"X-API-Key: your_api_key_here"'}</span>{" "}
-                  \<br />
+                  <span className="text-amber-300">{'"X-API-Key: your_api_key_here"'}</span> \<br />
                   {"  "}https://your-domain.com/api/conversations
                 </div>
                 <p>
-                  API keys can be configured with different permissions. Keep your keys
-                  secure and never expose them in client-side code. If a key is compromised,
-                  revoke it immediately from the Settings page and generate a new one.
+                  API keys can be configured with different permissions. Keep your keys secure and
+                  never expose them in client-side code. If a key is compromised, revoke it
+                  immediately from the Settings page and generate a new one.
                 </p>
               </div>
             </div>
@@ -872,9 +877,7 @@ export default function ApiDocsPage() {
                 <currentSection.icon className="h-5 w-5 text-owly-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-owly-text">
-                  {currentSection.name}
-                </h3>
+                <h3 className="text-lg font-semibold text-owly-text">{currentSection.name}</h3>
                 <p className="text-sm text-owly-text-light">
                   {currentSection.endpoints.length} endpoint
                   {currentSection.endpoints.length !== 1 ? "s" : ""}

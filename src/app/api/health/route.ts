@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { pingGemini } from "@/lib/ai/provider";
 
 const startTime = Date.now();
 
@@ -14,26 +15,22 @@ export async function GET() {
     checks.database = "error";
   }
 
-  // OpenAI reachability check
+  // Gemini reachability check
   try {
     const settings = await prisma.settings.findFirst({
-      select: { aiApiKey: true },
+      select: { aiApiKey: true, aiModel: true },
     });
     if (settings?.aiApiKey) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 3000);
-      const res = await fetch("https://api.openai.com/v1/models", {
-        method: "HEAD",
-        headers: { Authorization: `Bearer ${settings.aiApiKey}` },
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-      checks.openai = res.ok ? "reachable" : "error";
+      const ok = await Promise.race([
+        pingGemini(settings.aiApiKey, settings.aiModel),
+        new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 3000)),
+      ]);
+      checks.gemini = ok ? "reachable" : "error";
     } else {
-      checks.openai = "not_configured";
+      checks.gemini = "not_configured";
     }
   } catch {
-    checks.openai = "unreachable";
+    checks.gemini = "unreachable";
   }
 
   // Uptime

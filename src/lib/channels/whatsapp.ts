@@ -106,6 +106,9 @@ export async function initWhatsApp(): Promise<void> {
             { customerContact },
           ],
         },
+        orderBy: {
+          updatedAt: "desc",
+        },
       });
 
       if (!conversation) {

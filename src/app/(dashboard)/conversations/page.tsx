@@ -66,19 +66,26 @@ const channelColors: Record<string, string> = {
 };
 
 const channels = [
-  { value: "all", label: "All Channels" },
+  { value: "all", label: "Tất cả kênh" },
   { value: "whatsapp", label: "WhatsApp" },
   { value: "email", label: "Email" },
-  { value: "phone", label: "Phone" },
+  { value: "phone", label: "Điện thoại" },
 ];
 
 const statuses = [
-  { value: "all", label: "All Status" },
-  { value: "active", label: "Active" },
-  { value: "resolved", label: "Resolved" },
-  { value: "escalated", label: "Escalated" },
-  { value: "closed", label: "Closed" },
+  { value: "all", label: "Tất cả trạng thái" },
+  { value: "active", label: "Đang xử lý" },
+  { value: "resolved", label: "Đã xử lý" },
+  { value: "escalated", label: "Cần ưu tiên" },
+  { value: "closed", label: "Đã đóng" },
 ];
+
+function getStatusLabel(status: string) {
+  return (
+    statuses.find((item) => item.value === status)?.label ||
+    status
+  );
+}
 
 export default function ConversationsPage() {
   const [conversations, setConversations] = useState<ConversationData[]>([]);
@@ -92,6 +99,7 @@ export default function ConversationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   const [mobileShowDetail, setMobileShowDetail] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -105,7 +113,8 @@ export default function ConversationsPage() {
       const res = await fetch(`/api/conversations?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        setConversations(data);
+        const convList = Array.isArray(data) ? data : (data.conversations ?? data.data ?? []);
+        setConversations(convList);
       }
     } catch (error) {
       console.error("Failed to fetch conversations:", error);
@@ -144,12 +153,14 @@ export default function ConversationsPage() {
   }, [selectedConversation?.messages]);
 
   const handleSelectConversation = (id: string) => {
+    setSendError("");
     setSelectedId(id);
     setMobileShowDetail(true);
   };
 
   const handleSendReply = async () => {
     if (!replyText.trim() || !selectedId || sending) return;
+    setSendError("");
     setSending(true);
     try {
       const res = await fetch(`/api/conversations/${selectedId}/messages`, {
@@ -161,9 +172,13 @@ export default function ConversationsPage() {
         setReplyText("");
         fetchConversationDetail(selectedId);
         fetchConversations();
+      } else {
+        const data = await res.json().catch(() => null);
+        setSendError(data?.error || "Không thể gửi tin nhắn đến khách hàng.");
       }
     } catch (error) {
       console.error("Failed to send message:", error);
+      setSendError("Không thể gửi tin nhắn đến khách hàng.");
     } finally {
       setSending(false);
     }
@@ -196,16 +211,16 @@ export default function ConversationsPage() {
   return (
     <>
       <Header
-        title="Conversations"
-        description="Manage all customer interactions"
+        title="Hội thoại"
+        description="Quản lý toàn bộ tương tác với khách hàng"
       />
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Panel - Conversation List */}
         <div
           className={cn(
-            "w-full md:w-96 lg:w-[420px] border-r border-owly-border flex flex-col bg-owly-surface",
-            mobileShowDetail && "hidden md:flex"
+            "w-full flex-col bg-owly-surface",
+            mobileShowDetail ? "hidden" : "flex"
           )}
         >
           {/* Filters */}
@@ -214,7 +229,7 @@ export default function ConversationsPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-owly-text-light" />
               <input
                 type="text"
-                placeholder="Search conversations..."
+                placeholder="Tìm kiếm hội thoại..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary"
@@ -250,7 +265,7 @@ export default function ConversationsPage() {
           <div className="flex-1 overflow-y-auto">
             {loading ? (
               <div className="flex items-center justify-center h-40">
-                <div className="text-sm text-owly-text-light">Loading...</div>
+                <div className="text-sm text-owly-text-light">Đang tải...</div>
               </div>
             ) : conversations.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64 px-6 text-center">
@@ -258,10 +273,10 @@ export default function ConversationsPage() {
                   <Inbox className="h-8 w-8 text-owly-primary" />
                 </div>
                 <p className="font-medium text-owly-text">
-                  No conversations found
+                  Không tìm thấy hội thoại
                 </p>
                 <p className="text-sm text-owly-text-light mt-1">
-                  Conversations will appear here when customers reach out
+                  Hội thoại sẽ xuất hiện tại đây khi khách hàng liên hệ
                 </p>
               </div>
             ) : (
@@ -291,8 +306,8 @@ export default function ConversationsPage() {
                         >
                           <ChannelIcon className="h-4 w-4" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0 text-left">
+                          <div className="flex justify-between items-start mb-1">
                             <p className="font-medium text-sm text-owly-text truncate">
                               {conv.customerName}
                             </p>
@@ -308,14 +323,14 @@ export default function ConversationsPage() {
                               --
                             </span>
                             <span className="text-xs text-owly-text-light">
-                              {conv._count.messages} messages
+                              {conv._count.messages} tin nhắn
                             </span>
                           </div>
                           {lastMessage && (
                             <p className="text-sm text-owly-text-light mt-1 truncate">
                               {lastMessage.role === "admin" && (
                                 <span className="text-owly-primary font-medium">
-                                  You:{" "}
+                                  Bạn:{" "}
                                 </span>
                               )}
                               {lastMessage.content}
@@ -328,7 +343,7 @@ export default function ConversationsPage() {
                                 getStatusColor(conv.status)
                               )}
                             >
-                              {conv.status}
+                              {getStatusLabel(conv.status)}
                             </span>
                             {conv.tags.slice(0, 2).map((ct) => (
                               <span
@@ -352,8 +367,8 @@ export default function ConversationsPage() {
         {/* Right Panel - Conversation Detail */}
         <div
           className={cn(
-            "flex-1 flex flex-col bg-owly-bg",
-            !mobileShowDetail && "hidden md:flex"
+            "flex-1 flex-col bg-owly-bg",
+            !mobileShowDetail ? "hidden" : "flex"
           )}
         >
           {!selectedId ? (
@@ -362,69 +377,70 @@ export default function ConversationsPage() {
                 <MessageSquare className="h-10 w-10 text-owly-text-light" />
               </div>
               <p className="font-semibold text-lg text-owly-text">
-                Select a conversation
+                Chọn một hội thoại
               </p>
               <p className="text-sm text-owly-text-light mt-1 max-w-sm">
-                Choose a conversation from the list to view the full message
-                thread and reply to customers
+                Chọn hội thoại từ danh sách để xem toàn bộ nội dung và trả lời khách hàng
               </p>
             </div>
           ) : detailLoading && !selectedConversation ? (
             <div className="flex-1 flex items-center justify-center">
-              <div className="text-sm text-owly-text-light">Loading...</div>
+              <div className="text-sm text-owly-text-light">Đang tải...</div>
             </div>
           ) : selectedConversation ? (
             <>
               {/* Conversation Header */}
-              <div className="px-4 py-3 bg-owly-surface border-b border-owly-border flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    setMobileShowDetail(false);
-                    setSelectedId(null);
-                    setSelectedConversation(null);
-                  }}
-                  className="md:hidden p-1.5 hover:bg-owly-primary-50 rounded-lg transition-colors"
-                >
-                  <ArrowLeft className="h-5 w-5 text-owly-text" />
-                </button>
-                <div
-                  className={cn(
-                    "p-2 rounded-lg flex-shrink-0",
-                    channelColors[selectedConversation.channel] ||
-                      "text-owly-primary bg-owly-primary-50"
-                  )}
-                >
-                  {(() => {
-                    const Icon =
-                      channelIcons[selectedConversation.channel] ||
-                      MessageSquare;
-                    return <Icon className="h-4 w-4" />;
-                  })()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-owly-text truncate">
-                      {selectedConversation.customerName}
-                    </h3>
-                    <span
-                      className={cn(
-                        "px-2 py-0.5 rounded-full text-xs font-medium",
-                        getStatusColor(selectedConversation.status)
-                      )}
-                    >
-                      {selectedConversation.status}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-owly-text-light">
-                    <span>
-                      {getChannelLabel(selectedConversation.channel)}
-                    </span>
-                    {selectedConversation.customerContact && (
-                      <>
-                        <span>--</span>
-                        <span>{selectedConversation.customerContact}</span>
-                      </>
+              <div className="h-16 border-b border-owly-border bg-owly-surface px-4 md:px-6 flex items-center justify-between flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      setMobileShowDetail(false);
+                      setSelectedId(null);
+                      setSelectedConversation(null);
+                    }}
+                    className="mr-1 p-1.5 hover:bg-owly-primary-50 rounded-lg transition-colors flex-shrink-0"
+                  >
+                    <ArrowLeft className="h-5 w-5 text-owly-text" />
+                  </button>
+                  <div
+                    className={cn(
+                      "p-2 rounded-lg flex-shrink-0",
+                      channelColors[selectedConversation.channel] ||
+                        "text-owly-primary bg-owly-primary-50"
                     )}
+                  >
+                    {(() => {
+                      const Icon =
+                        channelIcons[selectedConversation.channel] ||
+                        MessageSquare;
+                      return <Icon className="h-4 w-4" />;
+                    })()}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-owly-text truncate">
+                        {selectedConversation.customerName}
+                      </h3>
+                      <span
+                        className={cn(
+                          "px-2 py-0.5 rounded-full text-xs font-medium",
+                          getStatusColor(selectedConversation.status)
+                        )}
+                      >
+                        {getStatusLabel(selectedConversation.status)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-owly-text-light">
+                      <span>
+                        {getChannelLabel(selectedConversation.channel)}
+                      </span>
+                      {selectedConversation.customerContact && (
+                        <>
+                          <span>--</span>
+                          <span>{selectedConversation.customerContact}</span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -446,7 +462,7 @@ export default function ConversationsPage() {
 
               {/* Tags Bar */}
               {selectedConversation.tags.length > 0 && (
-                <div className="px-4 py-2 bg-owly-surface border-b border-owly-border flex items-center gap-2">
+                <div className="px-4 md:px-6 py-2 bg-owly-surface border-b border-owly-border flex items-center gap-2">
                   <Tag className="h-3.5 w-3.5 text-owly-text-light" />
                   {selectedConversation.tags.map((ct) => (
                     <span
@@ -464,12 +480,12 @@ export default function ConversationsPage() {
               )}
 
               {/* Messages Thread */}
-              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+              <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6">
                 {selectedConversation.messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center">
                     <MessageSquare className="h-8 w-8 text-owly-text-light opacity-40 mb-2" />
                     <p className="text-sm text-owly-text-light">
-                      No messages in this conversation yet
+                      Chưa có tin nhắn nào trong hội thoại này
                     </p>
                   </div>
                 ) : (
@@ -498,7 +514,7 @@ export default function ConversationsPage() {
                       >
                         <div
                           className={cn(
-                            "max-w-[75%] rounded-2xl px-4 py-2.5",
+                            "max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-2.5",
                             isAdmin
                               ? "bg-owly-primary text-white rounded-br-md"
                               : "bg-owly-surface border border-owly-border text-owly-text rounded-bl-md"
@@ -515,8 +531,8 @@ export default function ConversationsPage() {
                             >
                               {isAdmin
                                 ? msg.role === "assistant"
-                                  ? "AI Assistant"
-                                  : "Admin"
+                                  ? "Trợ lý AI"
+                                  : "Nhân viên"
                                 : selectedConversation.customerName}
                             </span>
                           </div>
@@ -542,14 +558,17 @@ export default function ConversationsPage() {
               </div>
 
               {/* Reply Input */}
-              <div className="px-4 py-3 bg-owly-surface border-t border-owly-border">
+              <div className="px-4 md:px-8 py-4 bg-owly-surface border-t border-owly-border">
+                {sendError && (
+                  <p className="mb-2 text-sm text-red-600">{sendError}</p>
+                )}
                 <div className="flex items-end gap-2">
                   <div className="flex-1 relative">
                     <textarea
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder="Type your reply... (Enter to send, Shift+Enter for new line)"
+                      placeholder="Nhập phản hồi... (Enter để gửi, Shift+Enter để xuống dòng)"
                       rows={1}
                       className="w-full px-4 py-2.5 text-sm border border-owly-border rounded-xl bg-owly-bg focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary resize-none"
                       style={{

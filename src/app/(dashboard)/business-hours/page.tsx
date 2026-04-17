@@ -1,9 +1,9 @@
 "use client";
 
 import { Header } from "@/components/layout/header";
-import { Save, Check, AlertTriangle } from "lucide-react";
-import { useState, useEffect, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { Save, Check, AlertTriangle } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface BusinessHoursData {
   id: string;
@@ -29,13 +29,13 @@ type DayKey =
   | "sunday";
 
 const days: { key: DayKey; label: string }[] = [
-  { key: "monday", label: "Monday" },
-  { key: "tuesday", label: "Tuesday" },
-  { key: "wednesday", label: "Wednesday" },
-  { key: "thursday", label: "Thursday" },
-  { key: "friday", label: "Friday" },
-  { key: "saturday", label: "Saturday" },
-  { key: "sunday", label: "Sunday" },
+  { key: "monday", label: "Thứ hai" },
+  { key: "tuesday", label: "Thứ ba" },
+  { key: "wednesday", label: "Thứ tư" },
+  { key: "thursday", label: "Thứ năm" },
+  { key: "friday", label: "Thứ sáu" },
+  { key: "saturday", label: "Thứ bảy" },
+  { key: "sunday", label: "Chủ nhật" },
 ];
 
 const timezones = [
@@ -76,7 +76,7 @@ const defaultConfig: BusinessHoursData = {
   saturday: "",
   sunday: "",
   offlineMessage:
-    "We are currently offline. We will get back to you during business hours.",
+    "Salon hiện đang ngoài giờ hỗ trợ. Bên mình sẽ phản hồi bạn trong khung giờ làm việc.",
 };
 
 function parseTime(timeRange: string): { start: string; end: string } | null {
@@ -88,10 +88,12 @@ function parseTime(timeRange: string): { start: string; end: string } | null {
 
 function generateTimeOptions(): string[] {
   const options: string[] = [];
-  for (let h = 0; h < 24; h++) {
-    for (let m = 0; m < 60; m += 30) {
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
       options.push(
-        `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`
+        `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}`
       );
     }
   }
@@ -147,26 +149,24 @@ export default function BusinessHoursPage() {
   };
 
   const toggleDay = (day: DayKey) => {
-    setConfig((c) => ({
-      ...c,
-      [day]: c[day] ? "" : "09:00-18:00",
+    setConfig((current) => ({
+      ...current,
+      [day]: current[day] ? "" : "09:00-18:00",
     }));
   };
 
-  const updateDayTime = (
-    day: DayKey,
-    part: "start" | "end",
-    value: string
-  ) => {
+  const updateDayTime = (day: DayKey, part: "start" | "end", value: string) => {
     const current = parseTime(config[day]);
     if (!current) return;
-    const newRange =
+    const nextValue =
       part === "start" ? `${value}-${current.end}` : `${current.start}-${value}`;
-    setConfig((c) => ({ ...c, [day]: newRange }));
+    setConfig((state) => ({ ...state, [day]: nextValue }));
   };
 
   const currentStatus = useMemo(() => {
-    if (!config.enabled) return { open: false, label: "Support is disabled" };
+    if (!config.enabled) {
+      return { open: false, label: "Đang tắt hỗ trợ theo giờ làm việc" };
+    }
 
     try {
       const now = new Date();
@@ -178,28 +178,37 @@ export default function BusinessHoursPage() {
         hour12: false,
       });
       const parts = formatter.formatToParts(now);
-      const weekday = parts.find((p) => p.type === "weekday")?.value?.toLowerCase();
-      const hour = parts.find((p) => p.type === "hour")?.value || "00";
-      const minute = parts.find((p) => p.type === "minute")?.value || "00";
+      const weekday = parts
+        .find((part) => part.type === "weekday")
+        ?.value?.toLowerCase() as DayKey | undefined;
+      const hour = parts.find((part) => part.type === "hour")?.value || "00";
+      const minute =
+        parts.find((part) => part.type === "minute")?.value || "00";
       const currentTime = `${hour.padStart(2, "0")}:${minute.padStart(2, "0")}`;
 
-      const dayKey = weekday as DayKey;
-      const daySchedule = config[dayKey];
+      if (!weekday) {
+        return { open: false, label: "Không xác định được trạng thái" };
+      }
 
-      if (!daySchedule) return { open: false, label: "Closed today" };
+      const schedule = config[weekday];
+      if (!schedule) {
+        return { open: false, label: "Hôm nay nghỉ" };
+      }
 
-      const times = parseTime(daySchedule);
-      if (!times) return { open: false, label: "Closed today" };
+      const times = parseTime(schedule);
+      if (!times) {
+        return { open: false, label: "Hôm nay nghỉ" };
+      }
 
-      const isOpen = currentTime >= times.start && currentTime < times.end;
+      const open = currentTime >= times.start && currentTime < times.end;
       return {
-        open: isOpen,
-        label: isOpen
-          ? `Open now (until ${times.end})`
-          : `Closed (opens at ${times.start})`,
+        open,
+        label: open
+          ? `Đang mở cửa, hỗ trợ đến ${times.end}`
+          : `Hiện đang đóng, mở lại lúc ${times.start}`,
       };
     } catch {
-      return { open: false, label: "Unable to determine status" };
+      return { open: false, label: "Không xác định được trạng thái" };
     }
   }, [config]);
 
@@ -207,14 +216,14 @@ export default function BusinessHoursPage() {
     return (
       <div className="flex-1 flex flex-col min-h-0">
         <Header
-          title="Business Hours"
-          description="Configure when your support is available"
+          title="Giờ làm việc"
+          description="Thiết lập thời gian salon sẵn sàng hỗ trợ khách"
         />
         <div className="flex-1 p-6">
           <div className="max-w-3xl space-y-6">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3].map((item) => (
               <div
-                key={i}
+                key={item}
                 className="bg-owly-surface border border-owly-border rounded-xl p-6 animate-pulse"
               >
                 <div className="h-5 bg-owly-border rounded w-1/4 mb-4" />
@@ -230,13 +239,12 @@ export default function BusinessHoursPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <Header
-        title="Business Hours"
-        description="Configure when your support is available"
+        title="Giờ làm việc"
+        description="Thiết lập thời gian salon sẵn sàng hỗ trợ khách"
       />
 
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-3xl space-y-6">
-          {/* Status Preview */}
           <div
             className={cn(
               "flex items-center gap-3 p-4 rounded-xl border",
@@ -268,7 +276,7 @@ export default function BusinessHoursPage() {
                     : "text-amber-800 dark:text-amber-300"
                 )}
               >
-                Current Status
+                Trạng thái hiện tại
               </p>
               <p
                 className={cn(
@@ -283,21 +291,23 @@ export default function BusinessHoursPage() {
             </div>
           </div>
 
-          {/* Enable Toggle */}
           <div className="bg-owly-surface border border-owly-border rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-semibold text-owly-text">
-                  Business Hours
+                  Giờ làm việc
                 </h3>
                 <p className="text-xs text-owly-text-light mt-0.5">
-                  When enabled, customers will see your availability status and
-                  offline message outside business hours.
+                  Khi bật, khách sẽ thấy trạng thái hỗ trợ và lời nhắn ngoài giờ
+                  làm việc của salon.
                 </p>
               </div>
               <button
                 onClick={() =>
-                  setConfig((c) => ({ ...c, enabled: !c.enabled }))
+                  setConfig((current) => ({
+                    ...current,
+                    enabled: !current.enabled,
+                  }))
                 }
                 className={cn(
                   "relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0",
@@ -314,30 +324,31 @@ export default function BusinessHoursPage() {
             </div>
           </div>
 
-          {/* Timezone */}
           <div className="bg-owly-surface border border-owly-border rounded-xl p-5">
             <label className="block text-sm font-semibold text-owly-text mb-2">
-              Timezone
+              Múi giờ
             </label>
             <select
               value={config.timezone}
               onChange={(e) =>
-                setConfig((c) => ({ ...c, timezone: e.target.value }))
+                setConfig((current) => ({
+                  ...current,
+                  timezone: e.target.value,
+                }))
               }
               className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary transition-theme"
             >
-              {timezones.map((tz) => (
-                <option key={tz} value={tz}>
-                  {tz.replace(/_/g, " ")}
+              {timezones.map((timezone) => (
+                <option key={timezone} value={timezone}>
+                  {timezone.replace(/_/g, " ")}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Weekly Schedule */}
           <div className="bg-owly-surface border border-owly-border rounded-xl p-5">
             <h3 className="text-sm font-semibold text-owly-text mb-4">
-              Weekly Schedule
+              Lịch làm việc trong tuần
             </h3>
             <div className="space-y-3">
               {days.map(({ key, label }) => {
@@ -387,13 +398,13 @@ export default function BusinessHoursPage() {
                           }
                           className="px-2.5 py-1.5 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 transition-theme"
                         >
-                          {timeOptions.map((t) => (
-                            <option key={t} value={t}>
-                              {t}
+                          {timeOptions.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
                             </option>
                           ))}
                         </select>
-                        <span className="text-xs text-owly-text-light">to</span>
+                        <span className="text-xs text-owly-text-light">đến</span>
                         <select
                           value={times.end}
                           onChange={(e) =>
@@ -401,16 +412,16 @@ export default function BusinessHoursPage() {
                           }
                           className="px-2.5 py-1.5 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 transition-theme"
                         >
-                          {timeOptions.map((t) => (
-                            <option key={t} value={t}>
-                              {t}
+                          {timeOptions.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
                             </option>
                           ))}
                         </select>
                       </div>
                     ) : (
                       <span className="text-sm text-owly-text-light italic">
-                        Closed
+                        Nghỉ
                       </span>
                     )}
                   </div>
@@ -419,35 +430,33 @@ export default function BusinessHoursPage() {
             </div>
           </div>
 
-          {/* Offline Message */}
           <div className="bg-owly-surface border border-owly-border rounded-xl p-5">
             <label className="block text-sm font-semibold text-owly-text mb-2">
-              Offline Message
+              Tin nhắn ngoài giờ
             </label>
             <p className="text-xs text-owly-text-light mb-3">
-              This message will be shown to customers when your support team is
-              outside business hours.
+              Tin nhắn này sẽ hiển thị cho khách khi salon đang ngoài giờ làm
+              việc.
             </p>
             <textarea
               value={config.offlineMessage}
               onChange={(e) =>
-                setConfig((c) => ({
-                  ...c,
+                setConfig((current) => ({
+                  ...current,
                   offlineMessage: e.target.value,
                 }))
               }
               rows={3}
               className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary transition-theme resize-none"
-              placeholder="Enter the message customers will see when you're offline..."
+              placeholder="Nhập nội dung khách sẽ thấy khi salon ngoài giờ..."
             />
           </div>
 
-          {/* Save Button */}
           <div className="flex items-center justify-end gap-3 pb-6">
             {saved && (
               <span className="flex items-center gap-1.5 text-sm text-owly-success font-medium animate-fade-in">
                 <Check className="h-4 w-4" />
-                Changes saved
+                Đã lưu thay đổi
               </span>
             )}
             <button
@@ -456,11 +465,11 @@ export default function BusinessHoursPage() {
               className="flex items-center gap-2 px-5 py-2.5 bg-owly-primary text-white rounded-lg hover:bg-owly-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
             >
               {saving ? (
-                "Saving..."
+                "Đang lưu..."
               ) : (
                 <>
                   <Save className="h-4 w-4" />
-                  Save Changes
+                  Lưu thay đổi
                 </>
               )}
             </button>

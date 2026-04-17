@@ -25,6 +25,11 @@ export const owlyTools: ToolDefinition[] = [
             enum: ["low", "medium", "high", "urgent"],
             description: "Priority level of the ticket",
           },
+          type: {
+            type: "string",
+            enum: ["booking", "consultation", "quotation", "complaint", "warranty"],
+            description: "Ticket type: booking, consultation, quotation, complaint, or warranty",
+          },
           department: {
             type: "string",
             description: "Department name to assign the ticket to",
@@ -38,8 +43,7 @@ export const owlyTools: ToolDefinition[] = [
     type: "function",
     function: {
       name: "assign_to_person",
-      description:
-        "Assign a ticket or issue to a specific team member based on their expertise.",
+      description: "Assign a ticket or issue to a specific team member based on their expertise.",
       parameters: {
         type: "object",
         properties: {
@@ -94,8 +98,7 @@ export const owlyTools: ToolDefinition[] = [
         properties: {
           customerContact: {
             type: "string",
-            description:
-              "Customer's contact info (phone number or email address)",
+            description: "Customer's contact info (phone number or email address)",
           },
           customerId: {
             type: "string",
@@ -111,8 +114,7 @@ export const owlyTools: ToolDefinition[] = [
     type: "function",
     function: {
       name: "schedule_followup",
-      description:
-        "Schedule a follow-up message to the customer after a specified time.",
+      description: "Schedule a follow-up message to the customer after a specified time.",
       parameters: {
         type: "object",
         properties: {
@@ -137,8 +139,7 @@ export const owlyTools: ToolDefinition[] = [
     type: "function",
     function: {
       name: "trigger_webhook",
-      description:
-        "Trigger a configured webhook to notify an external system about an event.",
+      description: "Trigger a configured webhook to notify an external system about an event.",
       parameters: {
         type: "object",
         properties: {
@@ -196,6 +197,7 @@ async function createTicket(
     data: {
       title: args.title as string,
       description: args.description as string,
+      type: (args.type as string) || "consultation",
       priority: (args.priority as string) || "medium",
       conversationId: conversationId || null,
       departmentId: department?.id || null,
@@ -205,7 +207,7 @@ async function createTicket(
   return JSON.stringify({
     success: true,
     ticketId: ticket.id,
-    message: `Ticket created: ${ticket.title} (Priority: ${ticket.priority})`,
+    message: `Ticket created: ${ticket.title} (Type: ${ticket.type}, Priority: ${ticket.priority})`,
   });
 }
 
@@ -241,9 +243,7 @@ async function assignToPerson(args: Record<string, unknown>): Promise<string> {
   });
 }
 
-async function sendInternalEmail(
-  args: Record<string, unknown>
-): Promise<string> {
+async function sendInternalEmail(args: Record<string, unknown>): Promise<string> {
   const settings = await prisma.settings.findFirst();
   if (!settings?.smtpHost) {
     return JSON.stringify({
@@ -275,9 +275,47 @@ async function sendInternalEmail(
   });
 }
 
-async function getCustomerHistory(
-  args: Record<string, unknown>
-): Promise<string> {
+async function getCustomerHistory(args: Record<string, unknown>): Promise<string> {
+  const customer = args.customerId
+    ? await prisma.customer.findUnique({
+        where: { id: args.customerId as string },
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          email: true,
+          whatsapp: true,
+          hairHistory: true,
+          hairCondition: true,
+          profileNotes: true,
+          bleachHistory: true,
+          previousStylist: true,
+          preferences: true,
+        },
+      })
+    : await prisma.customer.findFirst({
+        where: {
+          OR: [
+            { email: { equals: args.customerContact as string, mode: "insensitive" } },
+            { phone: args.customerContact as string },
+            { whatsapp: args.customerContact as string },
+          ],
+        },
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          email: true,
+          whatsapp: true,
+          hairHistory: true,
+          hairCondition: true,
+          profileNotes: true,
+          bleachHistory: true,
+          previousStylist: true,
+          preferences: true,
+        },
+      });
+
   // Cross-channel lookup: prefer customerId for unified history
   const where = args.customerId
     ? { customerId: args.customerId as string }
@@ -298,37 +336,66 @@ async function getCustomerHistory(
   if (conversations.length === 0) {
     return JSON.stringify({
       success: true,
+      profile: customer
+        ? {
+            name: customer.name,
+            hairHistory: customer.hairHistory,
+            hairCondition: customer.hairCondition,
+            profileNotes: customer.profileNotes,
+            bleachHistory: customer.bleachHistory,
+            previousStylist: customer.previousStylist,
+            preferences: customer.preferences,
+          }
+        : null,
       history: [],
       message: "No previous conversations found for this customer.",
     });
   }
 
-  const history = conversations.map((conv: { channel: string; status: string; createdAt: Date; summary: string; messages: Array<{ role: string; content: string }> }) => ({
-    channel: conv.channel,
-    status: conv.status,
-    date: conv.createdAt,
-    summary: conv.summary,
-    messageCount: conv.messages.length,
-    lastMessages: conv.messages.map((m: { role: string; content: string }) => ({
-      role: m.role,
-      content: m.content.substring(0, 200),
-    })),
-  }));
+  const history = conversations.map(
+    (conv: {
+      channel: string;
+      status: string;
+      createdAt: Date;
+      summary: string;
+      messages: Array<{ role: string; content: string }>;
+    }) => ({
+      channel: conv.channel,
+      status: conv.status,
+      date: conv.createdAt,
+      summary: conv.summary,
+      messageCount: conv.messages.length,
+      lastMessages: conv.messages.map((m: { role: string; content: string }) => ({
+        role: m.role,
+        content: m.content.substring(0, 200),
+      })),
+    })
+  );
 
-  return JSON.stringify({ success: true, history });
+  return JSON.stringify({
+    success: true,
+    profile: customer
+      ? {
+          name: customer.name,
+          hairHistory: customer.hairHistory,
+          hairCondition: customer.hairCondition,
+          profileNotes: customer.profileNotes,
+          bleachHistory: customer.bleachHistory,
+          previousStylist: customer.previousStylist,
+          preferences: customer.preferences,
+        }
+      : null,
+    history,
+  });
 }
 
-async function scheduleFollowup(
-  args: Record<string, unknown>
-): Promise<string> {
+async function scheduleFollowup(args: Record<string, unknown>): Promise<string> {
   // In a production system, this would use a job queue (Bull, Agenda, etc.)
   // For now, we store it and a background process would pick it up
   return JSON.stringify({
     success: true,
     message: `Follow-up scheduled in ${args.delayHours} hours: "${args.message}"`,
-    scheduledFor: new Date(
-      Date.now() + (args.delayHours as number) * 3600000
-    ).toISOString(),
+    scheduledFor: new Date(Date.now() + (args.delayHours as number) * 3600000).toISOString(),
   });
 }
 
@@ -363,9 +430,10 @@ async function triggerWebhook(args: Record<string, unknown>): Promise<string> {
     });
   } catch (error) {
     clearTimeout(timeoutId);
-    const message = error instanceof Error && error.name === "AbortError"
-      ? "Webhook request timed out after 10 seconds"
-      : `Webhook request failed: ${error instanceof Error ? error.message : "Unknown error"}`;
+    const message =
+      error instanceof Error && error.name === "AbortError"
+        ? "Webhook request timed out after 10 seconds"
+        : `Webhook request failed: ${error instanceof Error ? error.message : "Unknown error"}`;
     return JSON.stringify({ success: false, message });
   }
   clearTimeout(timeoutId);

@@ -45,6 +45,9 @@ export const createMessageSchema = z.object({
 
 // Tickets
 export const createTicketSchema = z.object({
+  type: z
+    .enum(["booking", "consultation", "quotation", "complaint", "warranty"])
+    .default("consultation"),
   title: z.string().min(1, "Title is required").max(500),
   description: z.string().max(10000).optional(),
   priority: z.enum(["low", "medium", "high", "urgent"]).default("medium"),
@@ -55,6 +58,7 @@ export const createTicketSchema = z.object({
 });
 
 export const updateTicketSchema = z.object({
+  type: z.enum(["booking", "consultation", "quotation", "complaint", "warranty"]).optional(),
   title: z.string().min(1).max(500).optional(),
   description: z.string().max(10000).optional(),
   priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
@@ -105,6 +109,12 @@ export const createCustomerSchema = z.object({
   phone: z.string().max(50).optional(),
   whatsapp: z.string().max(50).optional(),
   tags: z.string().max(500).optional(),
+  hairHistory: z.string().max(5000).optional(),
+  hairCondition: z.string().max(3000).optional(),
+  profileNotes: z.string().max(5000).optional(),
+  bleachHistory: z.enum(["unknown", "yes", "no"]).optional(),
+  previousStylist: z.string().max(300).optional(),
+  preferences: z.string().max(3000).optional(),
   isBlocked: z.boolean().default(false),
   notes: z.string().max(5000).nullable().optional(),
 });
@@ -126,52 +136,64 @@ export const createAutomationRuleSchema = z.object({
   description: z.string().max(1000).optional(),
   type: z.enum(["auto_route", "auto_tag", "auto_reply", "keyword_alert"]),
   isActive: z.boolean().default(true),
-  conditions: z.array(
-    z.object({
-      field: z.enum(["message_content", "channel", "customer_name"]),
-      operator: z.enum(["contains", "equals", "starts_with"]),
-      value: z.string().min(1).max(500),
-    })
-  ).min(1, "At least one condition is required"),
-  actions: z.array(
-    z.object({
-      type: z.string().min(1).max(100),
-      value: z.string().max(1000),
-    })
-  ).min(1, "At least one action is required"),
+  conditions: z
+    .array(
+      z.object({
+      field: z.enum([
+        "message_content",
+        "channel",
+        "customer_name",
+        "business_hours",
+      ]),
+        operator: z.enum(["contains", "equals", "starts_with"]),
+        value: z.string().min(1).max(500),
+      })
+    )
+    .min(1, "At least one condition is required"),
+  actions: z
+    .array(
+      z.object({
+        type: z.string().min(1).max(100),
+        value: z.string().max(1000),
+      })
+    )
+    .min(1, "At least one action is required"),
   priority: z.number().int().min(0).max(1000).default(0),
 });
 
 // Settings
-export const updateSettingsSchema = z.object({
-  businessName: z.string().max(500).optional(),
-  businessDesc: z.string().max(5000).optional(),
-  welcomeMessage: z.string().max(2000).optional(),
-  tone: z.enum(["friendly", "formal", "technical", "professional"]).optional(),
-  language: z.string().max(20).optional(),
-  aiProvider: z.string().max(50).optional(),
-  aiModel: z.string().max(100).optional(),
-  aiApiKey: z.string().max(500).optional(),
-  maxTokens: z.number().int().min(100).max(128000).optional(),
-  temperature: z.number().min(0).max(2).optional(),
-  smtpHost: z.string().max(500).optional(),
-  smtpPort: z.number().int().min(1).max(65535).optional(),
-  smtpUser: z.string().max(300).optional(),
-  smtpPass: z.string().max(500).optional(),
-  smtpFrom: z.string().max(300).optional(),
-  imapHost: z.string().max(500).optional(),
-  imapPort: z.number().int().min(1).max(65535).optional(),
-  imapUser: z.string().max(300).optional(),
-  imapPass: z.string().max(500).optional(),
-  twilioSid: z.string().max(200).optional(),
-  twilioToken: z.string().max(200).optional(),
-  twilioPhone: z.string().max(50).optional(),
-  elevenLabsKey: z.string().max(200).optional(),
-  elevenLabsVoice: z.string().max(200).optional(),
-  whatsappMode: z.string().max(50).optional(),
-  whatsappApiKey: z.string().max(500).optional(),
-  whatsappPhone: z.string().max(50).optional(),
-}).strict();
+export const updateSettingsSchema = z
+  .object({
+    businessName: z.string().max(500).optional(),
+    businessDesc: z.string().max(5000).optional(),
+    logoUrl: z.string().max(5000000).optional(), // Allow large base64 strings
+    welcomeMessage: z.string().max(2000).optional(),
+    tone: z.enum(["friendly", "formal", "technical", "professional"]).optional(),
+    language: z.string().max(20).optional(),
+    aiProvider: z.string().max(50).optional(),
+    aiModel: z.string().max(100).optional(),
+    aiApiKey: z.string().max(500).optional(),
+    maxTokens: z.number().int().min(100).max(128000).optional(),
+    temperature: z.number().min(0).max(2).optional(),
+    smtpHost: z.string().max(500).optional(),
+    smtpPort: z.number().int().min(1).max(65535).optional(),
+    smtpUser: z.string().max(300).optional(),
+    smtpPass: z.string().max(500).optional(),
+    smtpFrom: z.string().max(300).optional(),
+    imapHost: z.string().max(500).optional(),
+    imapPort: z.number().int().min(1).max(65535).optional(),
+    imapUser: z.string().max(300).optional(),
+    imapPass: z.string().max(500).optional(),
+    twilioSid: z.string().max(200).optional(),
+    twilioToken: z.string().max(200).optional(),
+    twilioPhone: z.string().max(50).optional(),
+    elevenLabsKey: z.string().max(200).optional(),
+    elevenLabsVoice: z.string().max(200).optional(),
+    whatsappMode: z.string().max(50).optional(),
+    whatsappApiKey: z.string().max(500).optional(),
+    whatsappPhone: z.string().max(50).optional(),
+  })
+  .strict();
 
 // Canned Responses
 export const createCannedResponseSchema = z.object({
@@ -216,7 +238,10 @@ export const createNoteSchema = z.object({
 export { paginationSchema };
 
 // Validation helper
-export function validateBody<T>(schema: z.ZodSchema<T>, data: unknown): { success: true; data: T } | { success: false; error: string } {
+export function validateBody<T>(
+  schema: z.ZodSchema<T>,
+  data: unknown
+): { success: true; data: T } | { success: false; error: string } {
   const result = schema.safeParse(data);
   if (result.success) {
     return { success: true, data: result.data };

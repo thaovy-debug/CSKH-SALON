@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { cn, formatRelativeTime } from "@/lib/utils";
+import { PaginatedResponse } from "@/lib/pagination";
 
 interface ActivityData {
   id: string;
@@ -24,14 +25,6 @@ interface ActivityData {
   userName: string;
   metadata: Record<string, unknown>;
   createdAt: string;
-}
-
-interface ActivityResponse {
-  activities: ActivityData[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
 }
 
 const entityTypes = [
@@ -75,7 +68,9 @@ const entityConfig: Record<
 };
 
 export default function ActivityPage() {
-  const [data, setData] = useState<ActivityResponse | null>(null);
+  const [data, setData] = useState<PaginatedResponse<ActivityData> | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [entityFilter, setEntityFilter] = useState("all");
@@ -108,14 +103,14 @@ export default function ActivityPage() {
     setPage(1);
   }, [entityFilter]);
 
-  const activities = data?.activities || [];
-  const totalPages = data?.totalPages || 1;
-  const total = data?.total || 0;
+  const activities = data?.data || [];
+  const totalPages = data?.pagination.totalPages || 1;
+  const total = data?.pagination.total || 0;
 
   return (
     <>
       <Header
-        title="Activity Log"
+        title="Nhật ký hoạt động"
         description="Track all actions and changes"
       />
 
@@ -145,7 +140,7 @@ export default function ActivityPage() {
         <div className="bg-owly-surface rounded-xl border border-owly-border">
           {loading ? (
             <div className="flex items-center justify-center h-40">
-              <div className="text-sm text-owly-text-light">Loading...</div>
+              <div className="text-sm text-owly-text-light">Đang tải...</div>
             </div>
           ) : activities.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">

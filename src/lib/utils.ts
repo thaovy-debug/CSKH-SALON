@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString("tr-TR", {
+  return new Date(date).toLocaleDateString("vi-VN", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -23,10 +23,10 @@ export function formatRelativeTime(date: Date | string): string {
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
 
-  if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMins < 1) return "Vừa xong";
+  if (diffMins < 60) return `${diffMins} phút trước`;
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  if (diffDays < 7) return `${diffDays} ngày trước`;
   return formatDate(date);
 }
 
@@ -34,7 +34,8 @@ export function getChannelLabel(channel: string): string {
   const labels: Record<string, string> = {
     whatsapp: "WhatsApp",
     email: "Email",
-    phone: "Phone",
+    phone: "Điện thoại",
+    widget: "Website",
   };
   return labels[channel] || channel;
 }

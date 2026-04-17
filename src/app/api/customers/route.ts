@@ -48,10 +48,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(paginatedResponse(customers, total, page, limit));
   } catch (error) {
     logger.error("Failed to fetch customers:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch customers" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch customers" }, { status: 500 });
   }
 }
 
@@ -61,13 +58,24 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, email, phone, whatsapp, tags, notes, metadata } = body;
+    const {
+      name,
+      email,
+      phone,
+      whatsapp,
+      tags,
+      notes,
+      metadata,
+      hairHistory,
+      hairCondition,
+      profileNotes,
+      bleachHistory,
+      previousStylist,
+      preferences,
+    } = body;
 
     if (!name || typeof name !== "string" || !name.trim()) {
-      return NextResponse.json(
-        { error: "Name is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
     const customer = await prisma.customer.create({
@@ -77,6 +85,13 @@ export async function POST(request: NextRequest) {
         phone: phone?.trim() || "",
         whatsapp: whatsapp?.trim() || "",
         tags: tags?.trim() || "",
+        hairHistory: hairHistory?.trim() || "",
+        hairCondition: hairCondition?.trim() || "",
+        profileNotes: profileNotes?.trim() || "",
+        bleachHistory:
+          bleachHistory === "yes" || bleachHistory === "no" ? bleachHistory : "unknown",
+        previousStylist: previousStylist?.trim() || "",
+        preferences: preferences?.trim() || "",
         metadata: metadata || {},
         ...(notes
           ? {
@@ -95,9 +110,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(customer, { status: 201 });
   } catch (error) {
     logger.error("Failed to create customer:", error);
-    return NextResponse.json(
-      { error: "Failed to create customer" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create customer" }, { status: 500 });
   }
 }
