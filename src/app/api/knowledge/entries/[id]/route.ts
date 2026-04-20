@@ -40,6 +40,18 @@ export async function PUT(
       },
     });
 
+    // Update embedding asynchronously if title or content changed
+    if (title !== undefined || content !== undefined) {
+      prisma.settings.findFirst({ select: { aiApiKey: true } }).then(async (settings) => {
+        if (settings?.aiApiKey) {
+          const { indexKnowledgeEntry } = await import("@/lib/ai/semantic-search");
+          await indexKnowledgeEntry(entry.id, settings.aiApiKey).catch((e) => {
+            logger.error("Failed to update embedding for entry:", e);
+          });
+        }
+      }).catch(console.error);
+    }
+
     return NextResponse.json(entry);
   } catch (error) {
     logger.error("Failed to update entry:", error);

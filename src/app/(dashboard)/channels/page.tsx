@@ -31,6 +31,7 @@ interface ChannelData {
   isActive: boolean;
   config: Record<string, unknown>;
   status: string;
+  qr?: string | null;
 }
 
 type WhatsAppMode = "web" | "api";
@@ -247,16 +248,18 @@ function WhatsAppCard({
               </div>
             ) : (
               <div className="rounded-lg border border-owly-border bg-owly-bg p-6 flex flex-col items-center">
-                <div className="w-40 h-40 bg-white border-2 border-dashed border-owly-border rounded-lg flex items-center justify-center mb-3">
-                  <div className="text-center">
-                    <QrCode className="h-10 w-10 text-owly-text-light/40 mx-auto mb-1" />
-                    <p className="text-xs text-owly-text-light/60">
-                      QR Code
-                    </p>
-                  </div>
+                <div className="w-40 h-40 bg-white border-2 border-dashed border-owly-border rounded-lg flex items-center justify-center mb-3 overflow-hidden">
+                  {channel.qr ? (
+                    <img src={channel.qr} alt="WhatsApp QR Code" className="w-full h-full object-contain p-2" />
+                  ) : (
+                    <div className="text-center">
+                      <QrCode className="h-10 w-10 text-owly-text-light/40 mx-auto mb-1" />
+                      <p className="text-xs text-owly-text-light/60">QR Code</p>
+                    </div>
+                  )}
                 </div>
                 <p className="text-xs text-owly-text-light text-center max-w-[220px]">
-                  Scan this QR code with WhatsApp on your phone to connect
+                  {channel.qr ? "Quét mã QR này bằng WhatsApp để kết nối." : "Bấm Kết nối để tạo mã QR."}
                 </p>
                 <button
                   type="button"
@@ -727,7 +730,7 @@ export default function ChannelsPage() {
       setChannels(
         data.map((channel: ChannelData) =>
           channel.type === "whatsapp" && whatsappLive
-            ? { ...channel, status: whatsappLive.status }
+            ? { ...channel, status: whatsappLive.status, qr: whatsappLive.qr }
             : channel
         )
       );
@@ -741,6 +744,28 @@ export default function ChannelsPage() {
   useEffect(() => {
     fetchChannels();
   }, [fetchChannels]);
+
+  // Poll WhatsApp status to update QR code
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/channels/whatsapp");
+        if (res.ok) {
+          const live = await res.json();
+          setChannels(prev => {
+            const wa = prev.find(ch => ch.type === "whatsapp");
+            if (wa?.status === "connected" && live.status === "connected") return prev;
+            return prev.map(ch => 
+              ch.type === "whatsapp" 
+                ? { ...ch, status: live.status, qr: live.qr }
+                : ch
+            );
+          });
+        }
+      } catch (err) {}
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSave = async (
     type: string,

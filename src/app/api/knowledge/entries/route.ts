@@ -86,6 +86,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Generate embedding asynchronously
+    prisma.settings.findFirst({ select: { aiApiKey: true } }).then(async (settings) => {
+      if (settings?.aiApiKey) {
+        const { indexKnowledgeEntry } = await import("@/lib/ai/semantic-search");
+        await indexKnowledgeEntry(entry.id, settings.aiApiKey).catch((e) => {
+          logger.error("Failed to generate embedding for new entry:", e);
+        });
+      }
+    }).catch(console.error);
+
     return NextResponse.json(entry, { status: 201 });
   } catch (error) {
     logger.error("Failed to create entry:", error);
