@@ -183,7 +183,7 @@ export const fixtures = {
   apiKeyRecord: {
     id: "key-1",
     name: "Integration Key",
-    key: "salondesk_live_abc123def456",
+    key: "linhkienled1000_live_abc123def456",
     isActive: true,
     lastUsed: null,
     createdAt: new Date("2025-01-01"),

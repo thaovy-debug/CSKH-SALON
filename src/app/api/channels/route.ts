@@ -2,8 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { requireAuth, isAuthenticated } from "@/lib/route-auth";
+import {
+  mergeChannelConfigPreservingSecrets,
+  sanitizeChannelForClient,
+} from "@/lib/channels/config";
+import { upsertDefaultChannelAccountFromChannel } from "@/lib/channels/accounts";
 
-const CHANNEL_TYPES = ["widget", "whatsapp", "email", "phone", "sms", "telegram"];
+const CHANNEL_TYPES = [
+  "widget",
+  "whatsapp",
+  "email",
+  "phone",
+  "sms",
+  "telegram",
+  "zalo",
+  "facebook",
+  "instagram",
+];
 
 export async function GET(request: NextRequest) {
   const auth = await requireAuth(request, "channels:read");
@@ -17,7 +32,7 @@ export async function GET(request: NextRequest) {
     const channelMap = new Map(channels.map((ch) => [ch.type, ch]));
     const result = CHANNEL_TYPES.map((type) => {
       const existing = channelMap.get(type);
-      if (existing) return existing;
+      if (existing) return sanitizeChannelForClient(existing);
       return {
         id: null,
         type,
@@ -54,21 +69,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const existing = await prisma.channel.findUnique({ where: { type } });
+    const mergedConfig =
+      config === undefined
+        ? undefined
+        : mergeChannelConfigPreservingSecrets(type, config, existing?.config);
+
     const channel = await prisma.channel.upsert({
       where: { type },
       update: {
         isActive: typeof isActive === "boolean" ? isActive : undefined,
-        config: config ?? undefined,
+        config: mergedConfig ?? undefined,
       },
       create: {
         type,
         isActive: typeof isActive === "boolean" ? isActive : false,
-        config: config ?? {},
+        config: mergedConfig ?? {},
         status: "disconnected",
       },
     });
 
-    return NextResponse.json(channel, { status: 200 });
+    await upsertDefaultChannelAccountFromChannel({
+      type,
+      config: channel.config,
+      isActive: channel.isActive,
+      status: channel.status,
+    });
+
+    return NextResponse.json(sanitizeChannelForClient(channel), { status: 200 });
   } catch (error) {
     logger.error("Failed to save channel:", error);
     return NextResponse.json(

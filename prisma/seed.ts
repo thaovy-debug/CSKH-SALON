@@ -1,8 +1,15 @@
+import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
+import {
+  LED1000_KNOWLEDGE_CATEGORIES,
+  LED1000_KNOWLEDGE_TEMPLATE_ENTRIES,
+} from "../src/lib/knowledge/led1000-taxonomy";
 
-const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/owly?schema=public";
+const connectionString =
+  process.env.DATABASE_URL ||
+  "postgresql://postgres:postgres@localhost:5432/linhkienled1000?schema=public";
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
@@ -24,17 +31,17 @@ async function main() {
   await prisma.settings.upsert({
     where: { id: "default" },
     update: {
-      businessName: "Minh Hy Hair",
-      businessDesc: "Salon tóc nữ chuyên nghiệp - Cắt, Nhuộm, Uốn, Duỗi, Highlight, Balayage và Phục hồi tóc",
-      welcomeMessage: "Dạ chào chị! Em là trợ lý tư vấn của Minh Hy Hair 💇‍♀️ Em có thể giúp chị tư vấn dịch vụ, bảng giá và đặt lịch ạ. Chị cần tư vấn gì hôm nay ạ?",
+      businessName: "LED1000 / Linh Kiện LED1000",
+      businessDesc: "Chuyên đèn LED, nguồn điện, linh kiện LED, phụ kiện chiếu sáng, đèn trang trí và thiết bị điện liên quan.",
+      welcomeMessage: "Xin chào! LED1000 có thể hỗ trợ bạn tìm đèn LED, nguồn điện, linh kiện hoặc phụ kiện phù hợp. Bạn cần dùng cho mục đích nào và có thông số điện áp/công suất chưa?",
       tone: "friendly",
       language: "auto",
     },
     create: {
       id: "default",
-      businessName: "Minh Hy Hair",
-      businessDesc: "Salon tóc nữ chuyên nghiệp - Cắt, Nhuộm, Uốn, Duỗi, Highlight, Balayage và Phục hồi tóc",
-      welcomeMessage: "Dạ chào chị! Em là trợ lý tư vấn của Minh Hy Hair 💇‍♀️ Em có thể giúp chị tư vấn dịch vụ, bảng giá và đặt lịch ạ. Chị cần tư vấn gì hôm nay ạ?",
+      businessName: "LED1000 / Linh Kiện LED1000",
+      businessDesc: "Chuyên đèn LED, nguồn điện, linh kiện LED, phụ kiện chiếu sáng, đèn trang trí và thiết bị điện liên quan.",
+      welcomeMessage: "Xin chào! LED1000 có thể hỗ trợ bạn tìm đèn LED, nguồn điện, linh kiện hoặc phụ kiện phù hợp. Bạn cần dùng cho mục đích nào và có thông số điện áp/công suất chưa?",
       tone: "friendly",
       language: "auto",
     },
@@ -52,103 +59,116 @@ async function main() {
   // Create default business hours
   await prisma.businessHours.upsert({
     where: { id: "default" },
-    update: {},
-    create: { id: "default" },
+    update: {
+      offlineMessage: "LED1000 hiện đang ngoài giờ hỗ trợ. Chúng tôi sẽ phản hồi bạn trong khung giờ hoạt động sớm nhất.",
+    },
+    create: {
+      id: "default",
+      offlineMessage: "LED1000 hiện đang ngoài giờ hỗ trợ. Chúng tôi sẽ phản hồi bạn trong khung giờ hoạt động sớm nhất.",
+    },
   });
 
-  // Create salon departments
+  // Create LED1000 demo departments
   const tvDept = await prisma.department.upsert({
     where: { id: "dept-tv" },
-    update: {},
+    update: {
+      name: "Tư vấn sản phẩm",
+      description: "Tư vấn chọn đèn LED, nguồn điện, linh kiện và báo giá theo dữ liệu có sẵn",
+      email: "tuvan@led1000.vn",
+    },
     create: {
       id: "dept-tv",
-      name: "Tư vấn dịch vụ",
-      description: "Tư vấn dịch vụ, báo giá và đặt lịch cho khách hàng",
-      email: "tuvan@minhhyhair.com",
+      name: "Tư vấn sản phẩm",
+      description: "Tư vấn chọn đèn LED, nguồn điện, linh kiện và báo giá theo dữ liệu có sẵn",
+      email: "tuvan@led1000.vn",
     },
   });
 
   const cskdDept = await prisma.department.upsert({
     where: { id: "dept-cskh" },
-    update: {},
+    update: {
+      name: "Chăm sóc khách hàng",
+      description: "Xử lý phản hồi, bảo hành, đổi trả và hỗ trợ đơn hàng",
+      email: "cskh@led1000.vn",
+    },
     create: {
       id: "dept-cskh",
       name: "Chăm sóc khách hàng",
-      description: "Xử lý khiếu nại, phản hồi và bảo hành dịch vụ",
-      email: "cskh@minhhyhair.com",
+      description: "Xử lý phản hồi, bảo hành, đổi trả và hỗ trợ đơn hàng",
+      email: "cskh@led1000.vn",
     },
   });
 
   const stylDept = await prisma.department.upsert({
-    where: { id: "dept-stylist" },
-    update: {},
+    where: { id: "dept-technical" },
+    update: {
+      name: "Kỹ thuật",
+      description: "Hỗ trợ thông số nguồn điện, công suất, lắp đặt và an toàn điện",
+      email: "kythuat@led1000.vn",
+    },
     create: {
-      id: "dept-stylist",
-      name: "Stylist",
-      description: "Đội ngũ kỹ thuật viên và stylist chuyên nghiệp",
-      email: "stylist@minhhyhair.com",
+      id: "dept-technical",
+      name: "Kỹ thuật",
+      description: "Hỗ trợ thông số nguồn điện, công suất, lắp đặt và an toàn điện",
+      email: "kythuat@led1000.vn",
     },
   });
 
-  // Create salon team members
+  // Create LED1000 demo team members
   const members = [
-    { id: "member-1", name: "Linh Tư Vấn", email: "linh@minhhyhair.com", role: "Lead", expertise: "tư vấn dịch vụ, báo giá, đặt lịch, nhuộm tóc, uốn duỗi", departmentId: tvDept.id },
-    { id: "member-2", name: "Hoa CSKH", email: "hoa@minhhyhair.com", role: "Lead", expertise: "chăm sóc khách hàng, khiếu nại, bảo hành, hoàn tiền", departmentId: cskdDept.id },
-    { id: "member-3", name: "Mai Stylist", email: "mai@minhhyhair.com", role: "Lead", expertise: "cắt tóc, balayage, highlight, nhuộm màu, tạo kiểu", departmentId: stylDept.id },
-    { id: "member-4", name: "Thu Stylist", email: "thu@minhhyhair.com", role: "Member", expertise: "phục hồi tóc, keratin, uốn duỗi, ép tóc", departmentId: stylDept.id },
+    { id: "member-1", name: "Linh Tư Vấn", email: "linh@led1000.vn", role: "Lead", expertise: "tư vấn sản phẩm LED, báo giá, nguồn điện, phụ kiện chiếu sáng", departmentId: tvDept.id },
+    { id: "member-2", name: "Hoa CSKH", email: "hoa@led1000.vn", role: "Lead", expertise: "chăm sóc khách hàng, khiếu nại, bảo hành, đổi trả", departmentId: cskdDept.id },
+    { id: "member-3", name: "Minh Kỹ Thuật", email: "minh@led1000.vn", role: "Lead", expertise: "điện áp, công suất, tải nguồn, LED dây, thi công chiếu sáng", departmentId: stylDept.id },
+    { id: "member-4", name: "An Kho Hàng", email: "an@led1000.vn", role: "Member", expertise: "kiểm tra mã sản phẩm, quy cách, số lượng, tình trạng hàng", departmentId: tvDept.id },
   ];
 
   for (const m of members) {
     await prisma.teamMember.upsert({
       where: { id: m.id },
-      update: {},
+      update: m,
       create: m,
     });
   }
 
-  // Create knowledge base categories for Minh Hy Hair
-  const categories = [
-    { id: "cat-faq", name: "FAQ", description: "Câu hỏi khách thường gặp", icon: "help-circle", color: "#4A7C9B", sortOrder: 0 },
-    { id: "cat-products", name: "Bảng giá dịch vụ", description: "Giá cắt, nhuộm, uốn, duỗi, highlight, phục hồi", icon: "package", color: "#22C55E", sortOrder: 1 },
-    { id: "cat-policies", name: "Chính sách", description: "Đặt lịch, hủy lịch, bảo hành và khiếu nại", icon: "shield", color: "#F59E0B", sortOrder: 2 },
-    { id: "cat-haircare", name: "Tư vấn chăm sóc tóc", description: "Phân loại tóc, chăm sóc tại nhà, lưu ý sau dịch vụ", icon: "scissors", color: "#EC4899", sortOrder: 3 },
-  ];
+  // Create knowledge base categories for LED1000
+  const categories = LED1000_KNOWLEDGE_CATEGORIES;
 
   for (const c of categories) {
-    await prisma.category.upsert({ where: { id: c.id }, update: {}, create: c });
+    await prisma.category.upsert({ where: { id: c.id }, update: c, create: c });
   }
 
   const entries = [
+    ...LED1000_KNOWLEDGE_TEMPLATE_ENTRIES,
     // FAQ
-    { id: "entry-1", categoryId: "cat-faq", title: "Giờ làm việc", content: "Minh Hy Hair mở cửa từ Thứ Hai đến Chủ Nhật, 8:30 – 20:00. Trợ lý AI hỗ trợ tư vấn 24/7 và sẽ chuyển nhân viên khi cần.", priority: 10 },
-    { id: "entry-2", categoryId: "cat-faq", title: "Thông tin liên hệ & đặt lịch", content: "Khách có thể đặt lịch qua Zalo, fanpage Facebook hoặc gọi trực tiếp. Bot sẽ ghi nhận thông tin và xác nhận lịch hẹn.", priority: 9 },
-    { id: "entry-6", categoryId: "cat-faq", title: "Salon phục vụ đối tượng nào?", content: "Minh Hy Hair chuyên phục vụ khách hàng nữ. Salon không nhận khách nam và không phục vụ trẻ em.", priority: 8 },
-    { id: "entry-7", categoryId: "cat-faq", title: "Phân loại size tóc", content: "Salon phân loại độ dài tóc theo size để tính giá dịch vụ:\n- Size S: Tóc ngắn / tóc tém (dưới tai)\n- Size M: Tóc ngang vai\n- Size L: Tóc qua vai (chưa tới ngực)\n- Size XL: Tóc qua ngực trở xuống\nMột số dịch vụ có thể phụ thu 100.000 – 200.000đ nếu tóc dày hoặc đặc biệt dài.", priority: 10 },
-    // Bảng giá
-    { id: "entry-3", categoryId: "cat-products", title: "Bảng giá cắt tóc", content: "Dịch vụ cắt tóc (bao gồm gội + sấy):\n- Size S (tóc ngắn/tóc tém): 80.000đ\n- Size M (ngang vai): 100.000đ\n- Size L (qua vai): 120.000đ\n- Size XL (qua ngực): 150.000đ\nPhụ thu tóc dày: +50.000đ", priority: 9 },
-    { id: "entry-8", categoryId: "cat-products", title: "Bảng giá nhuộm tóc", content: "Dịch vụ nhuộm tóc (màu đơn, có pha màu):\n- Size S: từ 250.000đ\n- Size M: từ 350.000đ\n- Size L: từ 500.000đ\n- Size XL: từ 650.000đ\nNhuộm màu cao cấp / ombre / khói: cộng thêm 100.000 – 300.000đ tuỳ màu. Đã tẩy trước có thể điều chỉnh giá. Vui lòng gửi ảnh tham khảo để báo giá chính xác.", priority: 10 },
-    { id: "entry-9", categoryId: "cat-products", title: "Bảng giá uốn & duỗi tóc", content: "Dịch vụ uốn tóc:\n- Size S: từ 300.000đ\n- Size M: từ 450.000đ\n- Size L: từ 600.000đ\n- Size XL: từ 800.000đ\n\nDịch vụ duỗi / ép tóc:\n- Size S: từ 250.000đ\n- Size M: từ 400.000đ\n- Size L: từ 550.000đ\n- Size XL: từ 700.000đ\nGiá có thể thay đổi theo tình trạng tóc và loại thuốc.", priority: 9 },
-    { id: "entry-10", categoryId: "cat-products", title: "Dịch vụ Highlight & Balayage", content: "Highlight và Balayage là dịch vụ phức tạp, giá phụ thuộc vào số lượng sợi, màu sắc và tình trạng tóc:\n- Highlight cơ bản: từ 500.000đ\n- Balayage / ombre: từ 800.000đ\n- Tẩy tóc toàn bộ: từ 400.000đ\nKhuyến nghị: Gửi ảnh tham khảo hoặc đến salon để stylist tư vấn trực tiếp trước khi quyết định dịch vụ.", priority: 8 },
-    { id: "entry-11", categoryId: "cat-products", title: "Dịch vụ phục hồi tóc", content: "Phục hồi tóc hư tổn, khô xơ, chẻ ngọn:\n- Ủ tóc cơ bản: từ 150.000đ\n- Ủ tóc chuyên sâu (protein mask): từ 250.000đ\n- Phục hồi Keratin: từ 500.000đ\nGiá phụ thuộc vào mức độ hư tổn và độ dài tóc. Tư vấn thêm sau khi kiểm tra tình trạng tóc thực tế.", priority: 7 },
+    { id: "entry-1", categoryId: "cat-led1000-business-profile", title: "Thông tin LED1000", content: "LED1000 / Linh Kiện LED1000 chuyên đèn LED, nguồn điện, linh kiện LED, phụ kiện chiếu sáng, đèn trang trí và thiết bị điện liên quan.", priority: 10 },
+    { id: "entry-2", categoryId: "cat-led1000-business-profile", title: "Thông tin liên hệ", content: "Khách có thể liên hệ LED1000 qua hotline/Zalo 0909003082 hoặc 0972 90 25 25. Địa chỉ cần khách xác nhận trước production: 207 Vườn Lài, Phú Thọ Hòa, Q. Tân Phú, TP.HCM.", priority: 9 },
+    { id: "entry-6", categoryId: "cat-led1000-sales-scripts", title: "Thông tin cần hỏi khi tư vấn", content: "Khi khách hỏi sản phẩm chưa đủ rõ, cần hỏi thêm mục đích sử dụng, trong nhà/ngoài trời, điện áp, công suất/tải, chiều dài, màu ánh sáng, mức chống nước IP, số lượng và quy cách.", priority: 9 },
+    { id: "entry-7", categoryId: "cat-led1000-price-list", title: "Quy tắc báo giá", content: "Chỉ báo giá khi Knowledge Base có giá cụ thể gắn với đúng sản phẩm hoặc đúng quy cách khách hỏi. Nếu giá không rõ hoặc có nhiều sản phẩm gần giống, hỏi thêm mã sản phẩm, link, hình ảnh, số lượng, điện áp, công suất, kích thước hoặc quy cách.", priority: 10 },
+    // Sản phẩm
+    { id: "entry-3", categoryId: "cat-led1000-product-catalogue", title: "Nhóm sản phẩm chính", content: "Các nhóm sản phẩm thường gặp: nguồn tổng DC, nguồn adapter, nguồn 5V/12V/24V/48V, LED dây, LED thanh, LED quảng cáo, bóng đèn LED, đèn âm trần, đèn ốp trần, đèn tuýp LED, đèn pha LED, đèn năng lượng mặt trời, đèn trang trí và phụ kiện LED.", priority: 9 },
+    { id: "entry-8", categoryId: "cat-led1000-technical-guide", title: "Nguồn điện cho LED", content: "Khi tư vấn nguồn, cần biết điện áp LED, tổng công suất hoặc chiều dài/tải dự kiến, môi trường sử dụng và dự phòng công suất phù hợp. Với câu hỏi có rủi ro điện/thi công, nên khuyến nghị nhân viên kỹ thuật xác nhận.", priority: 10 },
+    { id: "entry-9", categoryId: "cat-led1000-product-catalogue", title: "LED dây", content: "Khi tư vấn LED dây, cần hỏi điện áp 12V/24V/220V, chiều dài, màu ánh sáng, dùng trong nhà hay ngoài trời, có cần chống nước hay đổi màu RGB không, và mục đích như hắt trần, tủ kệ, bảng hiệu hoặc trang trí.", priority: 9 },
+    { id: "entry-10", categoryId: "cat-led1000-product-catalogue", title: "Đèn trang trí và phụ kiện", content: "Đèn trang trí có thể cần thông tin về không gian sử dụng, chiều dài dây, màu ánh sáng, kiểu điều khiển, nguồn cấp và số lượng. Phụ kiện cần khớp đúng quy cách sản phẩm.", priority: 8 },
+    { id: "entry-11", categoryId: "cat-led1000-product-catalogue", title: "Đèn năng lượng mặt trời", content: "Khi tư vấn đèn năng lượng mặt trời, cần hỏi vị trí lắp, công suất mong muốn, thời gian chiếu sáng, mức chống nước, diện tích chiếu sáng và nhu cầu đèn pha, đèn đường, sân vườn hay trang trí.", priority: 7 },
     // Chính sách
-    { id: "entry-4", categoryId: "cat-policies", title: "Chính sách đặt và hủy lịch", content: "Khách nên đặt lịch trước tối thiểu 30 phút để salon sắp xếp stylist phù hợp. Nếu cần hủy hoặc đổi lịch, vui lòng báo trước ít nhất 2 giờ. Hủy không báo trước có thể ảnh hưởng đến ưu tiên đặt lịch lần sau.", priority: 8 },
-    { id: "entry-5", categoryId: "cat-policies", title: "Chính sách bảo hành và khiếu nại", content: "Minh Hy Hair cam kết bảo hành dịch vụ trong vòng 3 – 7 ngày sau khi làm (tùy dịch vụ). Nếu chưa hài lòng về kết quả, khách liên hệ ngay để salon kiểm tra và hỗ trợ xử lý. Không bảo hành trong trường hợp khách tự xử lý tóc tại nhà sau khi làm.", priority: 7 },
-    // Chăm sóc tóc
-    { id: "entry-12", categoryId: "cat-haircare", title: "Lưu ý sau nhuộm / uốn / duỗi tóc", content: "Sau khi làm dịch vụ hóa chất, khách nên:\n- Không gội tóc trong 48 giờ đầu\n- Sử dụng dầu gội dành cho tóc nhuộm / uốn\n- Không buộc tóc chặt ngay sau khi uốn\n- Tránh tiếp xúc nhiều với nước biển, hồ bơi trong tuần đầu\n- Dưỡng tóc tại nhà bằng serum hoặc dầu dưỡng để giữ màu bền lâu hơn.", priority: 6 },
+    { id: "entry-4", categoryId: "cat-led1000-return-policy", title: "Giao hàng và xác nhận đơn", content: "Nếu Knowledge Base chưa có chính sách giao hàng rõ cho đơn cụ thể, bot cần hỏi thêm địa chỉ, số lượng, sản phẩm và đề nghị nhân viên xác nhận.", priority: 8 },
+    { id: "entry-5", categoryId: "cat-led1000-warranty", title: "Bảo hành và đổi trả", content: "Chỉ trả lời chính sách bảo hành/đổi trả theo thông tin có trong Knowledge Base. Nếu chưa có dữ liệu rõ, cần nói chưa có thông tin chính xác và chuyển nhân viên xác nhận.", priority: 7 },
+    // Tư vấn kỹ thuật
+    { id: "entry-12", categoryId: "cat-led1000-technical-guide", title: "An toàn kỹ thuật điện", content: "Với lắp đặt nguồn, tải lớn, ngoài trời, chống nước hoặc đấu nối điện 220V, bot chỉ tư vấn ở mức thông tin và khuyến nghị nhân viên kỹ thuật/thợ đủ chuyên môn kiểm tra trước khi thi công.", priority: 8 },
   ];
 
   for (const e of entries) {
-    await prisma.knowledgeEntry.upsert({ where: { id: e.id }, update: {}, create: e });
+    await prisma.knowledgeEntry.upsert({ where: { id: e.id }, update: { ...e, isActive: true }, create: e });
   }
 
-  // Create salon tags
+  // Create demo tags
   const tags = [
     { id: "tag-1", name: "Khẩn cấp", color: "#EF4444" },
     { id: "tag-2", name: "Khách VIP", color: "#F59E0B" },
     { id: "tag-3", name: "Cần theo dõi", color: "#3B82F6" },
     { id: "tag-4", name: "Đã xử lý", color: "#22C55E" },
     { id: "tag-5", name: "Khiếu nại", color: "#8B5CF6" },
-    { id: "tag-6", name: "Đặt lịch", color: "#EC4899" },
+    { id: "tag-6", name: "Cần báo giá", color: "#EC4899" },
     { id: "tag-7", name: "Tư vấn giá", color: "#06B6D4" },
   ];
 
@@ -156,18 +176,18 @@ async function main() {
     await prisma.tag.upsert({ where: { id: t.id }, update: { name: t.name, color: t.color }, create: t });
   }
 
-  // Create canned responses for salon
+  // Create canned responses for LED1000
   const cannedResponses = [
-    { id: "cr-1", title: "Chào khách", content: "Dạ chào chị! Em là trợ lý tư vấn của Minh Hy Hair 💇‍♀️ Chị cần tư vấn dịch vụ gì hôm nay ạ?", category: "Chung", shortcut: "/chao" },
-    { id: "cr-2", title: "Tạm biệt", content: "Dạ cảm ơn chị đã liên hệ với Minh Hy Hair! Nếu cần tư vấn thêm, chị cứ nhắn lại nhé. Salon luôn sẵn sàng hỗ trợ ạ 💕", category: "Chung", shortcut: "/tambit" },
-    { id: "cr-3", title: "Xin ảnh tóc", content: "Dạ để em tư vấn chính xác hơn, chị có thể gửi ảnh tóc hiện tại không ạ? Em sẽ tư vấn ngay cho chị nha 🙏", category: "Tư vấn", shortcut: "/xepanh" },
-    { id: "cr-4", title: "Chuyển nhân viên", content: "Dạ trường hợp này em cần nhờ nhân viên tư vấn chuyên sâu hơn hỗ trợ chị ạ. Chị đợi em kết nối giúp chị trong giây lát nhé!", category: "Hỗ trợ", shortcut: "/chuyennv" },
-    { id: "cr-5", title: "Đặt lịch", content: "Dạ chị muốn đặt lịch cho dịch vụ này thì chị cho em biết: (1) Tên chị, (2) Số điện thoại và (3) Ngày giờ mong muốn nhé ạ 📅", category: "Đặt lịch", shortcut: "/datlich" },
-    { id: "cr-6", title: "Hỏi độ dài tóc", content: "Dạ mình cho em xin độ dài tóc hiện tại để em báo giá chính xác hơn ạ? (Tóc tém / ngang vai / qua vai / qua ngực)", category: "Tư vấn", shortcut: "/hoisize" },
+    { id: "cr-1", title: "Chào khách", content: "Dạ chào bạn! LED1000 có thể hỗ trợ bạn tìm đèn LED, nguồn điện, linh kiện hoặc phụ kiện phù hợp. Bạn cần dùng cho mục đích nào ạ?", category: "Chung", shortcut: "/chao" },
+    { id: "cr-2", title: "Tạm biệt", content: "Dạ cảm ơn bạn đã liên hệ LED1000. Nếu cần thêm thông tin về sản phẩm, quy cách hoặc báo giá, bạn cứ nhắn lại nhé.", category: "Chung", shortcut: "/tambit" },
+    { id: "cr-3", title: "Xin thông số", content: "Dạ để tư vấn chính xác hơn, bạn cho LED1000 xin điện áp, công suất/tải, môi trường dùng trong nhà hay ngoài trời, số lượng và hình ảnh/link sản phẩm nếu có nhé.", category: "Tư vấn", shortcut: "/thongso" },
+    { id: "cr-4", title: "Chuyển nhân viên", content: "Dạ trường hợp này cần nhân viên tư vấn chuyên sâu hơn xác nhận giúp bạn. Mình vui lòng chờ LED1000 kết nối nhân viên hỗ trợ nhé.", category: "Hỗ trợ", shortcut: "/chuyennv" },
+    { id: "cr-5", title: "Hỏi báo giá", content: "Dạ để báo giá chính xác, bạn cho LED1000 xin mã sản phẩm hoặc link/hình ảnh, số lượng cần mua và quy cách điện áp/công suất nếu có nhé.", category: "Báo giá", shortcut: "/baogia" },
+    { id: "cr-6", title: "Hỏi nguồn điện", content: "Dạ bạn cho LED1000 xin điện áp LED, tổng công suất hoặc chiều dài LED dây, dùng trong nhà/ngoài trời và có cần chống nước không để tư vấn nguồn phù hợp nhé.", category: "Tư vấn kỹ thuật", shortcut: "/hoinguon" },
   ];
 
   for (const cr of cannedResponses) {
-    await prisma.cannedResponse.upsert({ where: { id: cr.id }, update: {}, create: cr });
+    await prisma.cannedResponse.upsert({ where: { id: cr.id }, update: { ...cr, isActive: true }, create: cr });
   }
 
   // Create sample SLA rules
@@ -181,7 +201,7 @@ async function main() {
   }
 
   console.log("✅ Seed data created successfully!");
-  console.log("📋 Business: Minh Hy Hair");
+  console.log("📋 Business: LED1000 / Linh Kiện LED1000");
   console.log("🔐 Default admin: username=admin, password=admin123");
 }
 

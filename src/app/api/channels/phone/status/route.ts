@@ -18,6 +18,9 @@ export async function POST(request: NextRequest) {
         logger.warn("[Phone] Invalid Twilio signature on status callback");
         return new NextResponse("Forbidden", { status: 403 });
       }
+    } else if (process.env.NODE_ENV === "production") {
+      logger.warn("[Phone] Missing Twilio auth token in production");
+      return new NextResponse("Twilio auth token is not configured", { status: 503 });
     }
 
     const callSid = params.CallSid || "";

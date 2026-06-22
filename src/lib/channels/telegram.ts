@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { chat, createNewConversation } from "@/lib/ai/engine";
-import { resolveCustomer } from "@/lib/customer-resolver";
+import { processNormalizedInboundMessage } from "@/lib/channels/normalized";
 import { logger } from "@/lib/logger";
 
 interface TelegramUpdate {
@@ -38,32 +37,32 @@ export async function handleTelegramUpdate(update: TelegramUpdate): Promise<stri
 
   try {
     const chatId = String(message.chat.id);
-    const userName = [message.from.first_name, message.from.last_name].filter(Boolean).join(" ");
-    const contact = message.from.username ? `@${message.from.username}` : chatId;
+    const userName =
+      [message.from.first_name, message.from.last_name].filter(Boolean).join(" ") ||
+      (message.from.username ? `@${message.from.username}` : `Telegram User ${message.from.id}`);
 
-    const customerId = await resolveCustomer("telegram", contact, userName);
-
-    let conversation = await prisma.conversation.findFirst({
-      where: {
-        channel: "telegram",
-        status: { in: ["active", "escalated"] },
-        OR: [{ customerId }, { customerContact: contact }],
+    const result = await processNormalizedInboundMessage({
+      channel: "telegram",
+      externalCustomerId: String(message.chat.id || message.from.id),
+      customerContact: `telegram:${chatId}`,
+      externalConversationId: chatId,
+      platformMessageId: String(message.message_id || update.update_id),
+      customerName: userName,
+      text: message.text,
+      metadata: {
+        updateId: update.update_id,
+        chatType: message.chat.type,
+        ...(message.from.username ? { username: message.from.username } : {}),
       },
     });
-
-    if (!conversation) {
-      conversation = await createNewConversation("telegram", userName, contact, customerId);
-    }
-
-    const aiResponse = await chat(conversation.id, message.text);
 
     // Send reply via Telegram API
     const token = await getTelegramToken();
     if (token) {
-      await sendTelegramMessage(token, message.chat.id, aiResponse);
+      await sendTelegramMessage(token, message.chat.id, result.response);
     }
 
-    return aiResponse;
+    return result.response;
   } catch (error) {
     logger.error("[Telegram] Failed to process update:", error);
     return null;

@@ -1,0 +1,31 @@
+MaSP,TenSanPham,Nhom,QuyCach,DienAp,CongSuat,DonVi,GiaLeVND,GiaCongTrinhVND,GiaCuaHangVND,VAT,BaoHanh,GhiChu
+DEMO-AD12-2A,Adapter 12V 2A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,12V,24W,Cái,60000,56000,52000,Chưa gồm VAT,6 tháng,Dữ liệu demo dựa theo mặt bằng website crawl
+DEMO-AD12-3A,Adapter 12V 3A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,12V,36W,Cái,94000,88000,82000,Chưa gồm VAT,6 tháng,Dùng cho LED dây ngắn và thiết bị nhỏ
+DEMO-AD12-5A,Adapter 12V 5A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,12V,60W,Cái,125000,116000,108000,Chưa gồm VAT,6 tháng,Sản phẩm hay hỏi giá
+DEMO-AD12-6A,Adapter 12V 6A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,12V,72W,Cái,128000,120000,112000,Chưa gồm VAT,6 tháng,
+DEMO-AD12-8A,Adapter 12V 8A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,12V,96W,Cái,194000,182000,170000,Chưa gồm VAT,6 tháng,
+DEMO-AD12-10A,Adapter 12V 10A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,12V,120W,Cái,233000,218000,205000,Chưa gồm VAT,6 tháng,
+DEMO-AD24-3A,Adapter 24V 3A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,24V,72W,Cái,155000,145000,136000,Chưa gồm VAT,6 tháng,
+DEMO-AD24-5A,Adapter 24V 5A loại tốt,Nguồn Adapter,Jack 5.5x2.1mm,24V,120W,Cái,245000,230000,215000,Chưa gồm VAT,6 tháng,
+DEMO-PS12-5A,Nguồn tổ ong 12V 5A,Nguồn tổ ong,Tụ đơn,12V,60W,Cái,69000,64000,60000,Chưa gồm VAT,12 tháng,
+DEMO-PS12-10A,Nguồn tổ ong 12V 10A,Nguồn tổ ong,Tụ kép,12V,120W,Cái,118000,110000,103000,Chưa gồm VAT,12 tháng,
+DEMO-PS12-20A,Nguồn tổ ong 12V 20A,Nguồn tổ ong,Có quạt,12V,240W,Cái,198000,185000,174000,Chưa gồm VAT,12 tháng,
+DEMO-PS12-30A,Nguồn tổ ong 12V 30A,Nguồn tổ ong,Có quạt,12V,360W,Cái,285000,268000,252000,Chưa gồm VAT,12 tháng,
+DEMO-PS12-33A-OD,Nguồn 12V 33A ngoài trời chống mưa,Nguồn ngoài trời,Vỏ nhôm chống mưa,12V,400W,Cái,234000,220000,207000,Chưa gồm VAT,12 tháng,Phù hợp bảng hiệu ngoài trời
+DEMO-PS24-10A,Nguồn tổ ong 24V 10A,Nguồn tổ ong,Có quạt,24V,240W,Cái,265000,248000,235000,Chưa gồm VAT,12 tháng,
+DEMO-PS48-10A,Nguồn tổ ong 48V 10A,Nguồn tổng DC,Có quạt,48V,480W,Cái,413000,390000,372000,Chưa gồm VAT,12 tháng,Có giá demo gần website crawl
+DEMO-SL12-60,Nguồn siêu mỏng 12V 60W,Nguồn siêu mỏng,Mỏng nội thất,12V,60W,Cái,89000,83000,78000,Chưa gồm VAT,12 tháng,
+DEMO-SL12-120,Nguồn siêu mỏng 12V 120W,Nguồn siêu mỏng,Mỏng nội thất,12V,120W,Cái,132000,124000,116000,Chưa gồm VAT,12 tháng,
+DEMO-SL12-200,Nguồn siêu mỏng 12V 200W,Nguồn siêu mỏng,Mỏng nội thất,12V,200W,Cái,128000,121000,114000,Chưa gồm VAT,12 tháng,
+DEMO-SL12-300,Nguồn siêu mỏng 12V 300W,Nguồn siêu mỏng,Mỏng nội thất,12V,300W,Cái,215000,203000,190000,Chưa gồm VAT,12 tháng,
+DEMO-SL24-300,Nguồn siêu mỏng 24V 300W,Nguồn siêu mỏng,Mỏng nội thất,24V,300W,Cái,233000,220000,207000,Chưa gồm VAT,12 tháng,
+DEMO-SL24-400,Nguồn siêu mỏng 24V 400W,Nguồn siêu mỏng,Mỏng nội thất,24V,400W,Cái,254000,240000,226000,Chưa gồm VAT,12 tháng,
+DEMO-COB12-5M,LED dây COB 12V 8mm 320D,LED dây COB,Cuộn 5m trắng/vàng/trung tính,12V,10W/m,Cuộn,180000,168000,158000,Chưa gồm VAT,3 tháng,IP20 trong nhà
+DEMO-COB24-10M,LED dây COB 24V 8mm 320D,LED dây COB,Cuộn 10m trắng/vàng/trung tính,24V,10W/m,Cuộn,360000,338000,318000,Chưa gồm VAT,3 tháng,IP20 trong nhà
+DEMO-COB220-100M,LED dây COB 220V 10mm 300D,LED dây COB,Cuộn 100m cắt 50cm,220V,8W/m,Cuộn,2950000,2780000,2600000,Chưa gồm VAT,3 tháng,Cần kỹ thuật lắp đặt an toàn
+DEMO-LED12-5050-5M,LED dây dán 12V 5050 RGB,LED dây thường,Cuộn 5m 60 LED/m,12V,14.4W/m,Cuộn,145000,136000,128000,Chưa gồm VAT,3 tháng,Cần controller RGB
+DEMO-LED24-5050-IP65,LED dây dán 24V 5050 IP65,LED dây chống nước,Cuộn 5m chống nước,24V,14.4W/m,Cuộn,125000,118000,112000,Chưa gồm VAT,3 tháng,Dùng ngoài trời có mái che
+DEMO-FLOOD-50W,Đèn pha LED 50W LTP,Đèn pha LED,Ánh sáng trắng ngoài trời,220V,50W,Cái,185000,172000,162000,Chưa gồm VAT,12 tháng,
+DEMO-FLOOD-100W,Đèn pha LED 100W LTP,Đèn pha LED,Ánh sáng trắng ngoài trời,220V,100W,Cái,320000,300000,285000,Chưa gồm VAT,12 tháng,
+DEMO-SOLAR-150W,Đèn năng lượng mặt trời 150W LTP,Đèn năng lượng mặt trời,Có remote và tấm pin rời,Năng lượng mặt trời,150W,Cái,690000,650000,620000,Chưa gồm VAT,12 tháng,
+DEMO-MOD-F5,LED đúc F5 12V SenYang,LED quảng cáo,Dây đồng nhiều màu,12V,0.3W/bóng,Bóng,380,350,320,Chưa gồm VAT,Không bảo hành lẻ,Giá demo theo bóng

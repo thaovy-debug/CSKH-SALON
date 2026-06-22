@@ -11,6 +11,16 @@ import {
 } from "@/lib/auth";
 import { DEFAULT_GEMINI_MODEL, GEMINI_PROVIDER } from "@/lib/ai/catalog";
 
+const DEFAULT_BUSINESS_SETTINGS = {
+  businessName: "LED1000 / Linh Kiện LED1000",
+  businessDesc:
+    "Chuyên đèn LED, nguồn điện, linh kiện LED, phụ kiện chiếu sáng, đèn trang trí và thiết bị điện liên quan.",
+  welcomeMessage:
+    "Xin chào! LED1000 có thể hỗ trợ bạn tìm đèn LED, nguồn điện, linh kiện hoặc phụ kiện phù hợp. Bạn cần dùng cho mục đích nào và có thông số điện áp/công suất chưa?",
+  tone: "friendly",
+  language: "auto",
+};
+
 // POST /api/auth - Login or Setup
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -44,11 +54,12 @@ export async function POST(request: NextRequest) {
         id: "default",
         aiProvider: GEMINI_PROVIDER,
         aiModel: DEFAULT_GEMINI_MODEL,
+        ...DEFAULT_BUSINESS_SETTINGS,
       },
     });
 
     // Ensure channels exist
-    for (const type of ["whatsapp", "email", "phone"]) {
+    for (const type of ["whatsapp", "email", "phone", "zalo"]) {
       await prisma.channel.upsert({
         where: { type },
         update: {},

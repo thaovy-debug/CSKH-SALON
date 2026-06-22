@@ -72,14 +72,14 @@ export default function LoginPage() {
     <div className="bg-owly-surface rounded-2xl shadow-lg border border-owly-border p-8">
       <div className="flex flex-col items-center mb-8">
         <Image
-          src="/salondesk-logo.svg"
-          alt="SalonDesk"
-          width={56}
-          height={56}
-          className="mb-4"
+          src="/led1000-logo.png"
+          alt="LED1000 CSKH"
+          width={192}
+          height={67}
+          className="mb-4 h-16 w-auto object-contain"
         />
         <h1 className="text-2xl font-bold text-owly-text">
-          Chào mừng đến với SalonDesk
+          Chào mừng đến với LED1000 CSKH
         </h1>
         <p className="text-owly-text-light text-sm mt-1">
           Đăng nhập vào tài khoản của bạn

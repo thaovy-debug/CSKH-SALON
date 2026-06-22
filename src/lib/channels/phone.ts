@@ -142,7 +142,7 @@ export async function handleIncomingCall(from: string, callSid: string): Promise
   const settings = await prisma.settings.findFirst();
   const welcomeMessage =
     settings?.welcomeMessage ||
-    "Xin chào! Chào mừng bạn đến với Luna Women's Hair Studio. Bạn cần tư vấn bảng giá, tình trạng tóc hay đặt lịch làm tóc?";
+    "Xin chào! LED1000 có thể hỗ trợ bạn tìm đèn LED, nguồn điện, linh kiện hoặc phụ kiện phù hợp. Bạn cần dùng cho mục đích nào?";
 
   const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/channels/phone/gather?conversationId=${conversation.id}&callSid=${callSid}`;
 

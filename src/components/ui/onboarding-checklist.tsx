@@ -78,12 +78,10 @@ export function OnboardingChecklist() {
         },
         {
           id: "business",
-          title: "Đã cấu hình hồ sơ salon",
-          description: "Thiết lập tên salon và thông tin cơ bản",
+          title: "Đã cấu hình hồ sơ doanh nghiệp",
+          description: "Thiết lập tên LED1000 và thông tin cơ bản",
           href: "/settings",
-          completed:
-            !!settings.businessName &&
-            settings.businessName !== "Luna Women's Hair Studio",
+          completed: typeof settings.businessName === "string" && settings.businessName.includes("LED1000"),
           icon: Building2,
         },
         {
@@ -130,7 +128,7 @@ export function OnboardingChecklist() {
 
   useEffect(() => {
     // Check if user previously dismissed
-    const wasDismissed = localStorage.getItem("salondesk-onboarding-dismissed");
+    const wasDismissed = localStorage.getItem("linhkienled1000-onboarding-dismissed");
     if (wasDismissed === "true") {
       setDismissed(true);
     }
@@ -139,7 +137,7 @@ export function OnboardingChecklist() {
 
   function handleDismiss() {
     setDismissed(true);
-    localStorage.setItem("salondesk-onboarding-dismissed", "true");
+    localStorage.setItem("linhkienled1000-onboarding-dismissed", "true");
   }
 
   const completedCount = items.filter((i) => i.completed).length;
@@ -164,7 +162,7 @@ export function OnboardingChecklist() {
           <div>
             <h3 className="font-semibold text-owly-text">Bắt đầu thiết lập</h3>
             <p className="text-xs text-owly-text-light mt-0.5">
-              Hoàn thành các bước này để vận hành SalonDesk
+              Hoàn thành các bước này để vận hành CSKH LED1000
             </p>
           </div>
           <div className="flex items-center gap-3">

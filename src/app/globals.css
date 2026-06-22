@@ -1,42 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --owly-primary: #E295AC;
-  --owly-primary-dark: #C97A91;
-  --owly-primary-light: #F6DAE4;
-  --owly-primary-50: #FCF3F7;
-  --owly-primary-100: #FAECF1;
-  --owly-accent: #B8D8D8;
-  --owly-accent-light: #E0EEEE;
-  --owly-bg: #FFFDFD;
+  --owly-primary: #0785B5;
+  --owly-primary-dark: #006C94;
+  --owly-primary-light: #D8F2FF;
+  --owly-primary-50: #EEF9FF;
+  --owly-primary-100: #D8F2FF;
+  --owly-accent: #FFE600;
+  --owly-accent-light: #FFF8B8;
+  --owly-bg: #F6F8FA;
   --owly-surface: #FFFFFF;
-  --owly-text: #3A3034;
-  --owly-text-light: #8B7D82;
-  --owly-border: #F0E5E7;
-  --owly-sidebar: #54464C;
-  --owly-sidebar-hover: #66555D;
-  --owly-sidebar-active: #E295AC;
-  --owly-success: #88D4B0;
-  --owly-warning: #F5CB86;
-  --owly-danger: #E27E85;
+  --owly-text: #1F2933;
+  --owly-text-light: #5E5D5D;
+  --owly-border: #E5E7EB;
+  --owly-sidebar: #0785B5;
+  --owly-sidebar-hover: #006C94;
+  --owly-sidebar-active: #005F83;
+  --owly-success: #0E5841;
+  --owly-warning: #F49103;
+  --owly-danger: #DA2929;
+  --font-geist-sans: Roboto, "Segoe UI", Arial, sans-serif;
+  --font-geist-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 .dark {
-  --owly-primary: #E295AC;
-  --owly-primary-dark: #F6DAE4;
-  --owly-primary-light: #C97A91;
-  --owly-primary-50: #3E272F;
-  --owly-primary-100: #4F353E;
-  --owly-accent: #A5C4C4;
-  --owly-accent-light: #3F4D4D;
-  --owly-bg: #1E181A;
-  --owly-surface: #2B2225;
-  --owly-text: #F8F4F5;
-  --owly-text-light: #BBAFB4;
-  --owly-border: #4F4347;
-  --owly-sidebar: #151012;
-  --owly-sidebar-hover: #2B2225;
-  --owly-sidebar-active: #E295AC;
+  --owly-primary: #38BDF8;
+  --owly-primary-dark: #7DD3FC;
+  --owly-primary-light: #0B4F6F;
+  --owly-primary-50: #082F49;
+  --owly-primary-100: #0B4F6F;
+  --owly-accent: #FFE600;
+  --owly-accent-light: #4A4200;
+  --owly-bg: #0B1518;
+  --owly-surface: #102227;
+  --owly-text: #ECFDF5;
+  --owly-text-light: #A7C1C8;
+  --owly-border: #224048;
+  --owly-sidebar: #05384D;
+  --owly-sidebar-hover: #075E82;
+  --owly-sidebar-active: #0785B5;
 }
 
 @theme inline {

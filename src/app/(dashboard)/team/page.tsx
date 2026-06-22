@@ -101,7 +101,7 @@ function DepartmentForm({ initial, onSubmit, onCancel, loading }: { initial?: De
       </div>
       <div>
         <label className="block text-sm font-medium text-owly-text mb-1.5">Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="cskh@salon.vn" className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary" />
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="cskh@led1000.vn" className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary" />
       </div>
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} className="px-4 py-2 text-sm font-medium text-owly-text-light hover:text-owly-text border border-owly-border rounded-lg hover:bg-owly-bg transition-colors">Hủy</button>
@@ -131,7 +131,7 @@ function MemberForm({ initial, departments, onSubmit, onCancel, loading }: { ini
         </div>
         <div>
           <label className="block text-sm font-medium text-owly-text mb-1.5">Email <span className="text-owly-danger">*</span></label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nhanvien@salon.vn" required className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary" />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nhanvien@led1000.vn" required className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -160,7 +160,7 @@ function MemberForm({ initial, departments, onSubmit, onCancel, loading }: { ini
       </div>
       <div>
         <label className="block text-sm font-medium text-owly-text mb-1.5">Chuyên môn</label>
-        <input type="text" value={expertise} onChange={(e) => setExpertise(e.target.value)} placeholder="VD: Tư vấn dịch vụ, xử lý khiếu nại, bán hàng" className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary" />
+        <input type="text" value={expertise} onChange={(e) => setExpertise(e.target.value)} placeholder="VD: Tư vấn sản phẩm LED, báo giá, xử lý khiếu nại" className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-bg text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary" />
       </div>
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} className="px-4 py-2 text-sm font-medium text-owly-text-light hover:text-owly-text border border-owly-border rounded-lg hover:bg-owly-bg transition-colors">Hủy</button>

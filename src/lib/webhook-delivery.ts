@@ -66,12 +66,12 @@ async function attemptDelivery(
   try {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
-      "User-Agent": "SalonDesk-Webhook/1.0",
+      "User-Agent": "LinhKienLed1000-Webhook/1.0",
       ...webhook.headers,
     };
 
     if (signature) {
-      headers["X-SalonDesk-Signature"] = signature;
+      headers["X-LinhKienLed1000-Signature"] = signature;
     }
 
     const response = await fetch(webhook.url, {

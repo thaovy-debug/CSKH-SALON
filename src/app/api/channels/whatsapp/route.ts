@@ -61,19 +61,21 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const result = await sendWhatsAppMessage(String(to), String(message));
-      if (!result.ok) {
+      const recipient = String(to);
+      const sent = await sendWhatsAppMessage(recipient, String(message));
+      if (!sent) {
         return NextResponse.json(
-          { error: result.error || "Failed to send WhatsApp message" },
+          { error: "Failed to send WhatsApp message" },
           { status: 502 }
         );
       }
 
+      const chatId = recipient.includes("@c.us") ? recipient : `${recipient}@c.us`;
       return NextResponse.json({
         success: true,
         type: "whatsapp",
         status: "connected",
-        chatId: result.chatId,
+        chatId,
       });
     }
 

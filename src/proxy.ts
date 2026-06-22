@@ -79,14 +79,27 @@ export function proxy(request: NextRequest) {
   }
 
   // Public paths that don't require auth
-  const publicPaths = ["/login", "/setup", "/api/auth", "/api/health", "/api/openapi.json"];
+  const publicPaths = [
+    "/login",
+    "/setup",
+    "/privacy",
+    "/terms",
+    "/data-deletion",
+    "/api/auth",
+    "/api/health",
+    "/api/openapi.json",
+  ];
   const isPublic = publicPaths.some((p) => pathname.startsWith(p));
 
   // Channel webhook endpoints (authenticated via provider signatures, not JWT)
   if (
     pathname.startsWith("/api/channels/phone/") ||
     pathname.startsWith("/api/channels/sms") ||
-    pathname.startsWith("/api/channels/telegram")
+    pathname.startsWith("/api/channels/telegram") ||
+    pathname.startsWith("/api/channels/zalo/incoming") ||
+    pathname.startsWith("/api/webhooks/meta") ||
+    pathname.startsWith("/api/webhooks/shopee") ||
+    pathname.startsWith("/api/webhooks/tiktok-shop")
   ) {
     return addHeaders(NextResponse.next(), requestId);
   }
@@ -139,7 +152,7 @@ export function proxy(request: NextRequest) {
   }
 
   // Check for auth token (cookie) or API key (header)
-  const token = request.cookies.get("salondesk-token")?.value;
+  const token = request.cookies.get("linhkienled1000-token")?.value;
   const apiKey = request.headers.get("x-api-key");
 
   if (!token && !apiKey) {
@@ -175,7 +188,7 @@ export function proxy(request: NextRequest) {
       );
     }
     const response = NextResponse.redirect(new URL("/login", request.url));
-    response.cookies.delete("salondesk-token");
+    response.cookies.delete("linhkienled1000-token");
     return response;
   }
 

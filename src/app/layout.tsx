@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
-import { Quicksand } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { ThemeInit } from "@/components/theme-init";
 import "./globals.css";
 
-const inter = Quicksand({
-  variable: "--font-geist-sans",
-  subsets: ["latin", "vietnamese"],
-});
-
 export const metadata: Metadata = {
-  title: "SalonDesk - Trợ lý CSKH salon tóc",
-  description: "Nền tảng hỗ trợ khách hàng bằng AI dành cho salon tóc",
+  title: "LinhKienLed1000 - Trợ lý CSKH AI",
+  description: "Nền tảng hỗ trợ khách hàng bằng AI cho doanh nghiệp",
   icons: {
-    icon: "/salondesk-logo.svg",
+    icon: "/led1000-favicon.png",
   },
 };
 
@@ -23,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="vi" className="h-full antialiased" suppressHydrationWarning>
       <body className="h-full">
           <Providers>
             <ThemeInit />

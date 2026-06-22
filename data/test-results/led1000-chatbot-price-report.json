@@ -1,0 +1,109 @@
+{
+  "runInfo": {
+    "baseUrl": "http://localhost:3000",
+    "endpoint": "/api/chat",
+    "authMethod": "api_key",
+    "startedAt": "2026-06-18T12:13:31.627Z",
+    "finishedAt": "2026-06-18T12:14:02.232Z",
+    "total": 4,
+    "passed": 0,
+    "failed": 0,
+    "review": 4
+  },
+  "summaryByGroup": {
+    "Business/contact": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Product category retrieval": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Technical consulting": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Price/inventory behavior": {
+      "total": 4,
+      "passed": 0,
+      "failed": 0,
+      "review": 4
+    },
+    "Out-of-domain regression": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Ambiguous/missing info": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    }
+  },
+  "results": [
+    {
+      "id": "PRICE-01",
+      "group": "Price/inventory behavior",
+      "question": "Giá adapter 12V 5A bao nhiêu?",
+      "response": "Dạ, sản phẩm Adapter 12V 5A loại tốt (công suất 60W, jack 5.5x2.1mm) bên em đang có giá như sau ạ:\n\n*   **Giá bán lẻ:** 125.000đ/cái\n*   **Giá công trình:** 116.000đ/cái\n*   **Giá cửa hàng/đại lý:** 108.000đ/cái\n\n*Lưu ý: Giá trên chưa bao gồm VAT và là dữ liệu demo tham khảo. Mình mua dùng lẻ, cho công trình hay lấy về bán lại để em hỗ trợ chính xác hơn nhé? Ngoài ra, nếu mình cần số lượng lớn, anh/chị cho em xin thông tin để nhân viên kiểm tra tồn kho và xác nhận lại giá tốt nhất cho mình ạ.*",
+      "status": "review",
+      "flags": [
+        "price_inventory_manual_review"
+      ],
+      "notes": "Price/inventory answers require human review against the imported KB/source data.",
+      "conversationId": "b6544673-9fce-48ec-aedf-835ed2fc7b53",
+      "httpStatus": 200,
+      "durationMs": 8254
+    },
+    {
+      "id": "PRICE-02",
+      "group": "Price/inventory behavior",
+      "question": "Giá LED dây COB 12V bao nhiêu?",
+      "response": "Dạ, sản phẩm LED dây COB 12V 8mm 320D (cuộn 5m) hiện có giá bán lẻ là **180.000 VNĐ/cuộn** (giá chưa bao gồm VAT).\n\nVì đây là giá theo dữ liệu demo, để đảm bảo chính xác nhất cho đơn hàng của mình, chị vui lòng cho em biết số lượng cần mua hoặc chị thuộc nhóm khách hàng nào (khách lẻ, công trình hay cửa hàng) để em nhờ nhân viên kiểm tra lại và báo giá chính xác nhất cho chị nhé.\n\nNgoài ra, chị cho em hỏi thêm là mình dự định dùng LED dây này cho mục đích gì (ví dụ: hắt trần, tủ kệ) để em tư vấn thêm về nguồn điện phù hợp, vì LED dây COB 12V cần tính toán công suất nguồn để đảm bảo độ bền ạ.",
+      "status": "review",
+      "flags": [
+        "price_inventory_manual_review"
+      ],
+      "notes": "Price/inventory answers require human review against the imported KB/source data.",
+      "conversationId": "02873977-926a-4b83-8c7f-1b8f9a18c483",
+      "httpStatus": 200,
+      "durationMs": 7549
+    },
+    {
+      "id": "PRICE-03",
+      "group": "Price/inventory behavior",
+      "question": "Có giá đèn LED dây Rạng Đông không?",
+      "response": "Dạ, hiện tại trong hệ thống sản phẩm của LED1000 em chưa có thông tin về đèn LED dây thương hiệu Rạng Đông ạ.\n\nBên em hiện có sẵn các dòng LED dây khác như LED dây COB (12V/24V/220V) hoặc LED dây dán 5050 (12V/24V). Nếu bạn đang cần tìm loại LED dây cho mục đích cụ thể nào (như trang trí trong nhà, ngoài trời, hay lắp tủ kệ...), bạn cho em biết thêm thông tin về điện áp hoặc công suất dự kiến, em sẽ kiểm tra các sản phẩm tương đương hiện có để hỗ trợ bạn nhé!",
+      "status": "review",
+      "flags": [
+        "price_inventory_manual_review"
+      ],
+      "notes": "Price/inventory answers require human review against the imported KB/source data.",
+      "conversationId": "d416a4e9-844d-4c54-b20b-052546e3f14d",
+      "httpStatus": 200,
+      "durationMs": 7573
+    },
+    {
+      "id": "PRICE-04",
+      "group": "Price/inventory behavior",
+      "question": "Còn hàng đèn LED dây chống nước không?",
+      "response": "Dạ, theo dữ liệu tồn kho hiện có, bên em đang có sản phẩm **LED dây dán 24V 5050 IP65** (thuộc nhóm LED dây chống nước) với mã sản phẩm là **DEMO-LED24-5050-IP65**.\n\nHiện tại kho còn 32 cuộn khả dụng. Tuy nhiên, dữ liệu tồn kho có thể thay đổi nhanh, bạn cho em xin số lượng cụ thể bạn cần để em kiểm tra lại và báo nhân viên xác nhận giúp mình nhé?\n\nNgoài ra, khi sử dụng loại này, mình lắp đặt trong nhà hay ngoài trời (có mái che không ạ) để em tư vấn kỹ hơn về cách đấu nối an toàn?",
+      "status": "review",
+      "flags": [
+        "price_inventory_manual_review"
+      ],
+      "notes": "Price/inventory answers require human review against the imported KB/source data.",
+      "conversationId": "3b0fa15e-3c3b-4d04-b032-ed88a7f9cca1",
+      "httpStatus": 200,
+      "durationMs": 6909
+    }
+  ]
+}

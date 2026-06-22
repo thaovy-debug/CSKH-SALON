@@ -1,0 +1,91 @@
+{
+  "runInfo": {
+    "startedAt": "2026-06-18T13:57:18.309Z",
+    "finishedAt": "2026-06-18T13:57:18.554Z",
+    "total": 5,
+    "passed": 5,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "TICKET-01",
+      "title": "[LED1000 TEST] Xác nhận báo giá công trình nguồn 12V 20A",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "ticketId": "bc363a67-2f13-46c9-aa5a-adfb5a8deace",
+      "conversationId": "e2f19308-29d5-44ce-8b58-38307a7c8662",
+      "ticket": {
+        "title": "[LED1000 TEST] Xác nhận báo giá công trình nguồn 12V 20A",
+        "priority": "high",
+        "type": "quotation",
+        "status": "open",
+        "departmentName": "Tư vấn sản phẩm"
+      }
+    },
+    {
+      "id": "TICKET-02",
+      "title": "[LED1000 TEST] Kiểm tồn kho LED dây COB 24V",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "ticketId": "8fdf642e-fc61-48dd-85fd-e5070e3a1b6a",
+      "conversationId": "17db1ad5-0bc1-4241-84b6-059e7ccef14f",
+      "ticket": {
+        "title": "[LED1000 TEST] Kiểm tồn kho LED dây COB 24V",
+        "priority": "medium",
+        "type": "consultation",
+        "status": "open",
+        "departmentName": "Tư vấn sản phẩm"
+      }
+    },
+    {
+      "id": "TICKET-03",
+      "title": "[LED1000 TEST] Yêu cầu xuất VAT",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "ticketId": "073892d6-6e0f-46d4-91b3-11fb2ff3a721",
+      "conversationId": "50cbe35f-eb0b-41f5-9b57-7075266ae57e",
+      "ticket": {
+        "title": "[LED1000 TEST] Yêu cầu xuất VAT",
+        "priority": "medium",
+        "type": "quotation",
+        "status": "open",
+        "departmentName": "Chăm sóc khách hàng"
+      }
+    },
+    {
+      "id": "TICKET-04",
+      "title": "[LED1000 TEST] Tư vấn kỹ thuật bảng hiệu ngoài trời",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "ticketId": "d188225a-66ef-4ecb-b7fc-6a1c7ab9eaf5",
+      "conversationId": "cb927d51-5854-4ae4-9674-809f44e61efa",
+      "ticket": {
+        "title": "[LED1000 TEST] Tư vấn kỹ thuật bảng hiệu ngoài trời",
+        "priority": "high",
+        "type": "consultation",
+        "status": "open",
+        "departmentName": "Kỹ thuật"
+      }
+    },
+    {
+      "id": "TICKET-05",
+      "title": "[LED1000 TEST] Bảo hành nguồn LED",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "ticketId": "95c58828-ab7a-4d6a-88b5-2cf968ea3322",
+      "conversationId": "52b764cd-5960-42fc-a810-bf03cfc474ef",
+      "ticket": {
+        "title": "[LED1000 TEST] Bảo hành nguồn LED",
+        "priority": "high",
+        "type": "warranty",
+        "status": "open",
+        "departmentName": "Chăm sóc khách hàng"
+      }
+    }
+  ]
+}

@@ -1,0 +1,406 @@
+{
+  "runInfo": {
+    "imageDir": "data/image",
+    "startedAt": "2026-06-18T13:49:37.679Z",
+    "finishedAt": "2026-06-18T13:51:13.577Z",
+    "total": 11,
+    "passed": 9,
+    "failed": 0,
+    "review": 2
+  },
+  "results": [
+    {
+      "fileName": "dencamungthanh19cmsacpinusb6_MBlnjSem.jpg",
+      "fileSize": 37405,
+      "detectedType": "jpg-gemini",
+      "sectionCount": 1,
+      "warningCount": 5,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 21.305686259s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 21.174572907s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 21.058447713s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin sản phẩm được trích xuất từ hình ảnh quảng cáo đèn LED thanh cảm ứng."
+      ],
+      "durationMs": 1895,
+      "preview": "Đèn LED thanh cảm ứng có cổng sạc 19cm Tên sản phẩm: Đèn LED thanh cảm ứng có cổng sạc. Chiều dài: 19cm. Công dụng: Chuyên dùng chiếu sáng cầu thang, tủ quần áo, hành lang.",
+      "sections": [
+        {
+          "title": "Đèn LED thanh cảm ứng có cổng sạc 19cm",
+          "content": "Tên sản phẩm: Đèn LED thanh cảm ứng có cổng sạc. Chiều dài: 19cm. Công dụng: Chuyên dùng chiếu sáng cầu thang, tủ quần áo, hành lang.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1,
+            "geminiNotes": "Sản phẩm có tính năng cảm ứng và tích hợp cổng sạc pin."
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "dencamungthanh38cmsacpinusb2_zCFBl1vt.jpg",
+      "fileSize": 41156,
+      "detectedType": "jpg-gemini",
+      "sectionCount": 2,
+      "warningCount": 5,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\nPlease retry in 19.53452885s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 19.399785405s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 19.24077516s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin sản phẩm được trích xuất từ hình ảnh quảng cáo của LTP Lighting."
+      ],
+      "durationMs": 2225,
+      "preview": "Đèn LED thanh cảm ứng sạc pin USB Sản phẩm: Đèn LED thanh cảm ứng, sạc pin qua cổng USB. Kích thước: Dài 37.5cm. Công dụng: Chuyên dùng chiếu sáng cầu thang, tủ quần áo, hành lang. Thông tin liên hệ LTP Lighting Thương hiệu: LED1000 - LTP Lighting. Hotline: 0909 003 082.",
+      "sections": [
+        {
+          "title": "Đèn LED thanh cảm ứng sạc pin USB",
+          "content": "Sản phẩm: Đèn LED thanh cảm ứng, sạc pin qua cổng USB. Kích thước: Dài 37.5cm. Công dụng: Chuyên dùng chiếu sáng cầu thang, tủ quần áo, hành lang.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        },
+        {
+          "title": "Thông tin liên hệ LTP Lighting",
+          "content": "Thương hiệu: LED1000 - LTP Lighting. Hotline: 0909 003 082.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "contact",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "denhinhledtrangtrisudungpin1_OsrTp72w.jpg",
+      "fileSize": 55319,
+      "detectedType": "jpg-gemini",
+      "sectionCount": 1,
+      "warningCount": 6,
+      "status": "review",
+      "flags": [
+        "quality_warnings"
+      ],
+      "notes": [
+        "Quality warnings: Không có thông tin về giá, thông số kỹ thuật chi tiết (điện áp, kích thước) hoặc hướng dẫn sử dụng cụ thể trong hình ảnh.",
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 17.287597673s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 17.106636664s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 16.9184224s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Hình ảnh quảng cáo sản phẩm đèn LED trang trí sử dụng pin với các hình dáng khác nhau."
+      ],
+      "durationMs": 2049,
+      "preview": "Đèn hình LED có cốc treo sử dụng pin Sản phẩm đèn LED trang trí có cốc treo, sử dụng pin. Các mẫu hình dáng bao gồm: Ngôi sao, cây thông, hoa tuyết, mặt trăng, chuông.",
+      "sections": [
+        {
+          "title": "Đèn hình LED có cốc treo sử dụng pin",
+          "content": "Sản phẩm đèn LED trang trí có cốc treo, sử dụng pin. Các mẫu hình dáng bao gồm: Ngôi sao, cây thông, hoa tuyết, mặt trăng, chuông.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1,
+            "geminiNotes": "Thông tin dựa trên tiêu đề và hình ảnh minh họa sản phẩm."
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "denledcambienhongngoaioptuongltp901ot2_WxNTgkXF.jpg",
+      "fileSize": 39999,
+      "detectedType": "jpg-gemini",
+      "sectionCount": 2,
+      "warningCount": 5,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 15.274953318s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 15.123967553s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 14.992843996s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin sản phẩm được trích xuất từ hình ảnh quảng cáo."
+      ],
+      "durationMs": 1927,
+      "preview": "Đèn LED ốp tường cảm ứng hồng ngoại Sản phẩm: Đèn LED ốp tường cảm ứng hồng ngoại. Đặc điểm: Sang trọng, có cáp sạc USB, sử dụng chip LED SMD 2835 siêu sáng. Thông tin liên hệ Thương hiệu: LED1000 - LTP LIGHTING. Hotline: 0909 003 082.",
+      "sections": [
+        {
+          "title": "Đèn LED ốp tường cảm ứng hồng ngoại",
+          "content": "Sản phẩm: Đèn LED ốp tường cảm ứng hồng ngoại. Đặc điểm: Sang trọng, có cáp sạc USB, sử dụng chip LED SMD 2835 siêu sáng.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 0.95,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        },
+        {
+          "title": "Thông tin liên hệ",
+          "content": "Thương hiệu: LED1000 - LTP LIGHTING. Hotline: 0909 003 082.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 0.95,
+            "geminiType": "contact",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "denphaohoanangluongmattroi120led1_P2XtMABg.jpg",
+      "fileSize": 26364,
+      "detectedType": "jpg-gemini",
+      "sectionCount": 1,
+      "warningCount": 5,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\nPlease retry in 13.344900336s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 13.225932516s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 13.087707056s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin sản phẩm được trích xuất từ hình ảnh catalogue của đèn pháo hoa năng lượng mặt trời."
+      ],
+      "durationMs": 2103,
+      "preview": "Thông số kỹ thuật Đèn pháo hoa năng lượng mặt trời Tên sản phẩm: Đèn pháo hoa năng lượng mặt trời. Cấu tạo: 40 sợi, tổng cộng 120 bóng LED. Kích thước: Phần đầu đèn 25cm, phần thân cắm 75cm. Nguồn điện: Sử dụng pin năng lượng mặt trời tích hợp.",
+      "sections": [
+        {
+          "title": "Thông số kỹ thuật Đèn pháo hoa năng lượng mặt trời",
+          "content": "Tên sản phẩm: Đèn pháo hoa năng lượng mặt trời. Cấu tạo: 40 sợi, tổng cộng 120 bóng LED. Kích thước: Phần đầu đèn 25cm, phần thân cắm 75cm. Nguồn điện: Sử dụng pin năng lượng mặt trời tích hợp.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1,
+            "geminiNotes": "Thông số được đọc trực tiếp từ hình ảnh minh họa sản phẩm."
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "denthatrantrangtriquancafe_e59MD1l6.png",
+      "fileSize": 272485,
+      "detectedType": "png-gemini",
+      "sectionCount": 1,
+      "warningCount": 6,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\nPlease retry in 10.483589193s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 9.566101312s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 8.664669125s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Hình ảnh sản phẩm đèn thả trần trang trí quán cafe bằng mây tre đan. Không có thông tin về giá, mã sản phẩm hay thông số kỹ thuật cụ thể trong ảnh. | Không tìm thấy thông tin về giá, mã sản phẩm, kích thước hoặc thông số kỹ thuật trong hình ảnh."
+      ],
+      "durationMs": 5295,
+      "preview": "Đèn thả trần trang trí quán cafe mây tre đan Sản phẩm đèn thả trần có thiết kế dạng vòm lớn, chất liệu mây tre đan tự nhiên, phù hợp để trang trí không gian quán cafe, nhà hàng hoặc không gian nội thất phong cách mộc mạc, gần gũi.",
+      "sections": [
+        {
+          "title": "Đèn thả trần trang trí quán cafe mây tre đan",
+          "content": "Sản phẩm đèn thả trần có thiết kế dạng vòm lớn, chất liệu mây tre đan tự nhiên, phù hợp để trang trí không gian quán cafe, nhà hàng hoặc không gian nội thất phong cách mộc mạc, gần gũi.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 0.8,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1,
+            "geminiNotes": "Hình ảnh minh họa sản phẩm, không kèm thông số kỹ thuật chi tiết."
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "led-day-5730-chip-samsungs4602_qwR4rHIr.jpg",
+      "fileSize": 22315,
+      "detectedType": "jpg-gemini",
+      "sectionCount": 2,
+      "warningCount": 5,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 5.963009308s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 5.817954451s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 5.691957993s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin được trích xuất từ hình ảnh sản phẩm LED dây sử dụng chip Samsung 5730."
+      ],
+      "durationMs": 1847,
+      "preview": "LED dây chip Samsung 5730 Sản phẩm LED dây sử dụng chip Samsung 5730, điện áp 12V, đạt chuẩn CE và RoHS. Thương hiệu phân phối: LTP Led Lighting & Power. Thông tin liên hệ Website: linhkienled1000.com",
+      "sections": [
+        {
+          "title": "LED dây chip Samsung 5730",
+          "content": "Sản phẩm LED dây sử dụng chip Samsung 5730, điện áp 12V, đạt chuẩn CE và RoHS. Thương hiệu phân phối: LTP Led Lighting & Power.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 0.9,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1,
+            "geminiNotes": "Thông tin dựa trên nhãn in trực tiếp trên dây LED trong ảnh."
+          }
+        },
+        {
+          "title": "Thông tin liên hệ",
+          "content": "Website: linhkienled1000.com",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "contact",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "ledday12v2835120ds-3_vSxNmnqA.png",
+      "fileSize": 284974,
+      "detectedType": "png-gemini",
+      "sectionCount": 2,
+      "warningCount": 6,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 57.369445816s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 56.72532165s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 56.126596156s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin sản phẩm LED dây chống nước được trích xuất từ hình ảnh catalogue. | Hình ảnh có tiêu đề ghi DC24V nhưng trên dây LED trong ảnh có in chữ 12V, cần xác nhận lại thông số kỹ thuật chính xác với nhà cung cấp."
+      ],
+      "durationMs": 70675,
+      "preview": "Thông tin sản phẩm LED dây chống nước LTP Tên sản phẩm: LED dây chống nước. Điện áp: DC24V. Loại chip: 5050. Quy cách: Cuộn 5M. Mật độ LED: 60LED/M. Công suất: 12W/M. Kích thước mạch: 10mm. Chỉ số chống nước: IP65. Đặc điểm: Có keo phủ chíp. Bảo hành: 06 tháng. Ứng dụng của LED dây chống nước Sản phẩm phù hợp cho các ứng dụng: Trang trí ban công, trang trí ngoài trời, trang trí quảng cáo.",
+      "sections": [
+        {
+          "title": "Thông tin sản phẩm LED dây chống nước LTP",
+          "content": "Tên sản phẩm: LED dây chống nước. Điện áp: DC24V. Loại chip: 5050. Quy cách: Cuộn 5M. Mật độ LED: 60LED/M. Công suất: 12W/M. Kích thước mạch: 10mm. Chỉ số chống nước: IP65. Đặc điểm: Có keo phủ chíp. Bảo hành: 06 tháng.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        },
+        {
+          "title": "Ứng dụng của LED dây chống nước",
+          "content": "Sản phẩm phù hợp cho các ứng dụng: Trang trí ban công, trang trí ngoài trời, trang trí quảng cáo.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "technical",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "ledthanh12v4014ltp_2POKLSkb.png",
+      "fileSize": 76239,
+      "detectedType": "png-gemini",
+      "sectionCount": 1,
+      "warningCount": 5,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 53.364506233s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 52.959782343s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 52.776426507s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin được trích xuất từ hình ảnh sản phẩm LED thanh 12V."
+      ],
+      "durationMs": 2353,
+      "preview": "Thông số kỹ thuật LED thanh 12V 4014 Sản phẩm: LED thanh 12V. Thông số in trên thanh: 990x12MM - 4014 - 144LED. Xuất xứ: SAMSUNG, MADE IN KOREA.",
+      "sections": [
+        {
+          "title": "Thông số kỹ thuật LED thanh 12V 4014",
+          "content": "Sản phẩm: LED thanh 12V. Thông số in trên thanh: 990x12MM - 4014 - 144LED. Xuất xứ: SAMSUNG, MADE IN KOREA.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 0.95,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1,
+            "geminiNotes": "Thông tin dựa trên các ký tự in trực tiếp trên bề mặt thanh LED."
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "ledthanh12v5054machdongltp_eQFNk6af.png",
+      "fileSize": 91387,
+      "detectedType": "png-gemini",
+      "sectionCount": 1,
+      "warningCount": 6,
+      "status": "review",
+      "flags": [
+        "quality_warnings"
+      ],
+      "notes": [
+        "Quality warnings: Không có thông tin về giá, công suất, kích thước hoặc thông số kỹ thuật chi tiết trong hình ảnh.",
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 51.024400306s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 50.815174674s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 50.438766996s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Hình ảnh hiển thị sản phẩm LED thanh 12V 5054 mạch đồng LTP. Không có thông tin giá hoặc thông số kỹ thuật chi tiết trong ảnh."
+      ],
+      "durationMs": 2978,
+      "preview": "LED thanh 12V 5054 mạch đồng LTP Sản phẩm LED thanh 12V sử dụng chip LED 5054, thiết kế trên mạch đồng LTP. Sản phẩm bao gồm các thanh LED có dây nối sẵn, phù hợp cho các ứng dụng chiếu sáng quảng cáo hoặc trang trí.",
+      "sections": [
+        {
+          "title": "LED thanh 12V 5054 mạch đồng LTP",
+          "content": "Sản phẩm LED thanh 12V sử dụng chip LED 5054, thiết kế trên mạch đồng LTP. Sản phẩm bao gồm các thanh LED có dây nối sẵn, phù hợp cho các ứng dụng chiếu sáng quảng cáo hoặc trang trí.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 0.8,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1,
+            "geminiNotes": "Thông tin được trích xuất từ tên file và hình ảnh trực quan."
+          }
+        }
+      ]
+    },
+    {
+      "fileName": "z65728420253985f0cf514c385fa84ca7ab872c9170e82_WqcLpV2O.jpg",
+      "fileSize": 59582,
+      "detectedType": "jpg-gemini",
+      "sectionCount": 3,
+      "warningCount": 5,
+      "status": "pass",
+      "flags": [],
+      "notes": [
+        "Model/fallback notes: Model gemini-2.5-pro không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-pro, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\nPlease retry in 48.093655813s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.5-flash. | Model gemini-3.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-3.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 47.917475487s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-2.5-flash. | Model gemini-2.5-flash không dùng được cho lần đọc này (Gemini document import error (gemini-2.5-flash, HTTP 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 47.708182305s. (RESOURCE_EXHAUSTED)), thử tiếp gemini-3.1-flash-lite. | Model gemini-2.5-pro không dùng được cho lần đọc này, đã thử lại thành công bằng gemini-3.1-flash-lite. | Ghi chú nhận diện tài liệu: Thông tin sản phẩm bộ chuyển đổi nguồn LTP từ hình ảnh catalogue."
+      ],
+      "durationMs": 2426,
+      "preview": "Bộ chuyển đổi nguồn LTP 12V 400W Sản phẩm: Bộ chuyển đổi nguồn AC220V sang 12VDC 400W. Thương hiệu: LTP. Model: LTP 529-AM400. Đặc điểm nổi bật: Tích hợp Dimmer 3 mức, hiệu suất làm việc > 95% công suất. Ứng dụng: Cấp nguồn cho đèn LED, Camera. Tiêu chuẩn: IP33. Tính năng bảo vệ nguồn LTP 12V 400W Sản phẩm được tích hợp các tính năng bảo vệ an toàn: Bảo vệ ngắn mạch, bảo vệ quá dòng, bảo vệ quá áp. Chính sách bảo hành nguồn LTP Sản phẩm bộ chuyển đổi nguồn LTP 12V 400W được áp dụng chế độ bảo hà",
+      "sections": [
+        {
+          "title": "Bộ chuyển đổi nguồn LTP 12V 400W",
+          "content": "Sản phẩm: Bộ chuyển đổi nguồn AC220V sang 12VDC 400W. Thương hiệu: LTP. Model: LTP 529-AM400. Đặc điểm nổi bật: Tích hợp Dimmer 3 mức, hiệu suất làm việc > 95% công suất. Ứng dụng: Cấp nguồn cho đèn LED, Camera. Tiêu chuẩn: IP33.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "product",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        },
+        {
+          "title": "Tính năng bảo vệ nguồn LTP 12V 400W",
+          "content": "Sản phẩm được tích hợp các tính năng bảo vệ an toàn: Bảo vệ ngắn mạch, bảo vệ quá dòng, bảo vệ quá áp.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "technical",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        },
+        {
+          "title": "Chính sách bảo hành nguồn LTP",
+          "content": "Sản phẩm bộ chuyển đổi nguồn LTP 12V 400W được áp dụng chế độ bảo hành 24 tháng.",
+          "metadata": {
+            "sourceFormat": "gemini-document",
+            "parserConfidence": 1,
+            "geminiType": "warranty",
+            "documentKind": "product_catalogue",
+            "geminiModel": "gemini-3.1-flash-lite",
+            "sourcePage": 1
+          }
+        }
+      ]
+    }
+  ]
+}

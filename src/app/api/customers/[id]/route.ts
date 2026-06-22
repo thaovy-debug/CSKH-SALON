@@ -71,11 +71,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       tags,
       isBlocked,
       metadata,
-      hairHistory,
-      hairCondition,
+      purchaseContext,
+      technicalNeeds,
       profileNotes,
-      bleachHistory,
-      previousStylist,
+      quoteStatus,
+      previousAdvisor,
       preferences,
     } = body;
 
@@ -92,19 +92,18 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         ...(phone !== undefined && { phone: phone.trim() }),
         ...(whatsapp !== undefined && { whatsapp: whatsapp.trim() }),
         ...(tags !== undefined && { tags: tags.trim() }),
-        ...(hairHistory !== undefined && { hairHistory: hairHistory.trim() }),
-        ...(hairCondition !== undefined && {
-          hairCondition: hairCondition.trim(),
+        ...(purchaseContext !== undefined && { purchaseContext: purchaseContext.trim() }),
+        ...(technicalNeeds !== undefined && {
+          technicalNeeds: technicalNeeds.trim(),
         }),
         ...(profileNotes !== undefined && {
           profileNotes: profileNotes.trim(),
         }),
-        ...(bleachHistory !== undefined && {
-          bleachHistory:
-            bleachHistory === "yes" || bleachHistory === "no" ? bleachHistory : "unknown",
+        ...(quoteStatus !== undefined && {
+          quoteStatus: quoteStatus === "yes" || quoteStatus === "no" ? quoteStatus : "unknown",
         }),
-        ...(previousStylist !== undefined && {
-          previousStylist: previousStylist.trim(),
+        ...(previousAdvisor !== undefined && {
+          previousAdvisor: previousAdvisor.trim(),
         }),
         ...(preferences !== undefined && {
           preferences: preferences.trim(),

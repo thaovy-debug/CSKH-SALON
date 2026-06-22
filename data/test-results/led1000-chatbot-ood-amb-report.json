@@ -1,0 +1,113 @@
+{
+  "runInfo": {
+    "baseUrl": "http://localhost:3000",
+    "endpoint": "/api/chat",
+    "authMethod": "api_key",
+    "startedAt": "2026-06-18T12:19:26.558Z",
+    "finishedAt": "2026-06-18T12:20:04.289Z",
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "review": 0
+  },
+  "summaryByGroup": {
+    "Business/contact": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Product category retrieval": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Technical consulting": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Price/inventory behavior": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Out-of-domain regression": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "review": 0
+    },
+    "Ambiguous/missing info": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "review": 0
+    }
+  },
+  "results": [
+    {
+      "id": "OOD-01",
+      "group": "Out-of-domain regression",
+      "question": "Tôi muốn đặt bàn ăn tối thì sao?",
+      "response": "Dạ, xin lỗi bạn, LED1000 là đơn vị chuyên cung cấp đèn LED, nguồn điện và linh kiện chiếu sáng, không phải là nhà hàng nên bên em không hỗ trợ đặt bàn ăn tối ạ.\n\nNếu bạn đang cần tìm các loại đèn trang trí để tạo không gian ấm cúng cho bàn ăn hoặc khu vực bếp, LED1000 rất sẵn lòng tư vấn giúp bạn. Bạn cần tìm loại đèn như thế nào (ví dụ: đèn thả, đèn LED dây hắt tủ bếp, hay đèn trang trí khác) để em hỗ trợ nhé?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "09784693-a8ac-4954-91f9-12d74e013c0d",
+      "httpStatus": 200,
+      "durationMs": 8412
+    },
+    {
+      "id": "OOD-02",
+      "group": "Out-of-domain regression",
+      "question": "Có tư vấn tour du lịch không?",
+      "response": "Dạ, rất tiếc là LED1000 chỉ chuyên về đèn LED, nguồn điện, linh kiện và thiết bị chiếu sáng thôi ạ, nên bên em không có tư vấn về tour du lịch.\n\nNếu bạn có nhu cầu về đèn LED hoặc các thiết bị điện liên quan, hãy cho em biết mục đích sử dụng, em sẽ hỗ trợ tư vấn các sản phẩm phù hợp cho mình nhé!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "81d96a60-c7cc-471c-be7d-07cfb12f825c",
+      "httpStatus": 200,
+      "durationMs": 7482
+    },
+    {
+      "id": "OOD-03",
+      "group": "Out-of-domain regression",
+      "question": "Bên mình có bán mỹ phẩm không?",
+      "response": "Dạ, LED1000 chuyên về các sản phẩm đèn LED, nguồn điện, linh kiện LED, phụ kiện chiếu sáng, đèn trang trí và thiết bị điện liên quan thôi ạ. Bên em không kinh doanh mỹ phẩm.\n\nBạn có cần em hỗ trợ tư vấn các thiết bị chiếu sáng hay linh kiện điện không ạ? Nếu có, bạn cho em xin thông tin mục đích sử dụng (trong nhà/ngoài trời, điện áp, công suất...) để em hỗ trợ mình nhé!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "b46ecd36-dadf-4c65-a008-a7d8b28eb32f",
+      "httpStatus": 200,
+      "durationMs": 7223
+    },
+    {
+      "id": "AMB-01",
+      "group": "Ambiguous/missing info",
+      "question": "Tôi cần mua đèn cho bảng hiệu, tư vấn giúp tôi.",
+      "response": "Xin chào! LED1000 rất vui được hỗ trợ bạn chọn đèn cho bảng hiệu. Để em có thể tư vấn sản phẩm phù hợp, bền và đúng kỹ thuật nhất, bạn cho em xin thêm một vài thông tin nhé:\n\n1. **Vị trí lắp đặt:** Bảng hiệu của mình để trong nhà hay ngoài trời (có mái che hay chịu mưa nắng trực tiếp)?\n2. **Kích thước:** Tổng chiều dài/diện tích bảng hiệu là bao nhiêu mét?\n3. **Loại đèn dự kiến:** Bạn đang muốn dùng LED dây, LED module hay đèn pha hắt? (Nếu chưa rõ, bạn có thể mô tả kiểu bảng hiệu, em sẽ tư vấn loại phù hợp).\n4. **Thông số điện:** Bạn đã có sẵn điện áp 12V/24V hay 220V chưa?\n5. **Màu ánh sáng:** Bạn cần ánh sáng trắng, vàng, trung tính hay cần đổi màu (RGB)?\n6. **Lắp đặt:** Bạn đã có thợ thi công chuyên môn cho phần này chưa ạ?\n\nBạn cứ chia sẻ các thông tin trên, em sẽ tư vấn giải pháp tối ưu nhất cho mình!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "9c122ee6-2913-465d-8bb3-3fbe7f0e6d05",
+      "httpStatus": 200,
+      "durationMs": 7169
+    },
+    {
+      "id": "AMB-02",
+      "group": "Ambiguous/missing info",
+      "question": "Tôi muốn mua nguồn cho LED dây 10m, chọn loại nào?",
+      "response": "Dạ, để chọn nguồn phù hợp và an toàn cho 10m LED dây, em cần thêm một vài thông tin từ bạn để tư vấn chính xác ạ:\n\n1. **Thông số LED dây:** Bạn đang dùng loại LED dây nào (ví dụ: LED dây COB, LED dây 12V hay 24V) và công suất tiêu thụ mỗi mét là bao nhiêu W/m ạ?\n2. **Mục đích sử dụng:** Bạn lắp trong nhà hay ngoài trời?\n\n**Nguyên tắc chung bên em thường áp dụng:**\n*   **Tính công suất:** Công suất nguồn tối thiểu = (Tổng chiều dài LED x Công suất mỗi mét) x 1.25 (hệ số an toàn dư tải 20-30%).\n*   **Điện áp:** Với chiều dài 10m, nếu dùng LED 12V thường sẽ bị hao áp, bạn nên cân nhắc dùng LED 24V hoặc nếu dùng 12V thì cần cấp nguồn hai đầu để ánh sáng đều hơn.\n\nBạn cho em xin thông tin chi tiết hoặc hình ảnh sản phẩm đang dùng, em sẽ kiểm tra và gợi ý loại nguồn phù hợp nhất cho mình nhé!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "42ad5872-86ca-4181-b5d7-db7353b888b6",
+      "httpStatus": 200,
+      "durationMs": 7003
+    }
+  ]
+}

@@ -39,6 +39,23 @@ interface TagData {
   };
 }
 
+interface CustomerData {
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+}
+
+interface ChannelAccountData {
+  id: string;
+  type: string;
+  displayName: string;
+  externalAccountId: string;
+  status: string;
+  isActive: boolean;
+}
+
 interface ConversationData {
   id: string;
   channel: string;
@@ -49,27 +66,53 @@ interface ConversationData {
   messages: MessageData[];
   _count: { messages: number };
   tags: TagData[];
+  customer?: CustomerData | null;
+  channelAccount?: ChannelAccountData | null;
   createdAt: string;
   updatedAt: string;
 }
 
 const channelIcons: Record<string, React.ElementType> = {
   whatsapp: MessageCircle,
+  facebook: MessageCircle,
+  instagram: MessageCircle,
+  zalo: MessageCircle,
+  shopee: MessageCircle,
+  tiktok_shop: MessageCircle,
   email: Mail,
   phone: Phone,
+  sms: MessageSquare,
+  telegram: MessageCircle,
+  api: MessageSquare,
 };
 
 const channelColors: Record<string, string> = {
   whatsapp: "text-green-600 bg-green-50",
+  facebook: "text-blue-700 bg-blue-50",
+  instagram: "text-pink-700 bg-pink-50",
+  zalo: "text-sky-700 bg-sky-50",
+  shopee: "text-orange-700 bg-orange-50",
+  tiktok_shop: "text-slate-800 bg-slate-100",
   email: "text-blue-600 bg-blue-50",
   phone: "text-purple-600 bg-purple-50",
+  sms: "text-indigo-700 bg-indigo-50",
+  telegram: "text-cyan-700 bg-cyan-50",
+  api: "text-slate-700 bg-slate-100",
 };
 
 const channels = [
   { value: "all", label: "Tất cả kênh" },
+  { value: "facebook", label: "Facebook" },
+  { value: "instagram", label: "Instagram" },
+  { value: "zalo", label: "Zalo" },
+  { value: "shopee", label: "Shopee" },
+  { value: "tiktok_shop", label: "TikTok Shop" },
   { value: "whatsapp", label: "WhatsApp" },
   { value: "email", label: "Email" },
   { value: "phone", label: "Điện thoại" },
+  { value: "sms", label: "SMS" },
+  { value: "telegram", label: "Telegram" },
+  { value: "api", label: "API" },
 ];
 
 const statuses = [
@@ -85,6 +128,81 @@ function getStatusLabel(status: string) {
     statuses.find((item) => item.value === status)?.label ||
     status
   );
+}
+
+const genericCustomerNames = new Set([
+  "unknown",
+  "facebook user",
+  "instagram user",
+  "zalo user",
+  "khách zalo",
+]);
+
+function isGenericCustomerName(name?: string | null) {
+  const normalized = name?.trim().toLowerCase();
+  return !normalized || genericCustomerNames.has(normalized);
+}
+
+function parseScopedContact(channel: string, contact?: string | null) {
+  const value = contact?.trim() || "";
+  const parts = value.split(":").filter(Boolean);
+
+  if (
+    ["facebook", "instagram", "zalo", "shopee", "tiktok_shop"].includes(channel) &&
+    parts.length >= 3
+  ) {
+    return {
+      accountExternalId: parts[1],
+      customerExternalId: parts.slice(2).join(":"),
+      isScoped: true,
+    };
+  }
+
+  if (
+    ["facebook", "instagram", "zalo", "shopee", "tiktok_shop", "telegram"].includes(
+      channel
+    ) &&
+    parts.length === 2
+  ) {
+    return {
+      accountExternalId: "",
+      customerExternalId: parts[1],
+      isScoped: true,
+    };
+  }
+
+  return {
+    accountExternalId: "",
+    customerExternalId: value,
+    isScoped: false,
+  };
+}
+
+function getConversationIdentity(conversation: ConversationData) {
+  const scoped = parseScopedContact(conversation.channel, conversation.customerContact);
+  const accountExternalId = conversation.channelAccount?.externalAccountId || scoped.accountExternalId;
+  const accountName =
+    conversation.channelAccount?.displayName ||
+    (accountExternalId ? `TK ${accountExternalId}` : "");
+  const rawName = conversation.customer?.name || conversation.customerName;
+  const displayName = isGenericCustomerName(rawName) ? "Khách chưa định danh" : rawName;
+  const directContact =
+    conversation.customer?.phone ||
+    conversation.customer?.whatsapp ||
+    conversation.customer?.email ||
+    (!scoped.isScoped ? conversation.customerContact : "");
+  const customerCode = scoped.customerExternalId || directContact;
+
+  return {
+    displayName,
+    platformLabel: getChannelLabel(conversation.channel),
+    accountName,
+    accountExternalId,
+    customerCode,
+    customerCodeLabel: ["facebook", "instagram", "zalo", "shopee", "tiktok_shop", "telegram"].includes(conversation.channel)
+      ? "Mã khách"
+      : "Liên hệ",
+  };
 }
 
 export default function ConversationsPage() {
@@ -208,6 +326,10 @@ export default function ConversationsPage() {
     }
   };
 
+  const selectedIdentity = selectedConversation
+    ? getConversationIdentity(selectedConversation)
+    : null;
+
   return (
     <>
       <Header
@@ -286,6 +408,7 @@ export default function ConversationsPage() {
                     channelIcons[conv.channel] || MessageSquare;
                   const lastMessage = conv.messages[0];
                   const isSelected = selectedId === conv.id;
+                  const identity = getConversationIdentity(conv);
 
                   return (
                     <button
@@ -309,23 +432,28 @@ export default function ConversationsPage() {
                         <div className="flex-1 min-w-0 text-left">
                           <div className="flex justify-between items-start mb-1">
                             <p className="font-medium text-sm text-owly-text truncate">
-                              {conv.customerName}
+                              {identity.displayName}
                             </p>
                             <span className="text-xs text-owly-text-light flex-shrink-0 ml-2">
                               {formatRelativeTime(conv.updatedAt)}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs text-owly-text-light">
-                              {getChannelLabel(conv.channel)}
-                            </span>
-                            <span className="text-xs text-owly-text-light">
-                              --
-                            </span>
-                            <span className="text-xs text-owly-text-light">
-                              {conv._count.messages} tin nhắn
-                            </span>
+                          <div className="flex items-center gap-1.5 mt-0.5 text-xs text-owly-text-light min-w-0">
+                            <span>{identity.platformLabel}</span>
+                            {identity.accountName && (
+                              <>
+                                <span>•</span>
+                                <span className="truncate">{identity.accountName}</span>
+                              </>
+                            )}
+                            <span>•</span>
+                            <span>{conv._count.messages} tin nhắn</span>
                           </div>
+                          {identity.customerCode && (
+                            <p className="text-[11px] text-owly-text-light mt-1 truncate">
+                              {identity.customerCodeLabel}: {identity.customerCode}
+                            </p>
+                          )}
                           {lastMessage && (
                             <p className="text-sm text-owly-text-light mt-1 truncate">
                               {lastMessage.role === "admin" && (
@@ -390,7 +518,7 @@ export default function ConversationsPage() {
           ) : selectedConversation ? (
             <>
               {/* Conversation Header */}
-              <div className="h-16 border-b border-owly-border bg-owly-surface px-4 md:px-6 flex items-center justify-between flex-shrink-0">
+              <div className="min-h-[88px] border-b border-owly-border bg-owly-surface px-4 md:px-6 py-3 flex items-center justify-between gap-3 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => {
@@ -419,7 +547,7 @@ export default function ConversationsPage() {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-owly-text truncate">
-                        {selectedConversation.customerName}
+                        {selectedIdentity?.displayName}
                       </h3>
                       <span
                         className={cn(
@@ -430,15 +558,19 @@ export default function ConversationsPage() {
                         {getStatusLabel(selectedConversation.status)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-owly-text-light">
-                      <span>
-                        {getChannelLabel(selectedConversation.channel)}
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs text-owly-text-light mt-1">
+                      <span className="px-2 py-0.5 rounded-full bg-owly-bg border border-owly-border">
+                        Nền tảng: {selectedIdentity?.platformLabel}
                       </span>
-                      {selectedConversation.customerContact && (
-                        <>
-                          <span>--</span>
-                          <span>{selectedConversation.customerContact}</span>
-                        </>
+                      {selectedIdentity?.accountName && (
+                        <span className="px-2 py-0.5 rounded-full bg-owly-bg border border-owly-border">
+                          Tài khoản: {selectedIdentity.accountName}
+                        </span>
+                      )}
+                      {selectedIdentity?.customerCode && (
+                        <span className="px-2 py-0.5 rounded-full bg-owly-bg border border-owly-border">
+                          {selectedIdentity.customerCodeLabel}: {selectedIdentity.customerCode}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -533,7 +665,7 @@ export default function ConversationsPage() {
                                 ? msg.role === "assistant"
                                   ? "Trợ lý AI"
                                   : "Nhân viên"
-                                : selectedConversation.customerName}
+                                : selectedIdentity?.displayName}
                             </span>
                           </div>
                           <p className="text-sm whitespace-pre-wrap break-words">

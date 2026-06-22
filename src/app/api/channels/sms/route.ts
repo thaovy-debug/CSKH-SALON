@@ -19,12 +19,17 @@ export async function POST(request: NextRequest) {
         logger.warn("[SMS] Invalid Twilio signature");
         return new NextResponse("Forbidden", { status: 403 });
       }
+    } else if (process.env.NODE_ENV === "production") {
+      logger.warn("[SMS] Missing Twilio auth token in production");
+      return new NextResponse("Twilio auth token is not configured", { status: 503 });
     }
 
     const from = params.From || "";
+    const to = params.To || "";
+    const messageSid = params.MessageSid || "";
     const body = params.Body || "";
 
-    const response = await handleIncomingSms(from, body);
+    const response = await handleIncomingSms(from, body, { to, messageSid });
 
     // Return TwiML response
     const twiml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${response}</Message></Response>`;

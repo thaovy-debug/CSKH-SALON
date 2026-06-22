@@ -51,9 +51,9 @@ const en: Record<string, string> = {
   "auth.logout": "Log Out",
   "auth.username": "Username",
   "auth.password": "Password",
-  "auth.login_title": "Welcome to SalonDesk",
+  "auth.login_title": "Welcome to LED1000 CSKH",
   "auth.login_subtitle": "Sign in to your account",
-  "auth.setup_title": "Setup SalonDesk",
+  "auth.setup_title": "Setup LED1000 CSKH",
   "auth.setup_subtitle": "Create your admin account to get started",
 
   // Dashboard

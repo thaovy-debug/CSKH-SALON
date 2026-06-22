@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { chat, createNewConversation } from "@/lib/ai/engine";
-import { resolveCustomer } from "@/lib/customer-resolver";
+import { processNormalizedInboundMessage } from "@/lib/channels/normalized";
 import { logger } from "@/lib/logger";
 
 interface SmsConfig {
@@ -25,29 +24,32 @@ async function getSmsConfig(): Promise<SmsConfig | null> {
  */
 export async function handleIncomingSms(
   from: string,
-  body: string
+  body: string,
+  context?: {
+    to?: string;
+    messageSid?: string;
+  }
 ): Promise<string> {
   try {
     if (!body || !body.trim()) {
       return "Please send a message and we'll be happy to help!";
     }
 
-    const customerId = await resolveCustomer("sms", from, "SMS User");
-
-    let conversation = await prisma.conversation.findFirst({
-      where: {
-        channel: "sms",
-        status: { in: ["active", "escalated"] },
-        OR: [{ customerId }, { customerContact: from }],
+    const result = await processNormalizedInboundMessage({
+      channel: "sms",
+      externalCustomerId: from,
+      customerContact: from,
+      externalConversationId: context?.messageSid || from,
+      platformMessageId: context?.messageSid,
+      customerName: from || "SMS User",
+      text: body,
+      metadata: {
+        provider: "twilio",
+        ...(context?.to ? { to: context.to } : {}),
       },
     });
 
-    if (!conversation) {
-      conversation = await createNewConversation("sms", "SMS User", from, customerId);
-    }
-
-    const aiResponse = await chat(conversation.id, body.trim());
-    return aiResponse;
+    return result.response;
   } catch (error) {
     logger.error("[SMS] Failed to process incoming message:", error);
     return "Sorry, we're experiencing issues. Please try again later.";

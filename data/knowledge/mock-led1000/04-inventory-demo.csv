@@ -1,0 +1,16 @@
+MaSP,TenSanPham,Nhom,TonKho,KhaDung,TrangThai,NgayCapNhat,ViTriKho,SanPhamThayThe,GhiChu
+DEMO-AD12-5A,Adapter 12V 5A loại tốt,Nguồn Adapter,86,80,Còn hàng,2026-06-18,Kệ A1,DEMO-PS12-5A; DEMO-AD12-6A,Ưu tiên hỏi jack cắm trước khi chốt
+DEMO-AD12-10A,Adapter 12V 10A loại tốt,Nguồn Adapter,22,20,Còn ít,2026-06-18,Kệ A1,DEMO-PS12-10A,Nếu khách dùng bảng hiệu nên cân nhắc nguồn tổ ong
+DEMO-AD24-5A,Adapter 24V 5A loại tốt,Nguồn Adapter,0,0,Hết hàng,2026-06-18,Kệ A2,DEMO-PS24-10A,Gợi ý nguồn 24V 10A nếu tải phù hợp
+DEMO-PS12-10A,Nguồn tổ ong 12V 10A,Nguồn tổ ong,64,60,Còn hàng,2026-06-18,Kệ B1,DEMO-AD12-10A; DEMO-PS12-20A,
+DEMO-PS12-20A,Nguồn tổ ong 12V 20A,Nguồn tổ ong,18,15,Còn ít,2026-06-18,Kệ B1,DEMO-PS12-30A,
+DEMO-PS12-33A-OD,Nguồn 12V 33A ngoài trời chống mưa,Nguồn ngoài trời,9,8,Còn ít,2026-06-18,Kệ B3,DEMO-PS12-30A,Dùng ngoài trời cần che mưa trực tiếp nếu thi công lâu dài
+DEMO-PS48-10A,Nguồn tổ ong 48V 10A,Nguồn tổng DC,5,5,Còn ít,2026-06-18,Kệ B4,,Cần xác nhận điện áp thiết bị trước khi bán
+DEMO-COB12-5M,LED dây COB 12V 8mm 320D,LED dây COB,48,45,Còn hàng,2026-06-18,Kệ C1,DEMO-LED12-5050-5M,
+DEMO-COB24-10M,LED dây COB 24V 8mm 320D,LED dây COB,0,0,Hết hàng,2026-06-18,Kệ C2,DEMO-COB12-5M; DEMO-LED24-5050-IP65,Hỏi khách có đổi sang 12V hoặc loại chống nước được không
+DEMO-COB220-100M,LED dây COB 220V 10mm 300D,LED dây COB,3,3,Còn ít,2026-06-18,Kệ C3,DEMO-LED24-5050-IP65,Cần kỹ thuật lắp an toàn điện
+DEMO-LED24-5050-IP65,LED dây dán 24V 5050 IP65,LED dây chống nước,35,32,Còn hàng,2026-06-18,Kệ C4,DEMO-COB24-10M,
+DEMO-FLOOD-50W,Đèn pha LED 50W LTP,Đèn pha LED,27,25,Còn hàng,2026-06-18,Kệ D1,DEMO-FLOOD-100W,
+DEMO-FLOOD-100W,Đèn pha LED 100W LTP,Đèn pha LED,12,10,Còn ít,2026-06-18,Kệ D1,DEMO-FLOOD-50W,Hỏi diện tích và độ cao lắp
+DEMO-SOLAR-150W,Đèn năng lượng mặt trời 150W LTP,Đèn năng lượng mặt trời,0,0,Hết hàng,2026-06-18,Kệ D3,DEMO-FLOOD-100W,Nếu có điện lưới có thể chuyển sang đèn pha 100W
+DEMO-MOD-F5,LED đúc F5 12V SenYang,LED quảng cáo,5200,5000,Còn hàng,2026-06-18,Kệ E1,,Bán theo dây/túi tùy quy cách

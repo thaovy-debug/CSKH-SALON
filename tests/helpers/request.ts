@@ -54,7 +54,7 @@ export function createAuthenticatedRequest(
   return createRequest(path, {
     ...options,
     cookies: {
-      "salondesk-token": token,
+      "linhkienled1000-token": token,
       ...options.cookies,
     },
   });

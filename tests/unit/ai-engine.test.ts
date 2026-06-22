@@ -44,6 +44,7 @@ describe("AI Engine", () => {
 
     // Default knowledge base
     mockPrisma.knowledgeEntry.findMany.mockResolvedValue([]);
+    mockPrisma.automationRule.findMany.mockResolvedValue([]);
 
     // Default conversation
     mockPrisma.conversation.findUnique.mockResolvedValue({
@@ -113,6 +114,31 @@ describe("AI Engine", () => {
     );
   });
 
+  it("should try fallback Gemini chat models when configured model is rate limited", async () => {
+    mockOpenAICreateFn
+      .mockRejectedValueOnce(new Error("429 status code (no body)"))
+      .mockResolvedValueOnce({
+        choices: [
+          {
+            finish_reason: "stop",
+            message: { content: "Dạ LED1000 có thể hỗ trợ bạn." },
+          },
+        ],
+      });
+
+    const { chat } = await import("@/lib/ai/engine");
+    const response = await chat("conv-1", "hello");
+
+    expect(response).toBe("Dạ LED1000 có thể hỗ trợ bạn.");
+    expect(mockOpenAICreateFn).toHaveBeenCalledTimes(2);
+    expect(mockOpenAICreateFn.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ model: "gemini-2.5-flash" })
+    );
+    expect(mockOpenAICreateFn.mock.calls[1][0]).toEqual(
+      expect.objectContaining({ model: "gemini-3.5-flash" })
+    );
+  });
+
   it("should save user and assistant messages", async () => {
     mockOpenAICreateFn.mockResolvedValue({
       choices: [
@@ -175,6 +201,85 @@ describe("AI Engine", () => {
     const systemMessage = callArgs.messages[0];
     expect(systemMessage.content).toContain("Return Policy");
     expect(systemMessage.content).toContain("30-day returns allowed");
+  });
+
+  it("should build a LinhKienLed1000-aware system prompt", async () => {
+    mockPrisma.settings.findFirst.mockResolvedValue({
+      id: "default",
+      businessName: "LED1000 / Linh Kiện LED1000",
+      businessDesc: "Chuyên đèn LED, nguồn điện, linh kiện LED và phụ kiện chiếu sáng.",
+      welcomeMessage: "Xin chào! LED1000 hỗ trợ chọn sản phẩm phù hợp.",
+      tone: "technical",
+      language: "vi",
+      aiProvider: "gemini",
+      aiModel: "gemini-2.5-flash",
+      aiApiKey: "sk-test",
+      maxTokens: 1000,
+      temperature: 0.7,
+    });
+
+    mockOpenAICreateFn.mockResolvedValue({
+      choices: [
+        {
+          finish_reason: "stop",
+          message: { content: "Dạ LED1000 có thể hỗ trợ." },
+        },
+      ],
+    });
+
+    const { chat } = await import("@/lib/ai/engine");
+    await chat("conv-1", "Tôi cần adapter 12V");
+
+    const callArgs = mockOpenAICreateFn.mock.calls[0][0];
+    const systemMessage = callArgs.messages[0];
+    expect(systemMessage.content).toContain("trợ lý CSKH/tư vấn sản phẩm của LED1000");
+    expect(systemMessage.content).toContain("điện áp 5V/12V/24V/48V/220V");
+    expect(systemMessage.content).toContain("Không tự bịa giá, tồn kho, bảo hành, khuyến mãi");
+    expect(systemMessage.content).toContain("nguồn điện");
+    expect(systemMessage.content).toContain("LED dây");
+  });
+
+  it("should inject LinhKienLed1000 customer profile fields into prompt", async () => {
+    mockPrisma.conversation.findUnique.mockResolvedValue({
+      id: "conv-1",
+      channel: "whatsapp",
+      customerName: "Lan",
+      customerContact: "+1555",
+      customerId: "customer-1",
+      status: "active",
+      messages: [],
+    });
+    mockPrisma.customer.findUnique.mockResolvedValue({
+      phone: "0909003082",
+      email: "lan@example.com",
+      whatsapp: "",
+      tags: "VIP",
+      profileNotes: "Thường mua LED dây ngoài trời",
+      preferences: "Ưu tiên ánh sáng vàng",
+      purchaseContext: "Lắp bảng hiệu ngoài trời",
+      technicalNeeds: "LED dây 12V chống nước",
+      quoteStatus: "yes",
+      previousAdvisor: "Kỹ thuật LED1000",
+    });
+    mockOpenAICreateFn.mockResolvedValue({
+      choices: [
+        {
+          finish_reason: "stop",
+          message: { content: "Dạ em đã ghi nhận." },
+        },
+      ],
+    });
+
+    const { chat } = await import("@/lib/ai/engine");
+    await chat("conv-1", "Bạn còn nhớ nhu cầu của tôi không?");
+
+    const callArgs = mockOpenAICreateFn.mock.calls[0][0];
+    const systemMessage = callArgs.messages[0];
+    expect(systemMessage.content).toContain("Thường mua LED dây ngoài trời");
+    expect(systemMessage.content).toContain("Ưu tiên ánh sáng vàng");
+    expect(systemMessage.content).toContain("Lắp bảng hiệu ngoài trời");
+    expect(systemMessage.content).toContain("LED dây 12V chống nước");
+    expect(systemMessage.content).toContain("Kỹ thuật LED1000");
   });
 
   it("should handle tool calls and recurse", async () => {

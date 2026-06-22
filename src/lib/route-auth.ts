@@ -68,7 +68,7 @@ export async function requireAuth(
   }
 
   // Fall back to cookie auth
-  const token = request.cookies.get("salondesk-token")?.value;
+  const token = request.cookies.get("linhkienled1000-token")?.value;
 
   if (!token) {
     return NextResponse.json(

@@ -43,6 +43,25 @@ export async function GET(request: NextRequest) {
             take: 1,
             orderBy: { createdAt: "desc" },
           },
+          customer: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+              whatsapp: true,
+            },
+          },
+          channelAccount: {
+            select: {
+              id: true,
+              type: true,
+              displayName: true,
+              externalAccountId: true,
+              status: true,
+              isActive: true,
+            },
+          },
           _count: {
             select: { messages: true },
           },
@@ -90,6 +109,25 @@ export async function POST(request: NextRequest) {
         messages: {
           take: 1,
           orderBy: { createdAt: "desc" },
+        },
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            whatsapp: true,
+          },
+        },
+        channelAccount: {
+          select: {
+            id: true,
+            type: true,
+            displayName: true,
+            externalAccountId: true,
+            status: true,
+            isActive: true,
+          },
         },
         _count: {
           select: { messages: true },

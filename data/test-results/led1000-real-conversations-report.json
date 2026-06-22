@@ -1,0 +1,145 @@
+{
+  "runInfo": {
+    "baseUrl": "http://localhost:3000",
+    "endpoint": "/api/chat",
+    "startedAt": "2026-06-18T13:52:17.462Z",
+    "finishedAt": "2026-06-18T13:55:11.092Z",
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "review": 0
+  },
+  "results": [
+    {
+      "id": "REAL-01",
+      "title": "Khách hỏi LED dây ngoài trời cho bảng hiệu",
+      "conversationId": "987280f2-35df-4a28-9f61-f60e0ab88d9d",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "turns": [
+        {
+          "message": "Chào shop, tôi cần mua LED dây ngoài trời để làm bảng hiệu khoảng 8m.",
+          "response": "Dạ chào bạn, rất vui được hỗ trợ bạn tại LED1000!\n\nĐể làm bảng hiệu 8m ngoài trời, bạn có thể cân nhắc sử dụng **LED dây 12V hoặc 24V** (kèm nguồn đặt nơi khô ráo) để đảm bảo an toàn và độ bền cao hơn. Đặc biệt với chiều dài 8m, dòng **24V** sẽ giúp giảm hao áp tốt hơn so với 12V.\n\nĐể tư vấn loại LED phù hợp và tính toán công suất nguồn chính xác, bạn cho em xin thêm một vài thông tin nhé:\n\n1. Bạn cần ánh sáng màu gì (trắng, vàng, trung tính hay đổi màu RGB)?\n2. Bạn đã có sẵn nguồn điện tại vị trí lắp chưa?\n3. Bạn đã có thợ thi công lắp đặt phần điện này chưa ạ?\n4. Bạn muốn dùng loại LED dây thường hay loại LED COB (cho ánh sáng mịn, không lộ chấm LED)?\n\nSau khi có các thông tin này, em sẽ tư vấn cụ thể loại sản phẩm và công suất nguồn cần thiết cho mình ạ.",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 107124,
+          "conversationId": "987280f2-35df-4a28-9f61-f60e0ab88d9d"
+        },
+        {
+          "message": "Tôi chưa biết dùng 12V hay 220V, bảng hiệu ở ngoài trời có mưa.",
+          "response": "Dạ, cảm ơn bạn đã cung cấp thêm thông tin. Đối với bảng hiệu ngoài trời chịu mưa trực tiếp, em xin có một vài tư vấn kỹ thuật như sau để mình cân nhắc ạ:\n\n1. **Về loại LED (12V/24V so với 220V):**\n   * **LED 12V/24V:** Đây là lựa chọn **an toàn hơn** cho người sử dụng và độ bền thường cao hơn khi lắp ngoài trời. Tuy nhiên, bạn cần đặt bộ nguồn (adapter) ở vị trí khô ráo, có hộp bảo vệ chống nước. Với chiều dài 8m, em khuyên dùng loại **24V** để ánh sáng ổn định hơn và ít bị hao áp (tối sáng không đều) so với 12V.\n   * **LED 220V:** Loại này tiện vì không cần bộ nguồn cồng kềnh, nhưng yêu cầu kỹ thuật thi công rất khắt khe. Các điểm nối, đầu bịt và đầu cắm cần được xử lý chống nước tuyệt đối (dùng keo silicon, ống co nhiệt) để tránh rò rỉ điện gây nguy hiểm. **Nếu mình không có thợ chuyên môn lắp đặt hệ thống điện ngoài trời, em khuyến khích dùng loại 12V/24V để đảm bảo an toàn.**\n\n2. **Lưu ý chống nước:**\n   * Dù chọn loại nào, bạn cũng cần chọn loại LED có chỉ số chống nước (IP65 hoặc IP67 trở lên) để chịu được mưa nắng ngoài trời.\n\n3. **Khuyến nghị từ LED1000:**\n   * Vì bảng hiệu ngoài trời cần độ bền và an toàn, nếu mình chưa có kinh nghiệm lắp đặt, tốt nhất bạn nên có thợ thi công hỗ trợ.\n\nĐể em có thể tính toán chính xác hơn cho bạn, bạn cho em hỏi thêm:\n* Bạn đã có thợ thi công cho dự án này chưa ạ?\n* Bạn ưu tiên sự tiện lợi khi lắp đặt (không cần nguồn) hay ưu tiên sự an toàn và độ bền lâu dài hơn?\n\nNếu bạn cần báo giá hoặc thông tin chi tiết về từng loại, em sẽ kiểm tra dữ liệu tồn kho và gửi bạn tham khảo nhé!",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 9522,
+          "conversationId": "987280f2-35df-4a28-9f61-f60e0ab88d9d"
+        }
+      ]
+    },
+    {
+      "id": "REAL-02",
+      "title": "Khách công trình hỏi giá nguồn",
+      "conversationId": "8d3697da-7b90-48f4-a71d-c98aa9d517cb",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "turns": [
+        {
+          "message": "Tôi là khách công trình, cần 10 cái nguồn tổ ong 12V 20A, báo giá sơ bộ giúp tôi.",
+          "response": "Dạ chào bạn, rất cảm ơn bạn đã quan tâm đến sản phẩm của LED1000.\n\nVới nhu cầu mua 10 cái **Nguồn tổ ong 12V 20A** (Mã SP: DEMO-PS12-20A) cho công trình, em xin báo giá sơ bộ dựa trên bảng giá hiện có như sau:\n\n*   **Giá công trình:** 185.000 VNĐ/cái (chưa bao gồm VAT).\n*   **Tổng tạm tính cho 10 cái:** 1.850.000 VNĐ (chưa bao gồm VAT).\n\n**Lưu ý:**\n- Đây là mức giá sơ bộ theo dữ liệu hiện có, giá thực tế có thể thay đổi tùy theo thời điểm và chính sách ưu đãi cho đơn hàng số lượng lớn.\n- Để em có thể hỗ trợ tốt nhất cho công trình của bạn, bạn cho em biết thêm một chút thông tin nhé:\n    1. Bạn dự kiến cần hàng vào thời gian nào và địa chỉ giao hàng ở đâu ạ?\n    2. Bạn đã có danh sách các mã hàng khác cần mua kèm không, hay chỉ cần mỗi loại này?\n\nSau khi có thông tin, em sẽ chuyển cho nhân viên phụ trách xác nhận lại tồn kho và chốt giá chính xác cho bạn ạ!",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 8008,
+          "conversationId": "8d3697da-7b90-48f4-a71d-c98aa9d517cb"
+        },
+        {
+          "message": "Giá này đã gồm VAT chưa?",
+          "response": "Dạ, giá em báo ở trên là **chưa bao gồm VAT** ạ.\n\nNếu bạn cần xuất hóa đơn VAT cho đơn hàng này, bạn vui lòng cung cấp giúp em các thông tin sau:\n1. Tên công ty.\n2. Mã số thuế.\n3. Địa chỉ công ty trên hóa đơn.\n4. Email nhận hóa đơn điện tử.\n\nSau khi nhận được thông tin, em sẽ chuyển cho nhân viên phụ trách kiểm tra lại giá cuối và thời điểm xuất hóa đơn để xác nhận chính xác với mình nhé!",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 7228,
+          "conversationId": "8d3697da-7b90-48f4-a71d-c98aa9d517cb"
+        }
+      ]
+    },
+    {
+      "id": "REAL-03",
+      "title": "Khách hỏi tồn kho và sản phẩm thay thế",
+      "conversationId": "a531d96b-b063-447f-b06f-64b6dd75d7e9",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "turns": [
+        {
+          "message": "Còn hàng LED dây COB 24V cuộn 10m không?",
+          "response": "Dạ, theo dữ liệu tồn kho hiện tại thì mã **LED dây COB 24V 8mm 320D (DEMO-COB24-10M)** hiện đang **hết hàng** ạ.\n\nTuy nhiên, em có thể gợi ý cho mình một số sản phẩm thay thế như:\n- **LED dây COB 12V 8mm 320D (DEMO-COB12-5M)**: Hiện vẫn còn hàng.\n- **LED dây dán 24V 5050 IP65 (DEMO-LED24-5050-IP65)**: Hiện vẫn còn hàng.\n\nNếu mình cần gấp hoặc muốn kiểm tra kỹ hơn về khả năng đổi sang loại 12V hay loại chống nước, chị có thể cho em biết mục đích sử dụng cụ thể, em sẽ nhờ nhân viên kiểm tra lại tồn kho thực tế và tư vấn kỹ hơn cho mình nhé!",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 7128,
+          "conversationId": "a531d96b-b063-447f-b06f-64b6dd75d7e9"
+        },
+        {
+          "message": "Nếu hết thì đổi sang loại nào gần giống?",
+          "response": "Dạ, đối với mã **LED dây COB 24V (DEMO-COB24-10M)** đã hết hàng, bên em có gợi ý các sản phẩm thay thế tương đương dựa trên dữ liệu như sau:\n\n1.  **LED dây dán 24V 5050 IP65 (DEMO-LED24-5050-IP65):** Đây là phương án thay thế phù hợp nhất nếu chị vẫn muốn duy trì điện áp **24V**. Loại này có ưu điểm là chống nước (IP65).\n2.  **LED dây COB 12V 8mm 320D (DEMO-COB12-5M):** Nếu chị ưu tiên công nghệ **COB** (ánh sáng mịn, không lộ điểm LED), chị có thể cân nhắc chuyển sang loại 12V này. Tuy nhiên, chị lưu ý cần sử dụng nguồn điện 12V phù hợp thay vì nguồn 24V cũ nhé.\n\n**Để em tư vấn chính xác nhất, chị cho em hỏi thêm một chút ạ:**\n- Chị đang dùng cho mục đích gì (trong nhà hay ngoài trời)?\n- Chị đã có sẵn nguồn điện 24V hay mình đang dự định mua mới nguồn luôn ạ?\n\nNếu chị cần chốt đơn gấp hoặc muốn kiểm tra kho thực tế cho các mã thay thế này, chị cho em xin số lượng cần lấy, em sẽ chuyển thông tin để nhân viên hỗ trợ chị kiểm tra và xác nhận ngay nhé!",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 7711,
+          "conversationId": "a531d96b-b063-447f-b06f-64b6dd75d7e9"
+        }
+      ]
+    },
+    {
+      "id": "REAL-04",
+      "title": "Khách cần xuất VAT",
+      "conversationId": "69adb157-b99a-4b99-b2f4-7fada657c3e1",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "turns": [
+        {
+          "message": "Bên mình xuất VAT được không, tôi mua cho công ty?",
+          "response": "Dạ bên em có thể hỗ trợ kiểm tra xuất VAT cho đơn hàng ạ.\n\nĐể em chuyển thông tin cho nhân viên xác nhận giá cuối và thời điểm xuất hóa đơn, bạn vui lòng cung cấp giúp em các thông tin sau nhé:\n- Tên công ty.\n- Mã số thuế.\n- Địa chỉ công ty trên hóa đơn.\n- Email nhận hóa đơn điện tử.\n- Tên người liên hệ và số điện thoại.\n- Danh sách sản phẩm và số lượng cần mua.\n\nEm cảm ơn bạn!",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 7278,
+          "conversationId": "69adb157-b99a-4b99-b2f4-7fada657c3e1"
+        },
+        {
+          "message": "Tôi cần chuẩn bị thông tin gì?",
+          "response": "Dạ, để bên em hỗ trợ xuất hóa đơn VAT cho công ty bạn một cách chính xác nhất, bạn vui lòng chuẩn bị các thông tin sau giúp em nhé:\n\n1. **Thông tin xuất hóa đơn:**\n   - Tên công ty (chính xác theo đăng ký kinh doanh).\n   - Mã số thuế.\n   - Địa chỉ trụ sở công ty (ghi trên hóa đơn).\n   - Email nhận hóa đơn điện tử.\n\n2. **Thông tin đơn hàng:**\n   - Danh sách sản phẩm và số lượng cụ thể bạn cần mua.\n   - Thông tin người liên hệ và số điện thoại để nhân viên bên em tiện trao đổi.\n\nSau khi bạn gửi các thông tin này, em sẽ chuyển cho nhân viên kinh doanh xác nhận lại giá cuối cùng (do giá sản phẩm thường chưa bao gồm VAT) và thời điểm xuất hóa đơn giúp mình ạ.",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 8051,
+          "conversationId": "69adb157-b99a-4b99-b2f4-7fada657c3e1"
+        }
+      ]
+    },
+    {
+      "id": "REAL-05",
+      "title": "Khách ngoài ngành",
+      "conversationId": "07b57eb8-9521-40ea-bbb7-28658c672fe1",
+      "status": "pass",
+      "flags": [],
+      "notes": [],
+      "turns": [
+        {
+          "message": "Shop có tư vấn tour du lịch Đà Lạt không?",
+          "response": "Dạ, chào bạn! Rất tiếc là LED1000 chỉ chuyên về các sản phẩm đèn LED, nguồn điện, linh kiện LED và thiết bị chiếu sáng thôi ạ, bên em không cung cấp dịch vụ du lịch.\n\nNếu bạn cần tìm đèn LED trang trí cho không gian nhà ở hoặc các thiết bị chiếu sáng khác, bạn cứ cho em biết nhé, em rất sẵn lòng hỗ trợ bạn ạ!",
+          "status": "pass",
+          "flags": [],
+          "notes": [],
+          "durationMs": 7249,
+          "conversationId": "07b57eb8-9521-40ea-bbb7-28658c672fe1"
+        }
+      ]
+    }
+  ]
+}

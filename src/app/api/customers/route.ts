@@ -66,11 +66,11 @@ export async function POST(request: NextRequest) {
       tags,
       notes,
       metadata,
-      hairHistory,
-      hairCondition,
+      purchaseContext,
+      technicalNeeds,
       profileNotes,
-      bleachHistory,
-      previousStylist,
+      quoteStatus,
+      previousAdvisor,
       preferences,
     } = body;
 
@@ -85,12 +85,11 @@ export async function POST(request: NextRequest) {
         phone: phone?.trim() || "",
         whatsapp: whatsapp?.trim() || "",
         tags: tags?.trim() || "",
-        hairHistory: hairHistory?.trim() || "",
-        hairCondition: hairCondition?.trim() || "",
+        purchaseContext: purchaseContext?.trim() || "",
+        technicalNeeds: technicalNeeds?.trim() || "",
         profileNotes: profileNotes?.trim() || "",
-        bleachHistory:
-          bleachHistory === "yes" || bleachHistory === "no" ? bleachHistory : "unknown",
-        previousStylist: previousStylist?.trim() || "",
+        quoteStatus: quoteStatus === "yes" || quoteStatus === "no" ? quoteStatus : "unknown",
+        previousAdvisor: previousAdvisor?.trim() || "",
         preferences: preferences?.trim() || "",
         metadata: metadata || {},
         ...(notes

@@ -1,10 +1,217 @@
 # API Reference
 
-Owly provides a REST API for programmatic access to all major features. This page documents every available endpoint, including request and response formats.
+LinhKienLed1000 provides a REST API for programmatic access to all major features. This page documents every available endpoint, including request and response formats.
 
 ![API Documentation Page](../screenshots/17-api-docs.png)
 
 ---
+
+## Bản Tiếng Việt
+
+LinhKienLed1000 cung cấp REST API để tích hợp chatbot, hội thoại, ticket, Kho kiến thức, cấu hình hệ thống và xuất dữ liệu. Trang `/api-docs` trong dashboard là tài liệu tương tác; endpoint `/api/openapi.json?lang=vi` trả OpenAPI spec bằng tiếng Việt.
+
+### Xác Thực
+
+Tất cả request API, trừ `/api/health`, `/api/auth` và một số webhook public, cần xác thực.
+
+**Cách 1: API Key cho tích hợp hệ thống**
+
+Gửi API key trong header:
+
+```txt
+X-API-Key: your_api_key_here
+```
+
+Tạo và quản lý API key trong trang Admin/API keys. Không đưa API key vào code phía client hoặc ảnh chụp công khai.
+
+**Cách 2: Session Cookie cho dashboard**
+
+Dashboard dùng session cookie đăng nhập của admin. Cách này phù hợp khi thao tác trong trình duyệt, không khuyến nghị cho tích hợp server-to-server.
+
+### Base URL
+
+Các endpoint bên dưới là tương đối với domain triển khai:
+
+```txt
+https://your-domain.com
+```
+
+Môi trường local:
+
+```txt
+http://localhost:3000
+```
+
+### Chat
+
+`POST /api/chat`
+
+Gửi tin nhắn vào chatbot và nhận phản hồi AI. Dùng cho widget, test nội bộ hoặc hệ thống ngoài gọi vào app.
+
+Body chính:
+
+| Field | Type | Required | Mô tả |
+|---|---|---|---|
+| `message` | string | Có | Nội dung khách gửi. |
+| `conversationId` | string | Không | ID hội thoại hiện có. Nếu bỏ trống, app tạo hội thoại mới. |
+| `channel` | string | Không | Kênh nguồn, ví dụ `api`, `widget`, `facebook`, `shopee`. |
+| `customerName` | string | Không | Tên hiển thị của khách. |
+| `customerContact` | string | Không | Email, số điện thoại hoặc mã contact ổn định. |
+
+Response trả `conversationId` và `response` của bot.
+
+### Conversations
+
+`GET /api/conversations`
+
+Liệt kê hội thoại, có phân trang/lọc theo query nếu route hỗ trợ.
+
+`POST /api/conversations`
+
+Tạo hội thoại mới với `channel`, `customerName`, `customerContact` và metadata liên quan.
+
+`GET /api/conversations/:id`
+
+Lấy chi tiết hội thoại theo ID, gồm tin nhắn và dữ liệu liên quan.
+
+`PUT /api/conversations/:id`
+
+Cập nhật hội thoại như trạng thái, thông tin khách, tóm tắt hoặc metadata.
+
+`DELETE /api/conversations/:id`
+
+Xóa hội thoại và các tin nhắn liên quan.
+
+`POST /api/conversations/:id/messages`
+
+Thêm tin nhắn vào hội thoại. Khi nhân viên gửi thủ công, app có thể gửi outbound ra nền tảng nếu kênh đã có adapter và credential hợp lệ.
+
+### Tickets
+
+`GET /api/tickets`
+
+Liệt kê ticket hỗ trợ.
+
+`POST /api/tickets`
+
+Tạo ticket mới cho các trường hợp cần nhân viên xử lý, ví dụ báo giá chính thức, kiểm tồn kho, VAT, công trình hoặc yêu cầu ngoài khả năng bot.
+
+`GET /api/tickets/:id`
+
+Lấy chi tiết ticket và thông tin hội thoại/phân công liên quan.
+
+`PUT /api/tickets/:id`
+
+Cập nhật trạng thái, độ ưu tiên, người xử lý hoặc nội dung xử lý ticket.
+
+`DELETE /api/tickets/:id`
+
+Xóa ticket.
+
+### Knowledge Base
+
+`GET /api/knowledge/categories`
+
+Liệt kê danh mục Kho kiến thức.
+
+`POST /api/knowledge/categories`
+
+Tạo danh mục mới, ví dụ Hồ sơ doanh nghiệp, Bảng giá, Tồn kho, Chính sách bảo hành, VAT, Catalogue, Tư vấn kỹ thuật.
+
+`GET /api/knowledge/entries`
+
+Liệt kê mục kiến thức, có thể lọc theo danh mục.
+
+`POST /api/knowledge/entries`
+
+Tạo mục kiến thức mới. Với dữ liệu thật của khách, nên import qua UI Kho kiến thức để có bước preview/review.
+
+### Settings
+
+`GET /api/settings`
+
+Lấy cấu hình hệ thống. Các secret nhạy cảm phải được mask khi trả về UI/API.
+
+`PUT /api/settings`
+
+Cập nhật cấu hình. Chỉ gửi các field cần thay đổi. Không gửi lại secret nếu không muốn thay thế secret hiện có.
+
+### Webhooks
+
+`GET /api/webhooks`
+
+Liệt kê webhook nội bộ đã cấu hình.
+
+`POST /api/webhooks`
+
+Tạo webhook nội bộ để gửi sự kiện tới hệ thống khác.
+
+`GET /api/webhooks/meta`
+
+Xác minh callback webhook dùng chung cho Facebook Messenger và Instagram Direct Messaging bằng `hub.challenge`.
+
+`POST /api/webhooks/meta`
+
+Nhận event Meta, phân biệt Facebook/Instagram, đưa tin nhắn text vào pipeline hội thoại và gửi phản hồi qua Meta Send API nếu credential hợp lệ.
+
+`POST /api/webhooks/shopee`
+
+Nhận webhook Shopee. Chỉ xem là production-ready sau khi test E2E thật với Shopee Seller/Partner App, webhook receive, chat receive, outbound send, token refresh và idempotency.
+
+`POST /api/webhooks/tiktok-shop`
+
+Nhận webhook TikTok Shop customer-service. Outbound send chỉ nên bật sau khi xác minh contract Send Message trong TikTok Shop Partner Center.
+
+### Channels
+
+`GET /api/channels`
+
+Liệt kê cấu hình kênh đã sanitize. Không trả raw token hoặc app secret.
+
+`POST /api/channels`
+
+Tạo hoặc cập nhật cấu hình kênh legacy/default.
+
+`GET /api/channels/:type`
+
+Lấy cấu hình một kênh.
+
+`PUT /api/channels/:type`
+
+Cập nhật cấu hình một kênh.
+
+`POST /api/channels/:type`
+
+Thực hiện thao tác kết nối, ngắt kết nối hoặc test kênh nếu route hỗ trợ.
+
+### Export Và Health
+
+`GET /api/export`
+
+Xuất dữ liệu hội thoại, ticket, khách hàng hoặc Kho kiến thức ở dạng JSON/CSV.
+
+`GET /api/health`
+
+Kiểm tra trạng thái dịch vụ, database, AI provider và uptime.
+
+`GET /api/openapi.json`
+
+Trả OpenAPI spec tiếng Anh mặc định.
+
+`GET /api/openapi.json?lang=vi`
+
+Trả OpenAPI spec tiếng Việt. Nên dùng URL này khi cần tài liệu máy đọc hoặc đưa vào công cụ API bằng tiếng Việt.
+
+### Lưu Ý Production
+
+- Đã lưu cấu hình/credential trong database không đồng nghĩa kênh đã production-ready.
+- API key, token, app secret, partner key, cookie và refresh token không được đưa vào log, ảnh chụp hoặc tài liệu công khai.
+- Facebook/Instagram/Zalo/Shopee/TikTok Shop có thể có nhiều account/page/shop/OA; nên quản lý qua ChannelAccount để tách nguồn hội thoại.
+- Giá, tồn kho, VAT, bảo hành và tư vấn kỹ thuật chỉ chính xác khi khách upload dữ liệu chính thức vào Kho kiến thức.
+
+---
+
+## English Version
 
 ## Authentication
 

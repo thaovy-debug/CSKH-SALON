@@ -9,6 +9,7 @@ describe("Customer Resolver", () => {
     vi.restoreAllMocks();
     mockPrisma.customer.findFirst.mockResolvedValue(null);
     mockPrisma.customer.findUnique.mockResolvedValue(null);
+    mockPrisma.customer.findMany.mockResolvedValue([]);
     mockPrisma.customer.create.mockResolvedValue({ id: "new-cust-1" });
     mockPrisma.customer.update.mockResolvedValue({});
   });
@@ -124,6 +125,110 @@ describe("Customer Resolver", () => {
 
       const result = await resolveCustomer("api", "", "API User");
       expect(result).toBe("empty-contact");
+    });
+
+    it("should create facebook customer metadata without schema changes", async () => {
+      mockPrisma.customer.findMany.mockResolvedValue([]);
+      mockPrisma.customer.create.mockResolvedValue({ id: "fb-cust" });
+
+      const result = await resolveCustomer("facebook", "facebook:psid-1", "Facebook User");
+
+      expect(result).toBe("fb-cust");
+      expect(mockPrisma.customer.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          name: "Facebook User",
+          metadata: {
+            externalContacts: {
+              facebook: "facebook:psid-1",
+            },
+          },
+        }),
+      });
+    });
+
+    it("should find instagram customers by metadata externalContacts", async () => {
+      mockPrisma.customer.create.mockClear();
+      mockPrisma.customer.findMany.mockResolvedValueOnce([
+        {
+          id: "ig-cust",
+          metadata: {
+            externalContacts: {
+              instagram: "instagram:sender-1",
+            },
+          },
+        },
+      ]);
+      mockPrisma.customer.findUnique.mockResolvedValue({
+        name: "Instagram User",
+        email: "",
+        phone: "",
+        whatsapp: "",
+        metadata: {
+          externalContacts: {
+            instagram: "instagram:sender-1",
+          },
+        },
+      });
+
+      const result = await resolveCustomer("instagram", "instagram:sender-1", "Instagram User");
+
+      expect(result).toBe("ig-cust");
+      expect(mockPrisma.customer.create).not.toHaveBeenCalled();
+      expect(mockPrisma.customer.update).toHaveBeenCalledWith({
+        where: { id: "ig-cust" },
+        data: expect.objectContaining({
+          lastContact: expect.any(Date),
+          metadata: {
+            externalContacts: {
+              instagram: "instagram:sender-1",
+            },
+          },
+        }),
+      });
+    });
+
+    it("should merge facebook metadata without dropping existing metadata", async () => {
+      mockPrisma.customer.findMany.mockResolvedValueOnce([
+        {
+          id: "cross-cust",
+          metadata: {
+            vip: true,
+            externalContacts: {
+              instagram: "instagram:sender-1",
+              facebook: "facebook:psid-2",
+            },
+          },
+        },
+      ]);
+      mockPrisma.customer.findUnique.mockResolvedValue({
+        name: "Existing",
+        email: "existing@test.com",
+        phone: "",
+        whatsapp: "",
+        metadata: {
+          vip: true,
+          externalContacts: {
+            instagram: "instagram:sender-1",
+            facebook: "facebook:psid-2",
+          },
+        },
+      });
+
+      const result = await resolveCustomer("facebook", "facebook:psid-2", "Existing");
+
+      expect(result).toBe("cross-cust");
+      expect(mockPrisma.customer.update).toHaveBeenCalledWith({
+        where: { id: "cross-cust" },
+        data: expect.objectContaining({
+          metadata: {
+            vip: true,
+            externalContacts: {
+              instagram: "instagram:sender-1",
+              facebook: "facebook:psid-2",
+            },
+          },
+        }),
+      });
     });
   });
 });

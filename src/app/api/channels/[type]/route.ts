@@ -2,8 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { requireAuth, isAuthenticated } from "@/lib/route-auth";
+import {
+  mergeChannelConfigPreservingSecrets,
+  sanitizeChannelForClient,
+} from "@/lib/channels/config";
+import { upsertDefaultChannelAccountFromChannel } from "@/lib/channels/accounts";
 
-const CHANNEL_TYPES = ["widget", "whatsapp", "email", "phone", "sms", "telegram"];
+const CHANNEL_TYPES = [
+  "widget",
+  "whatsapp",
+  "email",
+  "phone",
+  "sms",
+  "telegram",
+  "zalo",
+  "facebook",
+  "instagram",
+];
 
 type RouteContext = { params: Promise<{ type: string }> };
 
@@ -37,7 +52,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       });
     }
 
-    return NextResponse.json(channel);
+    return NextResponse.json(sanitizeChannelForClient(channel));
   } catch (error) {
     logger.error("Failed to fetch channel:", error);
     return NextResponse.json(
@@ -63,23 +78,35 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 
     const body = await request.json();
     const { isActive, config, status } = body;
+    const existing = await prisma.channel.findUnique({ where: { type } });
+    const mergedConfig =
+      config === undefined
+        ? undefined
+        : mergeChannelConfigPreservingSecrets(type, config, existing?.config);
 
     const channel = await prisma.channel.upsert({
       where: { type },
       update: {
         isActive: typeof isActive === "boolean" ? isActive : undefined,
-        config: config ?? undefined,
+        config: mergedConfig ?? undefined,
         status: status ?? undefined,
       },
       create: {
         type,
         isActive: typeof isActive === "boolean" ? isActive : false,
-        config: config ?? {},
+        config: mergedConfig ?? {},
         status: status ?? "disconnected",
       },
     });
 
-    return NextResponse.json(channel);
+    await upsertDefaultChannelAccountFromChannel({
+      type,
+      config: channel.config,
+      isActive: channel.isActive,
+      status: channel.status,
+    });
+
+    return NextResponse.json(sanitizeChannelForClient(channel));
   } catch (error) {
     logger.error("Failed to update channel:", error);
     return NextResponse.json(
@@ -126,8 +153,15 @@ export async function POST(request: NextRequest, context: RouteContext) {
           status: "disconnected",
         },
       });
+      await upsertDefaultChannelAccountFromChannel({
+        type,
+        config: updated.config,
+        isActive: updated.isActive,
+        status: updated.status,
+      });
+
       return NextResponse.json({
-        ...updated,
+        ...sanitizeChannelForClient(updated),
         message: `${type} channel disconnected`,
       });
     }
@@ -146,7 +180,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       });
 
       return NextResponse.json({
-        ...updated,
+        ...sanitizeChannelForClient(updated),
         message: `${type} channel connected`,
       });
     }
@@ -162,7 +196,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       return NextResponse.json({
         success: true,
         message: `${type} connection test initiated`,
-        channel,
+        channel: sanitizeChannelForClient(channel),
       });
     }
 

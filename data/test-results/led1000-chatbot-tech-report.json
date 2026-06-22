@@ -1,0 +1,125 @@
+{
+  "runInfo": {
+    "baseUrl": "http://localhost:3000",
+    "endpoint": "/api/chat",
+    "authMethod": "api_key",
+    "startedAt": "2026-06-18T12:31:59.151Z",
+    "finishedAt": "2026-06-18T12:32:56.561Z",
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "review": 0
+  },
+  "summaryByGroup": {
+    "Business/contact": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Product category retrieval": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Technical consulting": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "review": 0
+    },
+    "Price/inventory behavior": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Out-of-domain regression": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Ambiguous/missing info": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    }
+  },
+  "results": [
+    {
+      "id": "TECH-01",
+      "group": "Technical consulting",
+      "question": "Tôi cần LED dây ngoài trời thì nên chọn loại nào?",
+      "response": "Dạ, để tư vấn loại LED dây ngoài trời phù hợp và an toàn nhất, bạn vui lòng chia sẻ thêm giúp em một vài thông tin sau nhé:\n\n1. **Chiều dài tổng cộng** bạn cần lắp đặt là bao nhiêu mét?\n2. **Vị trí lắp đặt:** Bạn lắp ở nơi có mái che hay tiếp xúc trực tiếp với mưa nắng?\n3. **Mục đích sử dụng:** Bạn dùng để trang trí viền bảng hiệu, sân vườn hay hắt kiến trúc?\n4. **Yêu cầu về ánh sáng:** Bạn muốn ánh sáng đơn sắc (trắng/vàng/trung tính) hay đổi màu (RGB)?\n\n**Một vài lưu ý nhỏ cho bạn:**\n* Nếu lắp ngoài trời đoạn ngắn và cần an toàn cao, bên em thường ưu tiên dòng **LED dây 12V/24V có chỉ số chống nước (IP65/IP67)**, khi đó nguồn điện cần được đặt ở vị trí khô ráo.\n* Nếu bạn cần kéo dài cho công trình lớn, **LED dây 220V** có thể là lựa chọn phù hợp, tuy nhiên cần lưu ý kỹ thuật lắp đặt, sử dụng phụ kiện chỉnh lưu, đầu bịt và keo chống nước chuyên dụng để đảm bảo an toàn điện.\n\nBạn cho em biết thêm các thông tin trên để em tư vấn loại LED và công suất nguồn phù hợp nhất cho mình nhé!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "5d32831a-5592-4731-91a4-61651cf040af",
+      "httpStatus": 200,
+      "durationMs": 14745
+    },
+    {
+      "id": "TECH-02",
+      "group": "Technical consulting",
+      "question": "Tôi muốn hắt trần phòng khách thì cần loại LED nào?",
+      "response": "Dạ, chào bạn! Để tư vấn loại LED hắt trần phòng khách phù hợp và thẩm mỹ nhất, em cần thêm một vài thông tin từ mình ạ:\n\n1. Tổng chiều dài hắt trần mình dự kiến là bao nhiêu mét?\n2. Mình muốn ánh sáng màu gì (vàng ấm, trắng, hay trung tính)?\n3. Mình có yêu cầu ánh sáng phải liền mạch, không thấy đốm sáng không ạ?\n4. Mình đã có sẵn nguồn (driver) hay các thiết bị liên quan chưa?\n\nThông thường, nếu mình muốn ánh sáng mịn, đẹp và liền mạch, bên em thường tư vấn dòng **LED dây COB (12V hoặc 24V)**. Ngoài ra, với các đoạn hắt trần dài trên 8-10m, em khuyến khích dùng loại 24V để đảm bảo độ sáng đều và giảm hao áp.\n\nMình chia sẻ thêm các thông tin trên để em hỗ trợ tư vấn loại LED và cách tính công suất nguồn chính xác cho mình nhé!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "e0af9dae-7450-41a1-aac6-199599ef5bd9",
+      "httpStatus": 200,
+      "durationMs": 8270
+    },
+    {
+      "id": "TECH-03",
+      "group": "Technical consulting",
+      "question": "Nguồn 12V 5A dùng cho LED dây được không?",
+      "response": "Dạ, nguồn 12V 5A hoàn toàn có thể dùng cho LED dây, tuy nhiên để đảm bảo an toàn và độ bền cho thiết bị, bạn cần lưu ý một số điểm sau:\n\n1. **Tổng công suất:** Bạn cần tính tổng công suất của đoạn LED dây định sử dụng (Công suất/m x số mét). Theo khuyến nghị kỹ thuật, bạn nên chọn nguồn dư tải khoảng 20-30% so với tổng công suất thực tế của LED.\n   * Ví dụ: Nếu tổng công suất LED là 48W, thì nguồn 12V 5A (60W) là phù hợp. Nếu tổng công suất LED lớn hơn 50-60W, bạn nên chọn nguồn có công suất lớn hơn (như 10A, 20A...) để tránh quá tải.\n\n2. **Thông tin thêm:** Để em tư vấn chính xác hơn cho trường hợp của bạn, bạn cho em xin thêm một vài thông tin nhé:\n   * Tổng chiều dài LED dây bạn định dùng là bao nhiêu mét?\n   * Công suất của loại LED dây đó là bao nhiêu W/m?\n   * Bạn dùng LED trong nhà hay ngoài trời ạ?\n\nNếu bạn chưa rõ các thông số này, bạn có thể gửi hình ảnh hoặc mã sản phẩm, em sẽ kiểm tra giúp bạn nhé!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "57a0f188-6f65-4d90-a43f-23691ccd56a0",
+      "httpStatus": 200,
+      "durationMs": 8208
+    },
+    {
+      "id": "TECH-04",
+      "group": "Technical consulting",
+      "question": "Tôi chưa biết chọn nguồn bao nhiêu W thì cần cung cấp thông tin gì?",
+      "response": "Dạ, để em có thể tư vấn cho mình chọn loại nguồn phù hợp và đảm bảo an toàn, chị vui lòng cung cấp giúp em một số thông tin sau nhé:\n\n1. **Loại đèn LED chị đang sử dụng là gì?** (Ví dụ: LED dây dán, LED dây COB, LED module,...)\n2. **Tổng chiều dài hoặc số lượng bóng LED** chị dự định lắp đặt là bao nhiêu?\n3. **Thông số điện áp của đèn:** Đèn của mình dùng điện 5V, 12V, 24V hay 220V ạ?\n4. **Mục đích sử dụng:** Mình lắp đặt trong nhà hay ngoài trời (có cần chống nước không)?\n5. **Công suất của đèn:** Nếu chị có thông tin công suất trên mỗi mét hoặc mỗi bóng thì càng tốt ạ.\n\n**Lưu ý nhỏ về kỹ thuật:** Để hệ thống hoạt động ổn định và bền bỉ, bên em luôn khuyến nghị chọn nguồn có công suất lớn hơn tổng công suất thực tế của tải (thường công thức tính nhanh là: **Tổng công suất nguồn tối thiểu = Tổng công suất đèn x 1.25**).\n\nNếu chị chưa rõ các thông số trên, mình có thể chụp ảnh tem nhãn trên sản phẩm hoặc mô tả sơ bộ nhu cầu, em sẽ hỗ trợ mình kiểm tra nhé!",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "812405c0-839e-46e5-a388-2461808dc03e",
+      "httpStatus": 200,
+      "durationMs": 7742
+    },
+    {
+      "id": "TECH-05",
+      "group": "Technical consulting",
+      "question": "LED dây COB khác gì LED dây thường?",
+      "response": "Dạ, sự khác biệt chính giữa LED dây COB và LED dây thường (như loại 5050) nằm ở cấu tạo và hiệu ứng ánh sáng ạ:\n\n1. **Về ánh sáng:**\n   - **LED dây COB:** Các chip LED được gắn dày đặc trên bảng mạch, kết hợp với lớp phủ phosphor, giúp ánh sáng phát ra **liền mạch, không bị đứt đoạn** và không nhìn thấy từng điểm LED lấm tấm. Ánh sáng trông mịn và sang trọng hơn.\n   - **LED dây thường (ví dụ 5050):** Các chip LED được đặt cách nhau một khoảng nhất định, nên khi nhìn trực tiếp hoặc hắt lên bề mặt gần, bạn sẽ thấy rõ từng điểm sáng (lấm tấm) của chip LED.\n\n2. **Về ứng dụng:**\n   - **LED dây COB:** Rất phù hợp cho các vị trí cần tính thẩm mỹ cao, ánh sáng mịn như hắt trần thạch cao, tủ kệ trưng bày, quầy bar hoặc những nơi không dùng thanh nhôm có nắp tán quang.\n   - **LED dây thường:** Phổ biến cho các loại LED RGB đổi màu hoặc các công trình cần độ sáng mạnh, bảng hiệu quảng cáo, hoặc khi bạn sử dụng kết hợp với thanh nhôm có nắp nhựa đục để che đi điểm LED.\n\n**Một vài lưu ý nhỏ khi chọn:**\n- Nếu bạn cần đoạn dài (trên 8-10m), LED dây COB 24V sẽ là lựa chọn tối ưu hơn 12V vì hạn chế được hiện tượng hao áp (giảm độ sáng ở cuối dây).\n- LED dây COB thông dụng thường là IP20 (dùng trong nhà), nếu bạn cần dùng ngoài trời thì cần chọn dòng chuyên dụng hoặc có biện pháp che chắn kỹ.\n\nBạn đang dự định lắp đặt cho không gian nào (hắt trần, tủ kệ, hay ngoài trời) để em tư vấn loại phù hợp nhất cho mình nhé?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "a171d3a6-7161-434d-a134-b3445a031bc2",
+      "httpStatus": 200,
+      "durationMs": 8927
+    },
+    {
+      "id": "TECH-06",
+      "group": "Technical consulting",
+      "question": "Đèn LED dây 12V và 220V khác nhau thế nào?",
+      "response": "Dạ, LED dây 12V và 220V có những khác biệt cơ bản về cách sử dụng và tính an toàn như sau:\n\n**1. LED dây 12V (và 24V):**\n*   **Đặc điểm:** Sử dụng điện áp thấp, cần có **nguồn chuyển đổi (adapter/nguồn tổ ong)** từ 220V xuống 12V/24V mới hoạt động được.\n*   **An toàn:** Rất an toàn, không lo bị giật điện khi tiếp xúc, phù hợp lắp đặt trong nhà, tủ kệ, hắt trần hoặc những nơi có thể chạm tay vào.\n*   **Ứng dụng:** Thường dùng cho trang trí nội thất, hắt trần, tủ kệ, quầy bar.\n*   **Lưu ý:** Khi lắp đặt đoạn dài, cần tính toán công suất nguồn (nên chọn nguồn dư tải 20-30%) và cách cấp nguồn để tránh bị sụt áp (giảm độ sáng ở cuối dây).\n\n**2. LED dây 220V:**\n*   **Đặc điểm:** Cắm trực tiếp vào điện lưới 220V thông qua một phụ kiện chỉnh lưu nhỏ.\n*   **An toàn:** Điện áp cao nên tiềm ẩn rủi ro về điện. Cần đảm bảo các đầu nối, đầu bịt phải được bọc kín, chống nước và cách điện tuyệt đối. Khuyến nghị chỉ nên dùng khi có thợ hoặc người có chuyên môn lắp đặt.\n*   **Ứng dụng:** Phù hợp trang trí ngoài trời, viền bảng hiệu, hoặc các công trình cần kéo dây dài mà không muốn đi dây nguồn phức tạp.\n*   **Lưu ý:** Cần chú ý kỹ thuật lắp đặt an toàn điện và sử dụng phụ kiện chuyên dụng (đầu nối, keo chống nước).\n\nĐể tư vấn loại phù hợp nhất cho bạn, chị có thể cho em biết thêm thông tin là mình định lắp ở đâu (trong nhà/ngoài trời), tổng chiều dài cần dùng là bao nhiêu mét và mục đích trang trí là gì không ạ?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "41d7cad1-b59f-41ca-a10e-f39bf85fbe40",
+      "httpStatus": 200,
+      "durationMs": 8961
+    }
+  ]
+}

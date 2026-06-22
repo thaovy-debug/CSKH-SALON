@@ -203,6 +203,42 @@ describe("AI Tools", () => {
       expect(result.history).toHaveLength(0);
       expect(result.message).toContain("No previous conversations");
     });
+
+    it("should return LinhKienLed1000 customer profile fields", async () => {
+      mockPrisma.customer.findFirst.mockResolvedValue({
+        name: "Lan",
+        phone: "0909003082",
+        email: "lan@example.com",
+        whatsapp: "",
+        tags: "VIP",
+        profileNotes: "Hay mua LED dây ngoài trời",
+        preferences: "Ánh sáng vàng",
+        purchaseContext: "Lắp bảng hiệu ngoài trời",
+        technicalNeeds: "LED dây 12V chống nước, nguồn dự phòng 20%",
+        quoteStatus: "yes",
+        previousAdvisor: "Kỹ thuật LED1000",
+      });
+      mockPrisma.conversation.findMany.mockResolvedValue([]);
+
+      const result = JSON.parse(
+        await executeToolCall("get_customer_history", {
+          customerContact: "0909003082",
+        })
+      );
+
+      expect(result.profile).toMatchObject({
+        name: "Lan",
+        phone: "0909003082",
+        email: "lan@example.com",
+        tags: "VIP",
+        profileNotes: "Hay mua LED dây ngoài trời",
+        preferences: "Ánh sáng vàng",
+        purchaseContext: "Lắp bảng hiệu ngoài trời",
+        technicalNeeds: "LED dây 12V chống nước, nguồn dự phòng 20%",
+        quoteStatus: "yes",
+        previousAdvisor: "Kỹ thuật LED1000",
+      });
+    });
   });
 
   describe("schedule_followup", () => {

@@ -6,6 +6,16 @@ import { logger } from "@/lib/logger";
 import { requireAuth, isAuthenticated } from "@/lib/route-auth";
 import { DEFAULT_GEMINI_MODEL, GEMINI_PROVIDER } from "@/lib/ai/catalog";
 
+const DEFAULT_BUSINESS_SETTINGS = {
+  businessName: "LED1000 / Linh Kiện LED1000",
+  businessDesc:
+    "Chuyên đèn LED, nguồn điện, linh kiện LED, phụ kiện chiếu sáng, đèn trang trí và thiết bị điện liên quan.",
+  welcomeMessage:
+    "Xin chào! LED1000 có thể hỗ trợ bạn tìm đèn LED, nguồn điện, linh kiện hoặc phụ kiện phù hợp. Bạn cần dùng cho mục đích nào và có thông số điện áp/công suất chưa?",
+  tone: "friendly",
+  language: "auto",
+};
+
 export async function GET(request: NextRequest) {
   const auth = await requireAuth(request, "settings:read");
   if (!isAuthenticated(auth)) return auth;
@@ -21,6 +31,7 @@ export async function GET(request: NextRequest) {
           id: "default",
           aiProvider: GEMINI_PROVIDER,
           aiModel: DEFAULT_GEMINI_MODEL,
+          ...DEFAULT_BUSINESS_SETTINGS,
         },
       });
     }

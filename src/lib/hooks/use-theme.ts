@@ -29,7 +29,7 @@ export const useTheme = create<ThemeStore>()(
       },
     }),
     {
-      name: "salondesk-theme",
+      name: "linhkienled1000-theme",
       onRehydrateStorage: () => (state) => {
         if (state?.theme === "dark" && typeof document !== "undefined") {
           document.documentElement.classList.add("dark");

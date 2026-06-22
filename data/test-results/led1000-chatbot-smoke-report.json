@@ -1,0 +1,173 @@
+{
+  "runInfo": {
+    "baseUrl": "http://localhost:3000",
+    "endpoint": "/api/chat",
+    "authMethod": "api_key",
+    "startedAt": "2026-06-18T11:48:44.196Z",
+    "finishedAt": "2026-06-18T11:50:11.947Z",
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "review": 0
+  },
+  "summaryByGroup": {
+    "Business/contact": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "review": 0
+    },
+    "Product category retrieval": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "review": 0
+    },
+    "Technical consulting": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Price/inventory behavior": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Out-of-domain regression": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    },
+    "Ambiguous/missing info": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "review": 0
+    }
+  },
+  "results": [
+    {
+      "id": "BIZ-01",
+      "group": "Business/contact",
+      "question": "LED1000 là bên nào?",
+      "response": "Dạ LED1000 hay Linh Kiện LED1000 là tên thương hiệu của Chi nhánh CTY TNHH TM DV QC Long Thịnh Phát. Bên em chuyên về các sản phẩm đèn LED, nguồn điện, linh kiện LED, phụ kiện chiếu sáng, đèn trang trí và thiết bị điện liên quan ạ.",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "b0670eb3-4639-4566-a491-369ee80c65d9",
+      "httpStatus": 200,
+      "durationMs": 2858
+    },
+    {
+      "id": "BIZ-02",
+      "group": "Business/contact",
+      "question": "Shop ở đâu?",
+      "response": "Dạ, LED1000 có địa chỉ tham khảo tại 207 Vườn Lài, Phú Thọ Hòa, Q. Tân Phú, TP.HCM ạ.",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "a030f569-4b96-44b3-b751-d02d8ad093b8",
+      "httpStatus": 200,
+      "durationMs": 3226
+    },
+    {
+      "id": "BIZ-03",
+      "group": "Business/contact",
+      "question": "Hotline là gì?",
+      "response": "Dạ hotline là một đường dây điện thoại thường được thiết lập để khách hàng liên hệ trực tiếp với doanh nghiệp để được hỗ trợ, tư vấn hoặc giải đáp thắc mắc nhanh chóng ạ.\n\nBên em có các hotline sau:\n*   Hotline/Zalo đặt hàng online: 0909003082\n*   Hotline/Zalo tư vấn công trình: 0972 90 25 25",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "1ffa49ae-72d0-42f1-a9ac-9794cc41a2b8",
+      "httpStatus": 200,
+      "durationMs": 3197
+    },
+    {
+      "id": "BIZ-04",
+      "group": "Business/contact",
+      "question": "LED1000 bán những nhóm sản phẩm nào?",
+      "response": "Dạ LED1000 chuyên tư vấn và cung cấp các nhóm sản phẩm sau ạ:\n- Nguồn tổng DC, nguồn tổ ong, nguồn siêu mỏng, nguồn ngoài trời.\n- Adapter 5V, 12V, 24V, 48V.\n- LED dây 12V, 24V, 220V; LED dây COB; LED dây RGB; LED dây chống nước.\n- Đèn pha LED, đèn năng lượng mặt trời, đèn LED thanh, LED quảng cáo.\n- Linh kiện LED, module LED, chip LED, mạch điều khiển, thanh nhôm, phụ kiện lắp đặt.",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "72dd734c-e1ec-4c0e-b300-03078199f80b",
+      "httpStatus": 200,
+      "durationMs": 2914
+    },
+    {
+      "id": "CAT-01",
+      "group": "Product category retrieval",
+      "question": "Có bán adapter 12V không?",
+      "response": "Dạ có ạ. LED1000 có bán các loại Adapter 12V để cấp nguồn cho LED dây 12V, camera, module LED nhỏ, tủ kệ, hộp đèn nhỏ.\n\nĐể em tư vấn loại phù hợp, chị/bạn cho em hỏi mình cần dùng adapter cho thiết bị có điện áp và tổng công suất/tải dự kiến là bao nhiêu ạ? Mình có dùng ngoài trời không và cần loại jack cắm hay dây trần ạ?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "8b4c41e2-5eac-42df-8e9a-9f1e3028f325",
+      "httpStatus": 200,
+      "durationMs": 5222
+    },
+    {
+      "id": "CAT-02",
+      "group": "Product category retrieval",
+      "question": "Có bán nguồn 24V không?",
+      "response": "Dạ LED1000 có bán nguồn 24V ạ. Mình cần công suất bao nhiêu và dùng cho mục đích gì ạ?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "e894708f-9a5c-4a2f-a1f9-92ec357b8720",
+      "httpStatus": 200,
+      "durationMs": 1787
+    },
+    {
+      "id": "CAT-03",
+      "group": "Product category retrieval",
+      "question": "Có bán LED dây không?",
+      "response": "Dạ LED1000 có bán LED dây ạ.\n\nĐể em tư vấn đúng loại mình cần, bạn cho em hỏi thêm là mình muốn dùng LED dây cho mục đích nào, ví dụ như hắt trần, tủ kệ, hay trang trí ngoài trời ạ? Và mình có nhu cầu về điện áp (12V, 24V, 220V) hay màu ánh sáng cụ thể không ạ?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "0284ac1f-093b-445a-95b4-3ddaf7d57fae",
+      "httpStatus": 200,
+      "durationMs": 3545
+    },
+    {
+      "id": "CAT-04",
+      "group": "Product category retrieval",
+      "question": "Có LED dây COB không?",
+      "response": "Dạ bên em có LED dây COB ạ. Hiện tại LED1000 đang cung cấp các dòng LED dây COB với ưu điểm ánh sáng liền mạch, không bị lộ điểm LED, phù hợp cho hắt trần, tủ kệ hoặc trang trí nội thất.\n\nBên em đang có sẵn các loại:\n*   **LED dây COB 12V:** Cuộn 5m, bản 8mm (màu trắng/vàng/trung tính).\n*   **LED dây COB 24V:** Cuộn 10m (phù hợp cho công trình cần đi dây dài, ít hao áp).\n*   **LED dây COB 220V:** Cuộn 100m (dùng cho trang trí ngoài trời hoặc viền bảng hiệu).\n\nĐể em tư vấn kỹ hơn, chị dự định lắp cho khu vực nào (trong nhà hay ngoài trời) và cần tổng chiều dài bao nhiêu mét ạ? Chị đã có nguồn điện phù hợp cho LED dây chưa ạ?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "ae13a087-7357-408a-a231-79bb333360c5",
+      "httpStatus": 200,
+      "durationMs": 57628
+    },
+    {
+      "id": "CAT-05",
+      "group": "Product category retrieval",
+      "question": "Có đèn năng lượng mặt trời không?",
+      "response": "Dạ có ạ. LED1000 có cung cấp đèn năng lượng mặt trời.\n\nBạn cho em hỏi bạn cần dùng cho diện tích chiếu sáng khoảng bao nhiêu, độ cao lắp đặt là bao nhiêu, dùng trong nhà hay ngoài trời, và bạn mong muốn thời gian chiếu sáng là bao lâu ạ?",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "9b8d4d36-55bf-4cbe-8b46-84eb3f8556d1",
+      "httpStatus": 200,
+      "durationMs": 3311
+    },
+    {
+      "id": "CAT-06",
+      "group": "Product category retrieval",
+      "question": "Có linh kiện đèn LED không?",
+      "response": "Dạ có ạ. LED1000 cung cấp nhiều loại linh kiện và phụ kiện LED như LED module, LED đúc F5/F8, chip LED, mạch điều khiển, dimmer, remote RGB, thanh nhôm LED, dây điện, jack DC, domino, keo silicon và đầu nối LED dây.\n\nBạn đang tìm linh kiện nào hoặc cần dùng cho mục đích gì ạ? Bạn có thể cho em xin hình ảnh, kích thước, điện áp hoặc số lượng để em tư vấn cụ thể hơn nha.",
+      "status": "pass",
+      "flags": [],
+      "notes": "",
+      "conversationId": "f5316a27-b576-495f-9248-07a1ce2113d3",
+      "httpStatus": 200,
+      "durationMs": 3543
+    }
+  ]
+}

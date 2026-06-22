@@ -54,7 +54,7 @@ export async function cacheGet(key: string): Promise<string | null> {
   const redis = await getRedisClient();
 
   if (redis) {
-    return redis.get(`salondesk:${key}`);
+    return redis.get(`linhkienled1000:${key}`);
   }
 
   // In-memory fallback
@@ -79,9 +79,9 @@ export async function cacheSet(
 
   if (redis) {
     if (ttlSeconds) {
-      await redis.set(`salondesk:${key}`, value, { EX: ttlSeconds });
+      await redis.set(`linhkienled1000:${key}`, value, { EX: ttlSeconds });
     } else {
-      await redis.set(`salondesk:${key}`, value);
+      await redis.set(`linhkienled1000:${key}`, value);
     }
     return;
   }
@@ -100,7 +100,7 @@ export async function cacheDel(key: string): Promise<void> {
   const redis = await getRedisClient();
 
   if (redis) {
-    await redis.del(`salondesk:${key}`);
+    await redis.del(`linhkienled1000:${key}`);
     return;
   }
 

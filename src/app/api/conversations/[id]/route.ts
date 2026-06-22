@@ -21,6 +21,16 @@ export async function GET(
           orderBy: { createdAt: "asc" },
         },
         customer: true,
+        channelAccount: {
+          select: {
+            id: true,
+            type: true,
+            displayName: true,
+            externalAccountId: true,
+            status: true,
+            isActive: true,
+          },
+        },
         tags: {
           include: { tag: true },
         },
@@ -103,6 +113,17 @@ export async function PUT(
         messages: {
           orderBy: { createdAt: "asc" },
         },
+        customer: true,
+        channelAccount: {
+          select: {
+            id: true,
+            type: true,
+            displayName: true,
+            externalAccountId: true,
+            status: true,
+            isActive: true,
+          },
+        },
         tags: {
           include: { tag: true },
         },
@@ -130,6 +151,17 @@ export async function PUT(
         where: { id },
         include: {
           messages: { orderBy: { createdAt: "asc" } },
+          customer: true,
+          channelAccount: {
+            select: {
+              id: true,
+              type: true,
+              displayName: true,
+              externalAccountId: true,
+              status: true,
+              isActive: true,
+            },
+          },
           tags: { include: { tag: true } },
           _count: { select: { messages: true } },
         },

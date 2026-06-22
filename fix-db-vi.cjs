@@ -7,7 +7,7 @@ const { Pool } = require("pg");
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://postgres:postgres@localhost:5432/owly?schema=public";
+  "postgresql://postgres:postgres@localhost:5432/linhkienled1000?schema=public";
 
 const pool = new Pool({ connectionString });
 
@@ -22,33 +22,33 @@ async function run() {
     const cannedUpdates = [
       {
         id: "cr-1",
-        title: "Lời chào",
+        title: "Chào khách LED1000",
         content:
-          "Xin chào! Cảm ơn bạn đã liên hệ với chúng tôi. Tôi có thể giúp gì cho bạn hôm nay?",
+          "Xin chào! Linh Kiện LED1000 có thể hỗ trợ bạn về đèn LED, nguồn điện, linh kiện LED hoặc phụ kiện chiếu sáng nào hôm nay?",
         category: "Chung",
         shortcut: "/chao",
       },
       {
         id: "cr-2",
-        title: "Lời tạm biệt",
+        title: "Kết thúc tư vấn",
         content:
-          "Cảm ơn bạn đã liên hệ! Nếu cần hỗ trợ thêm, đừng ngần ngại liên hệ lại nhé!",
+          "Cảm ơn bạn đã liên hệ Linh Kiện LED1000. Khi cần kiểm tra thêm mã hàng, giá hoặc tồn kho, bạn cứ nhắn lại nhé!",
         category: "Chung",
         shortcut: "/tambit",
       },
       {
         id: "cr-3",
-        title: "Quy trình hoàn tiền",
+        title: "Hỏi mã sản phẩm",
         content:
-          "Tôi hiểu bạn muốn hoàn tiền. Để tôi kiểm tra cho bạn nhé. Bạn có thể cho tôi biết mã đơn hàng không?",
-        category: "Thanh toán",
-        shortcut: "/hoantien",
+          "Bạn gửi giúp mình mã sản phẩm, điện áp, công suất hoặc ảnh tem thông số để bên mình kiểm tra đúng loại hàng nhé.",
+        category: "Tư vấn sản phẩm",
+        shortcut: "/masp",
       },
       {
         id: "cr-4",
-        title: "Chuyển chuyên viên",
+        title: "Chuyển kỹ thuật",
         content:
-          "Tôi sẽ kết nối bạn với chuyên viên có thể hỗ trợ tốt hơn cho vấn đề này. Vui lòng chờ trong giây lát.",
+          "Mình sẽ chuyển thông tin cho bộ phận kỹ thuật LED1000 để hỗ trợ chính xác hơn. Bạn vui lòng chờ trong giây lát.",
         category: "Hỗ trợ",
         shortcut: "/chuyenky",
       },
@@ -79,13 +79,13 @@ async function run() {
       },
       {
         id: "cat-products",
-        name: "Dịch vụ",
-        description: "Thông tin dịch vụ và điểm nổi bật",
+        name: "Sản phẩm",
+        description: "Thông tin sản phẩm, thông số và điểm nổi bật",
       },
       {
         id: "cat-policies",
         name: "Chính sách",
-        description: "Đặt lịch, hủy lịch, bảo hành và khiếu nại",
+        description: "Bảo hành, đổi trả, giao hàng và hỗ trợ sau bán",
       },
     ];
 
@@ -107,31 +107,31 @@ async function run() {
         id: "entry-1",
         title: "Giờ làm việc",
         content:
-          "Salon mở cửa từ Thứ hai đến Chủ nhật, 9:00 đến 20:00. Trợ lý AI hỗ trợ 24/7 với các câu hỏi cơ bản và sẽ chuyển nhân viên khi cần.",
+          "Linh Kiện LED1000 hỗ trợ khách hàng trong giờ làm việc của cửa hàng. Trợ lý AI có thể tiếp nhận câu hỏi cơ bản 24/7 và chuyển nhân viên khi cần kiểm tra giá, tồn kho hoặc kỹ thuật.",
       },
       {
         id: "entry-2",
         title: "Thông tin liên hệ",
         content:
-          "Khách có thể liên hệ salon qua số điện thoại 0901 234 567, Zalo hoặc fanpage. Nếu cần xử lý gấp, bot sẽ ghi nhận và chuyển cho nhân viên tư vấn.",
+          "Khách có thể liên hệ Linh Kiện LED1000 qua hotline/Zalo 0909003082 hoặc 0972 90 25 25. Nếu cần xử lý gấp, bot sẽ ghi nhận và chuyển cho nhân viên tư vấn.",
       },
       {
         id: "entry-3",
-        title: "Tổng quan dịch vụ",
+        title: "Tổng quan sản phẩm",
         content:
-          "Salon cung cấp các dịch vụ cắt, gội, uốn, nhuộm, phục hồi và chăm sóc da đầu. Bot sẽ hỏi tình trạng tóc, nhu cầu và ngân sách để gợi ý dịch vụ phù hợp trước khi chốt lịch.",
+          "Linh Kiện LED1000 cung cấp đèn LED, nguồn điện, LED dây, module LED, linh kiện LED, phụ kiện điều khiển và sản phẩm chiếu sáng trang trí. Bot cần hỏi điện áp, công suất, chiều dài, môi trường lắp đặt và nhu cầu sử dụng trước khi tư vấn.",
       },
       {
         id: "entry-4",
-        title: "Chính sách đặt và hủy lịch",
+        title: "Quy tắc báo giá",
         content:
-          "Khách nên đặt lịch trước để salon sắp xếp kỹ thuật viên phù hợp. Nếu cần hủy hoặc đổi lịch, vui lòng báo sớm ít nhất 2 giờ để salon hỗ trợ tốt nhất.",
+          "Giá và tồn kho phải đối chiếu bảng giá hoặc nhân viên phụ trách. Nếu Knowledge Base chưa có dữ liệu chính thức, bot không tự bịa giá và nên đề nghị khách cung cấp mã sản phẩm hoặc liên hệ hotline.",
       },
       {
         id: "entry-5",
-        title: "Chính sách bảo hành và khiếu nại",
+        title: "Chính sách bảo hành và hỗ trợ",
         content:
-          "Nếu khách chưa hài lòng sau dịch vụ, salon sẽ tiếp nhận phản hồi, kiểm tra tình trạng thực tế và hỗ trợ xử lý theo chính sách bảo hành. Các trường hợp khiếu nại sẽ được ưu tiên chuyển nhân viên phụ trách.",
+          "Các vấn đề bảo hành, đổi trả hoặc lỗi kỹ thuật cần kiểm tra mã hàng, tình trạng sản phẩm và chứng từ mua hàng. Trường hợp phức tạp sẽ được chuyển cho nhân viên phụ trách.",
       },
     ];
 

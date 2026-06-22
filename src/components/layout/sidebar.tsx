@@ -87,8 +87,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [logo, setLogo] = useState("/owly.png");
-  const [name, setName] = useState("MinhHyHair");
+  const [logo, setLogo] = useState("/led1000-logo.png");
+  const [name, setName] = useState("LED1000");
 
   useEffect(() => {
     fetch("/api/settings")
@@ -127,16 +127,25 @@ export function Sidebar() {
       >
         <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10">
         {logo.startsWith("data:") || logo.startsWith("http") ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={logo}
             alt={name}
-            className="w-8 h-8 rounded-lg flex-shrink-0 object-cover bg-white"
+            className={cn(
+              "h-9 rounded-md flex-shrink-0 object-contain bg-white p-1",
+              collapsed ? "w-9" : "w-16"
+            )}
           />
         ) : (
-          <img
+          <Image
             src={logo}
             alt={name}
-            className="w-8 h-8 rounded-lg flex-shrink-0 object-cover bg-white"
+            width={collapsed ? 36 : 64}
+            height={36}
+            className={cn(
+              "h-9 rounded-md flex-shrink-0 object-contain bg-white p-1",
+              collapsed ? "w-9" : "w-16"
+            )}
           />
         )}
         {!collapsed && (

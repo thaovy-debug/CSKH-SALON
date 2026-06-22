@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-06-10T12:54:27.769Z",
+  "pagesCrawled": 20,
+  "recordsExported": 20,
+  "recordsByType": {
+    "home": 1,
+    "contact": 1,
+    "policy": 0,
+    "catalogue": 0,
+    "product_category": 15,
+    "product_listing": 1,
+    "product": 2,
+    "unknown": 0
+  },
+  "skippedUrlsCount": 0,
+  "duplicatesRemoved": 0,
+  "averageContentLength": 2999,
+  "recordsWithHtmlEntitiesRemaining": 0,
+  "recordsWithVeryShortContent": 0,
+  "outputs": {
+    "markdown": "data/knowledge/led1000-website.md",
+    "json": "data/knowledge/led1000-website.json",
+    "report": "data/knowledge/led1000-crawl-report.json"
+  }
+}

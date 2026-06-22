@@ -1,7 +1,9 @@
 import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/salondesk?schema=public";
+const connectionString =
+  process.env.DATABASE_URL ||
+  "postgresql://postgres:postgres@localhost:5432/linhkienled1000?schema=public";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

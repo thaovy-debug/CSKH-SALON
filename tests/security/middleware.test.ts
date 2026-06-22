@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
+import { proxy } from "@/proxy";
 import { _getStoreForTesting } from "@/lib/rate-limit";
 
 // Mock rate-limit module with real implementation
@@ -31,7 +32,7 @@ describe("Middleware", () => {
 
   describe("Public paths", () => {
     it("should allow /login without token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/login");
       const response = middleware(request);
 
@@ -40,7 +41,7 @@ describe("Middleware", () => {
     });
 
     it("should allow /setup without token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/setup");
       const response = middleware(request);
 
@@ -48,7 +49,7 @@ describe("Middleware", () => {
     });
 
     it("should allow /api/auth without token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/auth");
       const response = middleware(request);
 
@@ -56,7 +57,7 @@ describe("Middleware", () => {
     });
 
     it("should allow /api/health without token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/health");
       const response = middleware(request);
 
@@ -64,7 +65,7 @@ describe("Middleware", () => {
     });
 
     it("should allow Twilio webhook paths without token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/channels/phone/incoming");
       const response = middleware(request);
 
@@ -74,7 +75,7 @@ describe("Middleware", () => {
 
   describe("Protected paths", () => {
     it("should return 401 for API routes without token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/conversations");
       const response = middleware(request);
 
@@ -82,7 +83,7 @@ describe("Middleware", () => {
     });
 
     it("should redirect pages to /login without token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/conversations");
       const response = middleware(request);
 
@@ -91,11 +92,11 @@ describe("Middleware", () => {
     });
 
     it("should allow access with valid JWT format token", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       // A proper 3-part JWT structure
       const fakeToken = "eyJhbGciOiJIUzI1NiJ9.eyJ0ZXN0IjoxfQ.signature";
       const request = createMiddlewareRequest("/api/conversations", {
-        cookies: { "salondesk-token": fakeToken },
+        cookies: { "linhkienled1000-token": fakeToken },
       });
       const response = middleware(request);
 
@@ -103,9 +104,9 @@ describe("Middleware", () => {
     });
 
     it("should reject malformed token (not 3 parts)", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/conversations", {
-        cookies: { "salondesk-token": "not-a-jwt" },
+        cookies: { "linhkienled1000-token": "not-a-jwt" },
       });
       const response = middleware(request);
 
@@ -115,7 +116,7 @@ describe("Middleware", () => {
 
   describe("Security headers", () => {
     it("should include X-Content-Type-Options header", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/health");
       const response = middleware(request);
 
@@ -123,7 +124,7 @@ describe("Middleware", () => {
     });
 
     it("should include X-Frame-Options header", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/health");
       const response = middleware(request);
 
@@ -131,7 +132,7 @@ describe("Middleware", () => {
     });
 
     it("should include X-XSS-Protection header", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/health");
       const response = middleware(request);
 
@@ -139,7 +140,7 @@ describe("Middleware", () => {
     });
 
     it("should include Referrer-Policy header", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/health");
       const response = middleware(request);
 
@@ -149,7 +150,7 @@ describe("Middleware", () => {
     });
 
     it("should include Permissions-Policy header", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/api/health");
       const response = middleware(request);
 
@@ -159,7 +160,7 @@ describe("Middleware", () => {
 
   describe("Rate limiting", () => {
     it("should allow requests within auth rate limit", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
 
       for (let i = 0; i < 5; i++) {
         const request = createMiddlewareRequest("/api/auth", {
@@ -171,7 +172,7 @@ describe("Middleware", () => {
     });
 
     it("should block after exceeding auth rate limit", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
 
       // Exhaust the rate limit
       for (let i = 0; i < 5; i++) {
@@ -192,7 +193,7 @@ describe("Middleware", () => {
     });
 
     it("should track different IPs independently", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
 
       // Exhaust rate limit for IP A
       for (let i = 0; i < 6; i++) {
@@ -214,7 +215,7 @@ describe("Middleware", () => {
 
   describe("Static files", () => {
     it("should pass through _next paths", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/_next/static/chunk.js");
       const response = middleware(request);
 
@@ -222,7 +223,7 @@ describe("Middleware", () => {
     });
 
     it("should pass through .png files", async () => {
-      const { middleware } = await import("@/middleware");
+      const middleware = proxy;
       const request = createMiddlewareRequest("/logo.png");
       const response = middleware(request);
 

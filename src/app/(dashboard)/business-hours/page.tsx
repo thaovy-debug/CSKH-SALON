@@ -76,7 +76,7 @@ const defaultConfig: BusinessHoursData = {
   saturday: "",
   sunday: "",
   offlineMessage:
-    "Salon hiện đang ngoài giờ hỗ trợ. Bên mình sẽ phản hồi bạn trong khung giờ làm việc.",
+    "LED1000 hiện đang ngoài giờ hỗ trợ. Bên mình sẽ phản hồi bạn trong khung giờ làm việc.",
 };
 
 function parseTime(timeRange: string): { start: string; end: string } | null {
@@ -217,7 +217,7 @@ export default function BusinessHoursPage() {
       <div className="flex-1 flex flex-col min-h-0">
         <Header
           title="Giờ làm việc"
-          description="Thiết lập thời gian salon sẵn sàng hỗ trợ khách"
+          description="Thiết lập thời gian LED1000 sẵn sàng hỗ trợ khách"
         />
         <div className="flex-1 p-6">
           <div className="max-w-3xl space-y-6">
@@ -240,52 +240,38 @@ export default function BusinessHoursPage() {
     <div className="flex-1 flex flex-col min-h-0">
       <Header
         title="Giờ làm việc"
-        description="Thiết lập thời gian salon sẵn sàng hỗ trợ khách"
+        description="Thiết lập thời gian LED1000 sẵn sàng hỗ trợ khách"
       />
 
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-3xl space-y-6">
           <div
             className={cn(
-              "flex items-center gap-3 p-4 rounded-xl border",
+              "flex items-center gap-3 rounded-xl border bg-owly-surface p-4 shadow-sm",
               currentStatus.open
-                ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800"
-                : "bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
+                ? "border-owly-success/30"
+                : "border-owly-warning/35"
             )}
           >
             <div
               className={cn(
-                "flex items-center justify-center w-10 h-10 rounded-full",
+                "flex h-10 w-10 items-center justify-center rounded-lg",
                 currentStatus.open
-                  ? "bg-green-100 dark:bg-green-900/40"
-                  : "bg-amber-100 dark:bg-amber-900/40"
+                  ? "bg-owly-success/10 text-owly-success"
+                  : "bg-owly-warning/10 text-owly-warning"
               )}
             >
               {currentStatus.open ? (
-                <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <Check className="h-5 w-5" />
               ) : (
-                <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                <AlertTriangle className="h-5 w-5" />
               )}
             </div>
             <div>
-              <p
-                className={cn(
-                  "text-sm font-semibold",
-                  currentStatus.open
-                    ? "text-green-800 dark:text-green-300"
-                    : "text-amber-800 dark:text-amber-300"
-                )}
-              >
+              <p className="text-xs font-medium uppercase tracking-wide text-owly-text-light">
                 Trạng thái hiện tại
               </p>
-              <p
-                className={cn(
-                  "text-sm",
-                  currentStatus.open
-                    ? "text-green-700 dark:text-green-400"
-                    : "text-amber-700 dark:text-amber-400"
-                )}
-              >
+              <p className="mt-0.5 text-sm font-semibold text-owly-text">
                 {currentStatus.label}
               </p>
             </div>
@@ -299,7 +285,7 @@ export default function BusinessHoursPage() {
                 </h3>
                 <p className="text-xs text-owly-text-light mt-0.5">
                   Khi bật, khách sẽ thấy trạng thái hỗ trợ và lời nhắn ngoài giờ
-                  làm việc của salon.
+                  làm việc của LED1000.
                 </p>
               </div>
               <button
@@ -435,7 +421,7 @@ export default function BusinessHoursPage() {
               Tin nhắn ngoài giờ
             </label>
             <p className="text-xs text-owly-text-light mb-3">
-              Tin nhắn này sẽ hiển thị cho khách khi salon đang ngoài giờ làm
+              Tin nhắn này sẽ hiển thị cho khách khi LED1000 đang ngoài giờ làm
               việc.
             </p>
             <textarea
@@ -448,7 +434,7 @@ export default function BusinessHoursPage() {
               }
               rows={3}
               className="w-full px-3 py-2 text-sm border border-owly-border rounded-lg bg-owly-surface text-owly-text focus:outline-none focus:ring-2 focus:ring-owly-primary/30 focus:border-owly-primary transition-theme resize-none"
-              placeholder="Nhập nội dung khách sẽ thấy khi salon ngoài giờ..."
+              placeholder="Nhập nội dung khách sẽ thấy khi LED1000 ngoài giờ..."
             />
           </div>
 
